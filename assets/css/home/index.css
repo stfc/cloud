@@ -1,0 +1,24 @@
+.carousel-indicators {
+    position: absolute;
+    bottom: 0px;
+}
+
+.carousel-indicators li {
+    background-color: #868686;
+    border: 0px;
+}
+
+.carousel-indicators .active {
+    background-color: #005996;
+    border: 0px;
+}
+
+#carousel {
+    padding-bottom: 50px;
+    border-radius: 4px;
+    min-height: 325px;
+}
+
+.dial {
+    font-size: 20px !important;
+}

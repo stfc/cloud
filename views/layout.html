@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content="Cloud">
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+        <title>{{ title }} - SCD Cloud</title>
+        <link rel="shortcut icon" href="/assets/images/favicon.png?2" sizes="16x16 24x24 32x32 64x64">
+        <link rel="stylesheet" href="/assets/css/bootstrap.3.3.1.min.css" type="text/css" />
+        <link rel="stylesheet" href="/assets/css/main.css" type="text/css" />
+        {% block css %}{% endblock %}
+    </head>
+    <body>
+        <div class="navbar-wrapper">
+            <div class="container">
+                <nav class="navbar navbar-inverse navbar-static-top navbar-custom" role="navigation">
+                    <div class="container">
+                        <div class="navbar-header">
+                            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                                <span class="sr-only">Toggle navigation</span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                            </button>
+                            <a class="navbar-brand" href="/" style="display:inline-block;width:180px;font-variant:small-caps">
+                                <img src="/assets/images/logo.png" id="logo" style="height:25px;display:inline-block;margin-top:-5px" /> scd cloud
+                            </a>
+                        </div>
+
+                        <div id="navbar" class="navbar-collapse collapse">
+                            <ul class="nav navbar-nav">
+                                <li{{ ' class="active"' if menufocus == 'machines' }}><a href="/machines">Machines</a></li>
+                            </ul>
+                            <ul class="nav navbar-nav navbar-right">
+                                <li id="logouttoolbar" class="dropdown" style="display:none">
+                                    <a href="#" data-toggle="dropdown" class="dropdown-toggle">
+                                        <span class="glyphicon glyphicon-user"></span>
+                                        <span id="user" style="padding:0 15px"></span>
+                                        <b class="caret"></b>
+                                    </a>
+                                    <ul class="dropdown-menu" style="min-width:0px !important;width:100%">
+                                        <li><a href="#" id="logout" style="">Logout</a></li>
+                                    </ul>
+                                </li>
+                                <li id="logintoolbar" style="display:none">
+                                    <a href="/login">
+                                        <span class="glyphicon glyphicon-log-in"></span>
+                                        <span style="padding:0 15px">Login</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </nav>
+            </div>
+        </div>
+
+        <div class="container">
+        {% block content %}{% endblock %}
+        </div>
+
+        <script src="/assets/js/jquery-1.11.1.min.js"></script>
+        <script src="/assets/js/jquery.cookie.js"></script>
+        <script src="/assets/js/bootstrap.3.3.1.min.js"></script>
+        <script src="/assets/js/analytics.js"></script>
+        <script src="/assets/js/menu.js"></script>
+        {% block javascript %}{% endblock %}
+    </body>
+</html>

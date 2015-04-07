@@ -1,0 +1,316 @@
+/* GLOBAL STYLES
+-------------------------------------------------- */
+/* Padding below the footer and lighter body text */
+
+body {
+    color: #5a5a5a;
+    padding-bottom: 35px;
+}
+
+
+/* CUSTOMIZE THE NAVBAR
+-------------------------------------------------- */
+
+/* Special class on .container surrounding .navbar, used for positioning it into place. */
+.navbar-wrapper {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 20;
+}
+
+/* Flip around the padding for proper display in narrow viewports */
+.navbar-wrapper > .container {
+  padding-right: 0;
+  padding-left: 0;
+}
+.navbar-wrapper .navbar {
+  padding-right: 15px;
+  padding-left: 15px;
+}
+.navbar-wrapper .navbar .container {
+  width: auto;
+}
+
+#logo:hover, #logo:focus {
+  text-shadow: 0px 0px 3px #4EBEF4;
+}
+
+
+/* RESPONSIVE CSS
+-------------------------------------------------- */
+
+@media (min-width: 768px) {
+  /* Navbar positioning foo */
+  .navbar-wrapper {
+    margin-top: 20px;
+  }
+  .navbar-wrapper .container {
+    padding-right: 15px;
+    padding-left: 15px;
+  }
+  .navbar-wrapper .navbar {
+    padding-right: 0;
+    padding-left: 0;
+  }
+
+  /* The navbar becomes detached from the top, so we round the corners */
+  .navbar-wrapper .navbar {
+    border-radius: 4px;
+  }
+
+  body {
+    padding-top: 100px;
+  }
+}
+
+
+@media (max-width: 768px) {
+    body {
+        padding-top: 80px;
+    }
+}
+
+.page-header {
+    padding-bottom: 9px;
+    margin: 00px 0px 20px;
+    border-bottom: 1px solid rgb(238, 238, 238);
+}
+
+
+/* SIDEBAR
+http://www.codingeverything.com/2014/02/BootstrapDocsSideBar.html
+-------------------------------------------------- */
+.bs-docs-sidebar {
+    padding-left: 20px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+/* all links */
+.bs-docs-sidebar .nav>li>a {
+    color: #999;
+    padding: 4px 20px;
+    font-size: 13px;
+    font-weight: 400;
+}
+
+/* nested links */
+.bs-docs-sidebar .nav .nav>li>a {
+    padding-top: 1px;
+    padding-bottom: 1px;
+    padding-left: 30px;
+    font-size: 12px;
+}
+
+/* all links */
+.bs-docs-sidebar .nav>li>a {
+    border-left: 2px solid transparent;
+}
+
+/* active & hover links */
+.bs-docs-sidebar .nav>.active>a, 
+.bs-docs-sidebar .nav>li>a:hover, 
+.bs-docs-sidebar .nav>li>a:focus {
+    color: #0a4e70;                 
+    text-decoration: none;          
+    background-color: transparent;  
+    border-left: 2px solid #0a4e70; 
+}
+
+
+/* NAVBAR
+http://twitterbootstrap3navbars.w3masters.nl/?color=%230d638e&linkcolor=%23fff&activelinkcolor=%23ffffff&gradient=0&gradient=1&borders=0&borders=1
+-------------------------------------------------- */
+.navbar-custom {
+  background-color: #003b63;
+  border-color: #002742;
+  background-image: -webkit-gradient(linear, left 0%, left 100%, from(#005996), to(#0a4e70));
+  background-image: -webkit-linear-gradient(top, #005996, 0%, #0a4e70, 100%);
+  background-image: -moz-linear-gradient(top, #005996 0%, #0a4e70 100%);
+  background-image: linear-gradient(to bottom, #005996 0%, #0a4e70 100%);
+  background-repeat: repeat-x;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#005996', endColorstr='#0a4e70', GradientType=0);
+}
+.navbar-custom .navbar-brand {
+  color: #ffffff;
+  font-size:20px;
+}
+.navbar-custom .navbar-brand:hover,
+.navbar-custom .navbar-brand:focus {
+  text-shadow: 0px 0px 3px #4EBEF4;
+  background-color: transparent;
+}
+.navbar-custom .navbar-text {
+  color: #ffffff;
+}
+.navbar-custom .navbar-nav > li:last-child > a {
+  border-right: 1px solid #002742;
+}
+.navbar-custom .navbar-nav > li > a {
+  color: #ffffff;
+  border-left: 1px solid #002742;
+}
+.navbar-custom .navbar-nav > li > a:hover,
+.navbar-custom .navbar-nav > li > a:focus {
+  background-image: -webkit-gradient(linear, left 0%, left 100%, from(#0a4e70), to(#005996));
+  background-image: -webkit-linear-gradient(top, #0a4e70, 0%, #005996, 100%);
+  background-image: -moz-linear-gradient(top, #0a4e70 0%, #005996 100%);
+  background-image: linear-gradient(to bottom, #0a4e70 0%, #005996 100%);
+  background-repeat: repeat-x;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#0a4e70', endColorstr='#005996', GradientType=0);
+  border-color: #002742;
+}
+.navbar-custom .navbar-nav > .active > a,
+.navbar-custom .navbar-nav > .active > a:hover,
+.navbar-custom .navbar-nav > .active > a:focus {
+  background-image: -webkit-gradient(linear, left 0%, left 100%, from(#0a4e70), to(#005996));
+  background-image: -webkit-linear-gradient(top, #0a4e70, 0%, #005996, 100%);
+  background-image: -moz-linear-gradient(top, #0a4e70 0%, #005996 100%);
+  background-image: linear-gradient(to bottom, #0a4e70 0%, #005996 100%);
+  background-repeat: repeat-x;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#0a4e70', endColorstr='#005996', GradientType=0);
+}
+.navbar-custom .navbar-nav > .disabled > a,
+.navbar-custom .navbar-nav > .disabled > a:hover,
+.navbar-custom .navbar-nav > .disabled > a:focus {
+  color: #cccccc;
+  background-color: transparent;
+}
+.navbar-custom .navbar-toggle {
+  border-color: #dddddd;
+}
+.navbar-custom .navbar-toggle:hover,
+.navbar-custom .navbar-toggle:focus {
+  background-color: #dddddd;
+}
+.navbar-custom .navbar-toggle .icon-bar {
+  background-color: #cccccc;
+}
+.navbar-custom .navbar-collapse,
+.navbar-custom .navbar-form {
+  border-color: #00263f;
+}
+.navbar-custom .navbar-nav > .dropdown > a:hover .caret,
+.navbar-custom .navbar-nav > .dropdown > a:focus .caret {
+  border-top-color: #ffffff;
+  border-bottom-color: #ffffff;
+}
+.navbar-custom .navbar-nav > .open > a,
+.navbar-custom .navbar-nav > .open > a:hover,
+.navbar-custom .navbar-nav > .open > a:focus {
+  background-color: #002742;
+  color: #ffffff;
+}
+.navbar-custom .navbar-nav > .open > a .caret,
+.navbar-custom .navbar-nav > .open > a:hover .caret,
+.navbar-custom .navbar-nav > .open > a:focus .caret {
+  border-top-color: #ffffff;
+  border-bottom-color: #ffffff;
+}
+.navbar-custom .navbar-nav > .dropdown > a .caret {
+  border-top-color: #ffffff;
+  border-bottom-color: #ffffff;
+}
+@media (max-width: 767) {
+  .navbar-custom .navbar-nav .open .dropdown-menu > li > a {
+    color: #ffffff;
+  }
+  .navbar-custom .navbar-nav .open .dropdown-menu > li > a:hover,
+  .navbar-custom .navbar-nav .open .dropdown-menu > li > a:focus {
+    color: #ffffff;
+    background-color: transparent;
+  }
+  .navbar-custom .navbar-nav .open .dropdown-menu > .active > a,
+  .navbar-custom .navbar-nav .open .dropdown-menu > .active > a:hover,
+  .navbar-custom .navbar-nav .open .dropdown-menu > .active > a:focus {
+    color: #ffffff;
+    background-color: #002742;
+  }
+  .navbar-custom .navbar-nav .open .dropdown-menu > .disabled > a,
+  .navbar-custom .navbar-nav .open .dropdown-menu > .disabled > a:hover,
+  .navbar-custom .navbar-nav .open .dropdown-menu > .disabled > a:focus {
+    color: #cccccc;
+    background-color: transparent;
+  }
+}
+.navbar-custom .navbar-link {
+  color: #ffffff;
+}
+.navbar-custom .navbar-link:hover {
+  color: #ffffff;
+}
+
+
+/* CUSTOM BUTTON */
+
+.btn-blue {
+  color: #fff;
+  background-color: #0a4e70;
+  border-color: #0a4e70;
+  background-image: -webkit-gradient(linear, left 0%, left 100%, from(#005894), to(#0a4e70));
+  background-image: -webkit-linear-gradient(top, #005894, 0%, #0a4e70, 100%);
+  background-image: -moz-linear-gradient(top, #005894 0%, #0a4e70 100%);
+  background-image: linear-gradient(to bottom, #005894 0%, #0a4e70 100%);
+  background-repeat: repeat-x;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#005894', endColorstr='#0a4e70', GradientType=0);
+}
+.btn-blue:hover,
+.btn-blue:focus,
+.btn-blue.focus,
+.btn-blue:active,
+.btn-blue.active,
+.open > .dropdown-toggle.btn-blue {
+  color: #fff;
+  background-image: -webkit-gradient(linear, left 0%, left 100%, from(#0a4e70), to(#005996));
+  background-image: -webkit-linear-gradient(top, #0a4e70, 0%, #005996, 100%);
+  background-image: -moz-linear-gradient(top, #0a4e70 0%, #005996 100%);
+  background-image: linear-gradient(to bottom, #0a4e70 0%, #005996 100%);
+  background-repeat: repeat-x;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#0a4e70', endColorstr='#005996', GradientType=0);
+  border-color: #204d74;
+}
+.btn-blue:active,
+.btn-blue.active,
+.open > .dropdown-toggle.btn-blue {
+  background-image: none;
+}
+.btn-blue.disabled,
+.btn-blue[disabled],
+fieldset[disabled] .btn-blue,
+.btn-blue.disabled:hover,
+.btn-blue[disabled]:hover,
+fieldset[disabled] .btn-blue:hover,
+.btn-blue.disabled:focus,
+.btn-blue[disabled]:focus,
+fieldset[disabled] .btn-blue:focus,
+.btn-blue.disabled.focus,
+.btn-blue[disabled].focus,
+fieldset[disabled] .btn-blue.focus,
+.btn-blue.disabled:active,
+.btn-blue[disabled]:active,
+fieldset[disabled] .btn-blue:active,
+.btn-blue.disabled.active,
+.btn-blue[disabled].active,
+fieldset[disabled] .btn-blue.active {
+  background-color: #005894;
+  border-color: #2e6da4;
+}
+.btn-blue .badge {
+  color: #337ab7;
+  background-color: #fff;
+}
+
+
+/* CUSTOM PAGINATION */
+
+.pagination > .active a {
+    background-color: #0a4e70 !important;
+    border-color: #0a4e70 !important;
+    color: #fff;
+}
+
+.pagination > li > a {
+    color: #0a4e70;
+}

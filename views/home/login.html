@@ -1,0 +1,47 @@
+{% set title = "Login" %}
+
+{% extends "layout.html" %}
+
+{% block css %}
+<link rel="stylesheet" href="/assets/css/home/login.css" type="text/css" />
+{% endblock %}
+
+{% block javascript %}
+<script src="/assets/js/home/login.js"></script>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6">
+        <h1 class="page-header">Login</h1>
+        <p>
+            You can access the cloud and any of your virtual machines with your Federal Credentials. By proceeding to log in, you agree to the <a href="/tos">Terms of Service</a>.
+        </p>
+    </div>
+    <div class="col-md-4 col-md-offset-1">
+        <div id="error" class="alert alert-danger text-center" role="alert" style="display:none">
+            <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> <span id="errormessage"></span>
+        </div>
+        <div class="member_signin">
+            <div class="panel-body">
+                <p class="member">Federal Login</p>
+                <form role="form" id="loginform" method="post">
+                    <div class="form-group">
+                        <label for="username" class="sr-only">username</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="username" name="username" placeholder="Federal ID" autofocus>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="password" class="sr-only">Password</label>
+                        <div class="input-group">
+                            <input type="password" class="form-control" id="password" name="password" placeholder="Password">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-blue btn-md login" id="login">LOG IN</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

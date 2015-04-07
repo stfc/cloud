@@ -1,0 +1,47 @@
+{% set menufocus = "history" %}
+{% set title = "Machine History" %}
+
+{% extends "layout.html" %}
+
+{% block css %}
+<link rel="stylesheet" href="/assets/css/bootstrap-select.min.css" type="text/css" />
+{% endblock %}
+
+{% block javascript %}
+<script src="/assets/js/jquery.paging.min.js"></script>
+<script src="/assets/js/machines/history.js"></script>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+{% set submenufocus = "history" %}
+{% include "machines/machinessubmenu.html" %}
+    <div class="col-md-10">
+        <h1 class="page-header">History</h1>
+        <div id="error" class="alert alert-danger text-center" role="alert" style="display:none">
+            <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> <span id="errormessage"></span>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Hostname</th>
+                        <th>State</th>
+                        <th>Type</th>
+                        <th>Start</th>
+                        <th>End</th>
+                        <th>CPU</th>
+                        <th>RAM</th>
+                    </tr>
+                </thead>
+            <tbody id="vms"></tbody>
+          </table>
+        </div>
+        <div style="text-align:center">
+            <ul class="pagination"></ul>
+        </div>
+    </div>
+</div>
+{% endblock %}

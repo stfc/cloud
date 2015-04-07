@@ -1,0 +1,74 @@
+{% set title = "Home" %}
+
+{% extends "layout.html" %}
+
+{% block css %}
+<link rel="stylesheet" href="/assets/css/home/index.css" type="text/css" />
+{% endblock %}
+
+{% block javascript %}
+<script src="/assets/js/jquery.knob.js"></script>
+<script src="/assets/js/home/index.js"></script>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+{% set submenufocus = "home" %}
+{% include "home/homesubmenu.html" %}
+    <div class="col-md-10">
+        <div id="carousel" class="carousel slide" data-ride="carousel">
+            <div class="carousel-inner" role="listbox">
+                <div class="item active">
+                    <h1 class="page-header">Welcome</h1>
+                    <img src="/assets/images/clouds.png" style="float:right;width:300px;padding-left:40px" />
+                    <p>
+                        Welcome to the SCD Cloud. This service provides a private <abbr title="Infrastucture as a Service">IaaS</abbr> cloud resource for SCD users.
+                        To start, select the login link at the top of the page and enter your federal username and password.
+                    </p>
+                    <p>
+                        You should be aware that the SCD Cloud is still in active development. Please read the <a href="/tos">Terms of Service</a> before proceeding.
+                    </p>
+                    <p>
+                        For any questions, problems or ideas email us at <a href="mailto:{{ email }}">{{ email }}</a>
+                    </p>
+                </div>
+                <div class="item">
+                    <h1 class="page-header">Infrastructure</h1>
+                    <img src="/assets/images/rack.png" style="width:170px;float:right;margin-top:-15px" />
+                    <p>
+                        The cloud is based on <a href="http://opennebula.org">OpenNebula</a> for the virtualisation and <a href="http://ceph.com">CEPH</a> for the storage. For the hardware, we use 
+                        <ul>
+                            <li>28x Dell R420 for the hypervisors</li>
+                            <li>30x Dell R520 for the storage nodes</li>
+                        </ul>
+                        This gives us a total of <b>3.5TB</b> of memory, <b>896</b> processing cores and a storage capacity of approximately <b>750TB</b>.
+                        <br /><br /><br />
+                        <img src="/assets/images/ceph.png" class="pull-right" style="height:45px;margin-right:50px;margin-top:-5px" />
+                        <img src="/assets/images/opennebula.png" class="pull-left" style="bottom:0px;margin-left:50px" />
+                    </p>
+                </div>
+                <div class="item">
+                    <h1 class="page-header">Allocated Resources</h1>
+                    <div class="row">
+                        <div class="col-md-4 col-md-offset-2 text-center" style="font-variant:small-caps">
+                            <input type="text" class="dial" id="cpu" value="0" />
+                            <div style="font-variant:small-caps;margin-top:-50px">Cpu</div>
+                            <span id="cpu_used"></span> out of <span id="cpu_total"></span>
+                        </div>
+                        <div class="col-md-4 text-center" style="font-variant:small-caps">
+                            <input type="text" class="dial" id="mem" value="0" />
+                            <div style="font-variant:small-caps;margin-top:-50px">Memory</div>
+                            <span id="mem_used"></span>gb out of <span id="mem_total"></span>gb
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <ol class="carousel-indicators">
+                <li data-target="#carousel" data-slide-to="0" class="active"></li>
+                <li data-target="#carousel" data-slide-to="1"></li>
+                <li data-target="#carousel" data-slide-to="2"></li>
+            </ol>
+        </div>
+    </div>
+</div>
+{% endblock %}
