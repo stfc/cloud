@@ -13,6 +13,14 @@
     var INCLUDE_URI = "/assets/js/machines/novnc/";
     var WSHOSTNAME = "{{ wshostname }}";
     var WSPORT = "{{ wsport }}";
+
+    $(function() {
+        drawTable();
+        quota.update();
+        setInterval(function () {
+            quota.update();
+        }, 3000);
+    });
 </script>
 <script src="/assets/js/machines/novnc/util.js"></script>
 <script src="/assets/js/machines/vnc.js"></script>
@@ -21,6 +29,7 @@
 <script src="/assets/js/jquery.paging.min.js"></script>
 
 <script src="/assets/js/machines/quota.js"></script>
+<script src="/assets/js/machines/pagination.js"></script>
 <script src="/assets/js/machines/createmachine.js"></script>
 <script src="/assets/js/machines/listmachines.js"></script>
 <script src="/assets/js/machines/deletemachine.js"></script>
@@ -60,7 +69,7 @@
                 </thead>
             <tbody id="vms">
                 <tr>
-                    <td colspan="9" class="text-center"><br />It looks like you do not have any Virtual Machines. Why do you create one?<br /><br /></td>
+                    <td colspan="9" class="text-center"><br />It looks like you do not have any Virtual Machines. Why don't you create one?<br /><br /></td>
                 </tr>
             </tbody>
           </table>

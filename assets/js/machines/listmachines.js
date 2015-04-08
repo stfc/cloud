@@ -1,15 +1,3 @@
-$(function() {
-    drawTable();
-    drawPagination();
-    setInterval(function () {drawTable()}, 3000);
-});
-
-var pagination;
-
-var offset = 0;
-var numvms = 0;
-var pagesize = 10;
-
 var VM_STATES = ["INIT", "PENDING", "HOLD", "ACTIVE", "STOPPED", "SUSPENDED", "DONE", "FAILED", "POWER OFF", "STOPPING"]
 var STATE_STYLE = ["primary", "primary", "info", "success", "warning", "warning", "default", "danger", "warning", "warning"]
 var MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
@@ -48,8 +36,11 @@ function drawTable()
         var html = "";
 
         $.each(json, function(index, vm) {
-            // disable vcn icon when machine pending
-            disabled = (vm['token'] == "" ? "disabled" : "")
+            // TODO: fails if clients time is different from the server
+            // disable vcn icon for 10 seconds to allow machine to sufficiently start
+            //disabled = (parseInt(vm['stime'])+10 > Math.floor(Date.now() / 1000) ? "disabled" : "")
+
+            disabled = (VM_STATES[vm['state']] == "PENDING" ? "disabled" : "")
 
             html += '<tr>';
             html += '<td>' + vm['name'] + '</td>';
@@ -71,47 +62,6 @@ function drawTable()
             $("#vms").empty();
             $("#vms").append(html);
         }
-
-        quota.update();
     });
 
-}
-
-function drawPagination(page)
-{
-    // when redrawing, stay on current page unless directed otherwise
-    var p = (pagination != undefined ? pagination.a['page'] : 1);
-    if (page != undefined) {
-        p = page;
-    }
-
-    // the number of vms used is taken from quota
-    pagination = $(".pagination").paging(quota.used, {
-        format: '[< ncn >]',
-        perpage: pagesize,
-        lapping: 0,
-        page: p,
-        onSelect: function (page) {
-            offset = this.slice[0];
-            drawTable();
-        },
-        onFormat: function (type) {
-            switch (type) {
-            case 'block':
-                if (this.value != this.page) {
-                    return '<li><a href="#">' + this.value + '</a></li>';
-                } else {
-                    return '<li class="active"><a href="#">' + this.value + '</a></li>';
-                }
-            case 'next':
-                return '<li><a href="#">&gt;</a></li>';
-            case 'prev':
-                return '<li><a href="#">&lt;</a></li>';
-            case 'first':
-                return '<li><a href="#">first</a></li>';
-            case 'last':
-                return '<li><a href="#">last</a></li>';
-            }
-        }
-    });
 }

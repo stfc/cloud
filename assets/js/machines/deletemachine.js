@@ -24,9 +24,8 @@ function deleteVM()
             }
         }
     }).done(function(json) {
-        quota.update();
         drawTable();
-        drawPagination();
+        quota.update();
     }).always(function(json) {
         $('#deletevmdialog').modal('hide');
     });

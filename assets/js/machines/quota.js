@@ -1,7 +1,3 @@
-$(function() {
-    quota.update();
-});
-
 var quota = {
     available: 0,
     used: 0,

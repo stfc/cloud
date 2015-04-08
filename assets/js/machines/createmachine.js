@@ -86,7 +86,6 @@ function createVM()
     }).done(function(json) {
         drawTable();
         quota.update();
-        drawPagination(-1);
     }).always(function() {
         $('#createvmdialog').modal('hide');
     });
