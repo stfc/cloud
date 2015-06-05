@@ -1,0 +1,91 @@
+{% set menufocus = "machines" %}
+{% set title = "Machine FAQ" %}
+
+{% extends "layout.html" %}
+
+{% block css %}
+<style>
+.faq {
+    color: #5A5A5A !important;
+}
+</style>
+{% endblock %}
+
+{% block javascript %}
+{% endblock %}
+
+{% block content %}
+<div class="row">
+{% set submenufocus = "faq" %}
+{% include "machines/machinessubmenu.html" %}
+    <div class="col-md-10">
+        <h1 class="page-header">FAQ</h1>
+        <ol>
+            <li><a href="#login">How do I login?</a></li>
+            <li><a href="#root">Can I get root access?</a></li>
+            <li><a href="#gui">Can I get a GUI session?</a></li>
+            <li><a href="#resources">Can I increase the RAM or CPUs?</a></li>
+            <li><a href="#quota">Can I increase my quota?</a></li>
+            <li><a href="#disk">Can I increase my disk size?</a></li>
+            <li><a href="#stopping">What is the <span class="label label-warning">STOPPING</span> state?</a></li>
+            <li><a href="#os">Do you support other Linux variants/version?</a></li>
+            <li><a href="#pakiti">Why are Pakiti and rsyslog running on my VM?</a></li>
+        </ol>
+
+        <br />
+        <h3><a name="login" href="#login" class="faq">1. How do I login?</a></h3>
+        <p>
+            You can SSH into your machines with your federal credentials eg. <strong>ssh fed12345@vm20.nubes.stfc.ac.uk</strong>. You can also associate your SSH public key to your account for passwordless login.
+        </p>
+
+        <br />
+        <h3><a name="root" href="#root" class="faq">2. Can I get root access?</a></h3>
+        Yes, once you have logged in with your federal credentials you will have permission to use <strong>sudo</strong>.
+        <p class="text-danger">
+            NOTE: you must not change the root password or remove entires from the authorized_keys file for the root account. Please make sure you have read the <a href="/tos">Terms of Service</a>.
+        </p>
+
+        <br />
+        <h3><a name="gui" href="#gui" class="faq">3. Can I get a GUI session?</a></h3>
+        <p>
+            Click the <button type="button" class="btn btn-blue btn-xs"><img src="/assets/images/icon-display.png" style="width:14px;margin-top:-2px" /></button> button to get an interactive GUI session inside your browser.
+        </p>
+
+        <br />
+        <h3><a name="resources" href="#resources" class="faq">4. Can I increase the RAM or CPUs?</a></h3>
+        <p>
+            Currently we only provide a standard set of resources for each machine. If you would like to discuss increasing these values email us at <a href="mailto:{{ email }}">{{ email }}</a>.
+        </p>
+
+        <br />
+        <h3><a name="quota" href="#quota" class="faq">5. Can I increase my quota?</a></h3>
+        <p>
+            Yes, if you would like your quota increased email us at <a href="mailto:{{ email }}">{{ email }}</a>.
+        </p>
+
+        <br />
+        <h3><a name="disk" href="#disk" class="faq">6. Can I increase my disk size?</a></h3>
+        <p>
+            Yes, if you would like access to more storage email us at <a href="mailto:{{ email }}">{{ email }}</a>.
+        </p>
+
+        <br />
+        <h3><a name="stopping" href="#stopping" class="faq">7. What is the <span class="label label-warning" style="font-size:50%;vertical-align:middle">STOPPING</span> state?</a></h3>
+        <p>
+            When a VM is deleted, a snapshop is taken an stored for a period of time. This is for the reason of security and traceability.
+        <p>
+
+        <br />
+        <h3><a name="os" href="#os" class="faq">8. Do you support other Linux variants/version?</a></h3>
+        <p>
+            Yes, if you would like to discuss adding different images or versions to the cloud, email us at <a href="mailto:{{ email }}">{{ email }}</a>.
+        </p>
+
+        <br />
+        <h3><a name="pakiti" href="#pakiti" class="faq">9. Why are Pakiti and rsyslog running on my VM?</a></h3>
+        <p>
+            These services are used for monitoring and security. Please refrain from stopping or changing the behaviour of either of these service. Please make sure you have read the <a href="/tos">Terms of Service</a>. 
+        </p>
+    </div>
+</div>
+{% endblock %}

@@ -61,8 +61,21 @@ class VM(object):
         server = xmlrpclib.ServerProxy(HEADNODE)
 
         request = [
+            "%s:%s"%(fedid,session), # auth token
+            int(id)                  # vmid
+        ]
+        response = server.one.vm.info(*request)
+        vm_info = ET.fromstring(response[1])
+        state = vm_info.find('STATE').text
+
+        if state == 14:
+            action = "delete"
+        else:
+            action = "shutdown-hard"
+
+        request = [
             "%s:%s"%(FEDID,SESSION), # auth token
-            "shutdown-hard",         # required for quarantining vms
+            action,                  # required for quarantining vms
             int(id),                 # id of vm to delete
         ]
         response = server.one.vm.action(*request)
@@ -81,7 +94,7 @@ class VM(object):
     '''
     @cherrypy.tools.isAuthorised()
     @cherrypy.tools.json_out()
-    def GET(self, history=0, offset=0, size=10):
+    def GET(self, history=0, offset=0, size=1):
 
         HEADNODE = cherrypy.request.config.get("headnode")
         FEDID = cherrypy.request.cookie.get('fedid').value
@@ -151,3 +164,31 @@ class VM(object):
             })
 
         return json
+
+
+    '''
+        Upate VM info/state
+
+        id     : the id of VM to update
+        action : the action to be performed
+    '''
+    @cherrypy.tools.isAuthorised()
+    def POST(self, **params):
+
+        if not params.get("id") or not params.get("action"):
+            raise cherrypy.HTTPError(400, "Bad parameters")
+
+        HEADNODE = cherrypy.request.config.get("headnode")
+        FEDID = cherrypy.request.cookie.get('fedid').value
+        SESSION = cherrypy.request.cookie.get('session').value
+
+        server = xmlrpclib.ServerProxy(HEADNODE)
+
+        if params.get("action") == 'boot':
+            request = [
+                "%s:%s"%(FEDID,SESSION), # auth token
+                "resume",                # the action to be performed
+                int(params.get("id"))    # the VM id
+            ]
+            response = server.one.vm.action(*request)
+            validateresponse(response)

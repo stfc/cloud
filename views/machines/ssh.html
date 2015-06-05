@@ -1,0 +1,42 @@
+{% set menufocus = "machines" %}
+{% set title = "Machine SSH Key" %}
+
+{% extends "layout.html" %}
+
+{% block javascript %}
+<script src="/assets/js/machines/sshkey.js"></script>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+{% set submenufocus = "ssh" %}
+{% include "machines/machinessubmenu.html" %}
+    <div class="col-md-10">
+        <h1 class="page-header">SSH Key</h1>
+
+        <div id="error" class="alert alert-danger text-center" role="alert" style="display:none">
+            <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> <span id="errormessage"></span>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        </div>
+
+        <div id="success" class="alert alert-success text-center" role="alert" style="display:none">
+            <span class="glyphicon glyphicon-ok" aria-hidden="true"></span> <span id="successmessage"></span>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        </div>
+
+        You can have your SSH public key automatically added to new machines to allow passwordless login. Just paste you <em>public key</em> in the box below.
+
+        <br /><br />
+
+        <form class="form-horizontal" role="form" id="sshform" method="post">
+            <fieldset>
+                <div class="form-group" style="margin-left:0px;margin-right:0px">
+                    <label for="sshkey">SSH Key</label>
+                    <textarea id="sshkey" class="form-control" style="height:100px">{{ key }}</textarea>
+                </div>
+            </fieldset>
+            <button type="submit" class="btn btn-blue btn-md pull-right">Submit</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

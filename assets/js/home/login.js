@@ -7,7 +7,7 @@ $(function() {
 
         $.ajax({
             type: "PUT",
-            url: "/api/auth",
+            url: "/api/user",
             contentType: "application/json",
             data: JSON.stringify(data),
             statusCode: {

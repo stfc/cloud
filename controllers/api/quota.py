@@ -21,8 +21,7 @@ class Quota(object):
 
         request = [
             "%s:%s"%(FEDID,SESSION), # auth token
-            -1,                      # return details for current user
-
+            -1                       # return details for current user
         ]
         response = server.one.user.info(*request)
         validateresponse(response)

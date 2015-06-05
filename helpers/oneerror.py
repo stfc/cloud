@@ -13,8 +13,10 @@ Opennebula XMLRPC return codes
 '''
 def validateresponse(response):
     if not response[0]:
-        if response[2] <= 512:
+        if response[2] == 502:
+            pass
+        elif response[2] <= 512:
             raise cherrypy.HTTPError(403, "Forbidden")
         else:
-            raise cherrypy.HTTPError(500, "Internal server error")
+            raise cherrypy.HTTPError(500, "Internal server error " + str(response))
         

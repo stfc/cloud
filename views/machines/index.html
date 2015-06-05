@@ -19,7 +19,7 @@
         quota.update();
         setInterval(function () {
             quota.update();
-        }, 3000);
+        }, 5000);
     });
 </script>
 <script src="/assets/js/machines/novnc/util.js"></script>
@@ -33,6 +33,7 @@
 <script src="/assets/js/machines/createmachine.js"></script>
 <script src="/assets/js/machines/listmachines.js"></script>
 <script src="/assets/js/machines/deletemachine.js"></script>
+<script src="/assets/js/machines/bootmachine.js"></script>
 {% endblock %}
 
 {% block content %}
@@ -96,7 +97,7 @@
                             <label for="name" class="col-sm-3 control-label">Name</label>
                             <div class="col-sm-8">
                                 <div class="input-group">
-                                    <input type="text" id="name" name="name" class="form-control" data-type="text" required />
+                                    <input type="text" id="name" name="name" class="form-control noEnterSubmit" data-type="text" required />
                                     <span class="input-group-btn">
                                     <button type="button" class="btn btn-default" onclick="randomname()">
                                         <img src="/assets/images/icon-dice.png" style="width:16px;margin-top:-1px" />

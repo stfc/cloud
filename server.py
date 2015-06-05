@@ -15,7 +15,7 @@ from controllers.machines import Machines
 from controllers.api.vm import VM
 from controllers.api.template import Template
 from controllers.api.quota import Quota
-from controllers.api.auth import Auth
+from controllers.api.user import User
 
 cherrypy.config.update("config/global.conf")
 
@@ -30,7 +30,7 @@ api = lambda:None
 api.vm = VM()
 api.template = Template()
 api.quota = Quota()
-api.auth = Auth()
+api.user = User()
 
 cherrypy.tree.mount(api, "/api", "config/api.conf")
 

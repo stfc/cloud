@@ -1,10 +1,13 @@
 import cherrypy
 import os
+import xmlrpclib
+import xml.etree.ElementTree as ET
 
 from random import randint
 
 from helpers.auth import *
 from helpers.jinja import *
+from helpers.oneerror import *
 
 
 class Machines(object):
@@ -24,8 +27,46 @@ class Machines(object):
     def history(self):
         pass
 
+
+    @cherrypy.expose
+    @cherrypy.tools.isAuthorised(redirect=True)
+    @cherrypy.tools.jinja(template="machines/ssh.html")
+    def ssh(self):
+
+        HEADNODE = cherrypy.request.config.get("headnode")
+        FEDID = cherrypy.request.cookie.get('fedid').value
+        SESSION = cherrypy.request.cookie.get('session').value
+
+        server = xmlrpclib.ServerProxy(HEADNODE)
+
+        request = [
+            "%s:%s"%(FEDID,SESSION), # auth token
+            -1                       # return details for current user
+        ]
+        response = server.one.user.info(*request)
+        validateresponse(response)
+        user_info = ET.fromstring(response[1])
+
+        try:
+            key = user_info.find('TEMPLATE').find('SSH_PUBLIC_KEY').text
+        except:
+            key = ""
+
+        return { 'key' : key }
+
+
+
+    @cherrypy.expose
+    @cherrypy.tools.jinja(template="machines/faq.html")
+    def faq(self):
+
+        EMAIL = cherrypy.request.config.get("email")
+        return {"email" : EMAIL}
+
+
     @cherrypy.expose
     def random(self):
+
         GOODWORDS = cherrypy.request.config.get("goodwords")
         BADWORDS = cherrypy.request.config.get("badwords")
 

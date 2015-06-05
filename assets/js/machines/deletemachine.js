@@ -19,6 +19,7 @@ function deleteVM()
                 window.location.replace("/login");
             },
             500: function(data) {
+                alert(JSON.stringify(data));
                 $("#errormessage").html("The cloud may be experiencing problems. Please try again later.");
                 $("#error").show();
             }
