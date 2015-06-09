@@ -61,7 +61,7 @@ class VM(object):
         server = xmlrpclib.ServerProxy(HEADNODE)
 
         request = [
-            "%s:%s"%(fedid,session), # auth token
+            "%s:%s"%(FEDID,SESSION), # auth token
             int(id)                  # vmid
         ]
         response = server.one.vm.info(*request)
