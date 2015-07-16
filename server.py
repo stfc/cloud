@@ -35,14 +35,18 @@ api.user = User()
 cherrypy.tree.mount(api, "/api", "config/api.conf")
 
 # Launch websockify for NoVNC
-websockify = Popen([
+wsparams = [
     '/usr/bin/websockify',
     '-v',
     str(cherrypy.config.get("wsport")),
-    '--cert=' + cherrypy.config.get("wscert"),
-    '--key=' + cherrypy.config.get("wskey"),
     '--target-config=' + cherrypy.config.get("wstokendir")
-])
+]
+
+if cherrypy.config.get("wscert") != None:
+    wsparams.append('--cert=' + cherrypy.config.get("wscert"))
+    wsparams.append('--key=' + cherrypy.config.get("key"))
+
+websockify = Popen(wsparams)
 
 if cherrypy.config.get("wsgi_enabled") == True:
     # make WSGI compliant
