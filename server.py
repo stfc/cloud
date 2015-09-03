@@ -44,7 +44,7 @@ wsparams = [
 
 if cherrypy.config.get("wscert") != None:
     wsparams.append('--cert=' + cherrypy.config.get("wscert"))
-    wsparams.append('--key=' + cherrypy.config.get("key"))
+    wsparams.append('--key=' + cherrypy.config.get("wskey"))
 
 websockify = Popen(wsparams)
 
