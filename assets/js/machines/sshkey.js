@@ -1,7 +1,9 @@
 $(function() {
     $('#sshform').submit(function() {
         var key = $("#sshkey").val();
-    
+        if (key === "") {
+            key = "\n";
+        }
         $.ajax({
             type: "POST",
             url: "/api/user",
