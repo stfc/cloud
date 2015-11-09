@@ -30,6 +30,7 @@
 
 <script src="/assets/js/machines/quota.js"></script>
 <script src="/assets/js/machines/pagination.js"></script>
+<script src="/assets/js/machines/pickmachinetype.js"></script>
 <script src="/assets/js/machines/createmachine.js"></script>
 <script src="/assets/js/machines/listmachines.js"></script>
 <script src="/assets/js/machines/deletemachine.js"></script>
@@ -90,45 +91,56 @@
                 <h4 class="modal-title"><button type="button" class="btn btn-blue btn-xs"><img src="/assets/images/icon-vm.png" style="width:14px;margin-top:-1px" /></button>&nbsp;&nbsp;Create Machine</h4>
             </div>
             <div class="modal-body">
+                <div id="vm-error" class="alert alert-danger text-center" role="alert" style="display:none">
+                    <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> <span id="vm-errormessage"></span>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                </div>
                 <form id="createvm" class="form-horizontal" role="form" action="/">
-                    <br />
                     <fieldset>
+                        <legend>Name Your Machine</legend>
                         <div class="form-group">
                             <label for="name" class="col-sm-3 control-label">Name</label>
                             <div class="col-sm-8">
                                 <div class="input-group">
                                     <input type="text" id="name" name="name" class="form-control noEnterSubmit" data-type="text" required />
                                     <span class="input-group-btn">
-                                    <button type="button" class="btn btn-default" title="Generate random name" onclick="randomname()">
-                                        <img src="/assets/images/icon-dice.png" style="width:16px;margin-top:-1px" />
-                                    </button>
+                                        <button type="button" class="btn btn-default" title="Generate random name" onclick="randomname()">
+                                            <img src="/assets/images/icon-dice.png" style="width:16px;margin-top:-1px" />
+                                        </button>
                                     </span>
                                 </div>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label for="template" class="col-sm-3 control-label">Type</label>
-                            <div class="col-sm-8">
-                                <select id="template" name="template" class="selectpicker" data-width="100%"></select>
-                            </div>
-                        </div>
                     </fieldset>
+                    <br>
                     <fieldset>
-                        <legend>Description</legend>
-                        <div class="form-group">
-                            <label for="description" class="col-sm-3 control-label">Description</label>
-                            <div class="col-sm-8">
-                                <div id="description"></div>
+                        <legend>Chose a Template</legend>
+
+                        <div class="modal-body">
+                            <div class="btn-group btn-group-justified" role="group" id="buttonbox"></div>
+                            <div class="input-group" role="group" id="inputbox"></div>
+                        </div>
+                        <div class="modal-footer">
+                            <div class="container-fluid">
+                                <div class="col-md-10 text-left" id="helpbox">
+                                </div>
+                                <div class="col-md-2" id="controlbox">
+                                </div>
                             </div>
                         </div>
+
+                    </fieldset>
+                    <br>
+                    <fieldset>
+                        <legend>Resources</legend>
                         <div class="form-group">
-                            <label for="cpu" class="col-sm-3 control-label">CPU</label>
+                            <label for="cpu" class="col-sm-3 control-label">Template CPU</label>
                             <div class="col-sm-8">
                                 <p class="form-control-static" id="cpu"></p>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="memory" class="col-sm-3 control-label">Memory</label>
+                            <label for="memory" class="col-sm-3 control-label">Template Memory</label>
                             <div class="col-sm-8">
                                 <p class="form-control-static" id="memory"></p>
                             </div>
@@ -138,7 +150,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-blue" onclick="createVM()">Create</button>
+                <button type="button" class="btn btn-blue" onclick="createVM(selected_template)">Create</button>
             </div>
         </div>
     </div>
