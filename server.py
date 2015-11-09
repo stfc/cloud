@@ -2,7 +2,7 @@ import os, sys
 
 # change the current working directory and python path
 location = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(location) 
+sys.path.append(location)
 os.chdir(location)
 
 import cherrypy
@@ -13,9 +13,9 @@ from subprocess import Popen
 from controllers.home import Home
 from controllers.machines import Machines
 from controllers.api.vm import VM
-from controllers.api.template import Template
 from controllers.api.quota import Quota
 from controllers.api.user import User
+from controllers.api.templatelist import TemplateList
 
 cherrypy.config.update("config/global.conf")
 
@@ -28,9 +28,9 @@ cherrypy.tree.mount(home, "/", "config/pages.conf")
 # API
 api = lambda:None
 api.vm = VM()
-api.template = Template()
 api.quota = Quota()
 api.user = User()
+api.templatelist = TemplateList()
 
 cherrypy.tree.mount(api, "/api", "config/api.conf")
 
