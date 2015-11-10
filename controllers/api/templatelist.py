@@ -59,6 +59,10 @@ class TemplateList(object):
                 description = template.find('TEMPLATE').find('DESCRIPTION').text
             else:
                 description = "There is no description for this type of machine"
+            if template.find('TEMPLATE').find('VCPU') != None:
+                cpu = template.find('TEMPLATE').find('VCPU').text
+            else:
+                cpu = template.find('TEMPLATE').find('CPU').text
 
             if osvariant not in menuchoices[os_flavour][osversion]:
                 menuchoices[os_flavour][osversion][osvariant] = list()
@@ -66,7 +70,7 @@ class TemplateList(object):
                 'name': template.find('NAME').text,
                 'id': template.find('ID').text,
                 'description':description,
-                'cpu':  template.find('TEMPLATE').find('CPU').text,
+                'cpu':  cpu,
                 'memory'      : template.find('TEMPLATE').find('MEMORY').text
             })
 
