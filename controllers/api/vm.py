@@ -149,6 +149,10 @@ class VM(object):
                 state = "9"
             else:
                 state = vm.find('STATE').text
+            if vm.find('TEMPLATE').find('VCPU') != None:
+                cpu = vm.find('TEMPLATE').find('VCPU').text
+            else:
+                cpu = vm.find('TEMPLATE').find('CPU').text
 
             json.append({
                 'id'       : vm.find('ID').text,
@@ -157,7 +161,7 @@ class VM(object):
                 'state'    : state,
                 'stime'    : vm.find('STIME').text,
                 'etime'    : vm.find('ETIME').text,
-                'cpu'      : vm.find('TEMPLATE').find('CPU').text,
+                'cpu'      : cpu,
                 'memory'   : vm.find('TEMPLATE').find('MEMORY').text,
                 'type'     : template_type,
                 'token'    : token
