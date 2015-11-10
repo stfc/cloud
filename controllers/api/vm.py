@@ -141,9 +141,7 @@ class VM(object):
                 hostname = "-"
 
             # get/generate vnc token
-            token = getToken(FEDID, vm.find('ID').text)
-            if token == None:
-                token = createToken(FEDID, SESSION, vm.find('ID').text)
+            token = createToken(FEDID, SESSION, vm.find('ID').text)
 
             if vm.find('LCM_STATE').text == "11":
                 state = "9"

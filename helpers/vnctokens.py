@@ -35,8 +35,10 @@ def createToken(fedid, session, id):
     token = None
 
     if len(vm.find('HISTORY_RECORDS').findall('HISTORY')) != 0:
+        for history in vm.find('HISTORY_RECORDS').findall('HISTORY'):
+            if history.find('ETIME').text == '0':
+                host = history.find('HOSTNAME').text
         token = str(uuid.uuid4()) + "_" + str(id)
-        host = vm.find('HISTORY_RECORDS').find('HISTORY').find('HOSTNAME').text
         port = vm.find('TEMPLATE').find('GRAPHICS').find('PORT').text
         line = token + ": " + host + ":" + port
     
