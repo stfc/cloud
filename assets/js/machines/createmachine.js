@@ -1,69 +1,23 @@
-var template_list = null;
+/*jshint sub:true*/
 
 function createVMdialog()
 {
-    if (quota.used == quota.available && quota.available != 0) {
+    if (quota.used == quota.available && quota.available !== 0) {
         $("#errormessage").html('You have hit your quota of VMs. Please delete uneeded ones or contact us and request a quota increase.');
         $("#error").show();
         return;
     }
 
     $("#name").val("");
-    $("#template").empty();
-
-    $.ajax({
-        type: "GET",
-        url: "/api/template",
-        statusCode: {
-            403: function() {
-                $.removeCookie('session', {path : '/'});
-                $.removeCookie('name', {path : '/'});
-                $.removeCookie('fedid', {path : '/'});
-                window.location.replace("/login");
-            },
-            500: function() {
-                $("#errormessage").html("The cloud may be experiencing problems. Please try again later.");
-                $("#error").show();
-            }
-        }
-    }).done(function(json) {
-        template_list = json;
-
-        var html = '';
-        $.each(template_list, function(index, template) {
-            html += '<option value="' + template['id'] + '">';
-            html += template['name'];
-            html += '</option>';
-        });
-        $("#template").append(html);
-        $("#description").html(template_list[0]['description']);
-        $("#cpu").html(template_list[0]['cpu']);
-        $("#memory").html((template_list[0]['memory']/1024) + "GB");
-    
-        $('select.selectpicker').on('change', function(){
-            var template_id = $('.selectpicker option:selected').val();
-            $.each(template_list, function(index, template) {
-                if (template['id'] == template_id) {
-                    description = template['description'];
-                    cpu = template['cpu'];
-                    memory = (template['memory']/1024) + "GB";
-                }
-            });
-            $("#description").html(description);
-            $("#cpu").html(cpu);
-            $("#memory").html(memory);
-        });
-    
-        $('.selectpicker').selectpicker('refresh');
-        $('#createvmdialog').modal('show');
-    });
+    $('#createvmdialog').modal('show');
+    draw_buttons();
 }
 
-function createVM()
+function createVM(selected_template)
 {
     var data = {
         "name" : $("#name").val().replace(/[^a-zA-Z 0-9-]+/g, ''),
-        "template_id": $('.selectpicker option:selected').val()
+        "template_id": selected_template
     };
 
     $.ajax({
@@ -72,6 +26,10 @@ function createVM()
         contentType: "application/json",
         data: JSON.stringify(data),
         statusCode: {
+            400: function() {
+                $("#vm-errormessage").html("Make sure you have given your VM a name and selected an template.");
+                $("#vm-error").show();
+            },
             403: function() {
                 $.removeCookie('session', {path : '/'});
                 $.removeCookie('name', {path : '/'});
@@ -86,8 +44,11 @@ function createVM()
     }).done(function(json) {
         drawTable();
         quota.update();
-    }).always(function() {
         $('#createvmdialog').modal('hide');
+        selected_flavour = "";
+        selected_release = "";
+        selected_type = "";
+        selected_template = "";
     });
 }
 

@@ -110,13 +110,13 @@ http://www.codingeverything.com/2014/02/BootstrapDocsSideBar.html
 }
 
 /* active & hover links */
-.bs-docs-sidebar .nav>.active>a, 
-.bs-docs-sidebar .nav>li>a:hover, 
+.bs-docs-sidebar .nav>.active>a,
+.bs-docs-sidebar .nav>li>a:hover,
 .bs-docs-sidebar .nav>li>a:focus {
-    color: #0a4e70;                 
-    text-decoration: none;          
-    background-color: transparent;  
-    border-left: 2px solid #0a4e70; 
+    color: #0a4e70;
+    text-decoration: none;
+    background-color: transparent;
+    border-left: 2px solid #0a4e70;
 }
 
 
@@ -302,6 +302,43 @@ fieldset[disabled] .btn-blue.active {
   background-color: #fff;
 }
 
+/* CREATE MACHINE BUTTONS */
+.btn-lev1, .btn-lev2,
+.btn-lev3, .btn-lev4 {
+    color: #fff;
+}
+.btn-lev1:hover, .btn-lev2:hover,
+.btn-lev3:hover, .btn-lev4:hover {
+    color: #fff;
+}
+.btn-lev1 {
+    background-color: #3771B5;
+    border-color: #255287;
+}
+.btn-lev2 {
+    background-color: #4E41BE;
+    border-color: #372c99;
+}
+.btn-lev3 {
+    background-color: #C83A01;
+    border-color: #902e06;
+}
+.btn-lev4 {
+    background-color: #01894F;
+    border-color: #036038;
+}
+.btn-lev1:hover {
+    background-color: #255287;
+}
+.btn-lev2:hover {
+    background-color: #372c99;
+}
+.btn-lev3:hover {
+    background-color: #902e06;
+}
+.btn-lev4:hover {
+    background-color: #036038;
+}
 
 /* CUSTOM PAGINATION */
 
