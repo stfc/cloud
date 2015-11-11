@@ -32,12 +32,27 @@ class VM(object):
 
         server = xmlrpclib.ServerProxy(HEADNODE)
 
+        # build xml to be used for additional customisation
+        extracontext=""
+        if json.get("cpu")
+            extracontext="<CPU>"+json.get("cpu")+"</CPU>"
+        if json.get("vcpu")
+            extracontext="<VCPU>"+json.get("vcpu")+"</VCPU>"
+        if json.get("memory")
+            extracontext="<MEMORY>"+json.get("memory")+"</MEMORY>"
+        if json.get("sandbox")
+            extracontext="<AQ_SANDBOX>"+json.get("sandbox")+"</AQ_SANDBOX>"
+        if json.get("personality")
+            extracontext="<AQ_PERSONALITY>"+json.get("personality")+"</AQ_PERSONALITY>"
+        if json.get("archetype")
+            extracontext="<AQ_ARCHETYPE>"+json.get("archetype")+"</AQ_ARCHETYPE>"
+
         request = [
             "%s:%s"%(FEDID,SESSION),      # auth token
             int(json.get("template_id")), # template id
             json.get("name"),             # name of the new vm
             False,                        # start normally
-            ""                            # extra context variables
+            extracontext                  # extra context variables
         ]
         response = server.one.template.instantiate(*request)
         validateresponse(response)
