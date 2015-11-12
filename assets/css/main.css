@@ -3,8 +3,8 @@
 /* Padding below the footer and lighter body text */
 
 body {
-    color: #5a5a5a;
-    padding-bottom: 35px;
+  color: #5a5a5a;
+  padding-bottom: 35px;
 }
 
 
@@ -67,15 +67,15 @@ body {
 
 
 @media (max-width: 768px) {
-    body {
-        padding-top: 80px;
-    }
+  body {
+    padding-top: 80px;
+  }
 }
 
 .page-header {
-    padding-bottom: 9px;
-    margin: 00px 0px 20px;
-    border-bottom: 1px solid rgb(238, 238, 238);
+  padding-bottom: 9px;
+  margin: 00px 0px 20px;
+  border-bottom: 1px solid rgb(238, 238, 238);
 }
 
 
@@ -83,40 +83,40 @@ body {
 http://www.codingeverything.com/2014/02/BootstrapDocsSideBar.html
 -------------------------------------------------- */
 .bs-docs-sidebar {
-    padding-left: 20px;
-    margin-top: 20px;
-    margin-bottom: 20px;
+  padding-left: 20px;
+  margin-top: 20px;
+  margin-bottom: 20px;
 }
 
 /* all links */
 .bs-docs-sidebar .nav>li>a {
-    color: #999;
-    padding: 4px 20px;
-    font-size: 13px;
-    font-weight: 400;
+  color: #999;
+  padding: 4px 20px;
+  font-size: 13px;
+  font-weight: 400;
 }
 
 /* nested links */
 .bs-docs-sidebar .nav .nav>li>a {
-    padding-top: 1px;
-    padding-bottom: 1px;
-    padding-left: 30px;
-    font-size: 12px;
+  padding-top: 1px;
+  padding-bottom: 1px;
+  padding-left: 30px;
+  font-size: 12px;
 }
 
 /* all links */
 .bs-docs-sidebar .nav>li>a {
-    border-left: 2px solid transparent;
+  border-left: 2px solid transparent;
 }
 
 /* active & hover links */
 .bs-docs-sidebar .nav>.active>a,
 .bs-docs-sidebar .nav>li>a:hover,
 .bs-docs-sidebar .nav>li>a:focus {
-    color: #0a4e70;
-    text-decoration: none;
-    background-color: transparent;
-    border-left: 2px solid #0a4e70;
+  color: #0a4e70;
+  text-decoration: none;
+  background-color: transparent;
+  border-left: 2px solid #0a4e70;
 }
 
 
@@ -305,49 +305,102 @@ fieldset[disabled] .btn-blue.active {
 /* CREATE MACHINE BUTTONS */
 .btn-lev1, .btn-lev2,
 .btn-lev3, .btn-lev4 {
-    color: #fff;
+  color: #fff;
 }
 .btn-lev1:hover, .btn-lev2:hover,
 .btn-lev3:hover, .btn-lev4:hover {
-    color: #fff;
+  color: #fff;
 }
 .btn-lev1 {
-    background-color: #3771B5;
-    border-color: #255287;
+  background-color: #3771B5;
+  border-color: #255287;
 }
 .btn-lev2 {
-    background-color: #4E41BE;
-    border-color: #372c99;
+  background-color: #4E41BE;
+  border-color: #372c99;
 }
 .btn-lev3 {
-    background-color: #C83A01;
-    border-color: #902e06;
+  background-color: #C83A01;
+  border-color: #902e06;
 }
 .btn-lev4 {
-    background-color: #01894F;
-    border-color: #036038;
+  background-color: #01894F;
+  border-color: #036038;
 }
 .btn-lev1:hover {
-    background-color: #255287;
+  background-color: #255287;
 }
 .btn-lev2:hover {
-    background-color: #372c99;
+  background-color: #372c99;
 }
 .btn-lev3:hover {
-    background-color: #902e06;
+  background-color: #902e06;
 }
 .btn-lev4:hover {
-    background-color: #036038;
+  background-color: #036038;
+}
+
+/* VM STATES */
+progress {
+  -webkit-appearance: none;
+  appearance: none;
+  border: none;
+  background: #ccc;
+  width: 100px;
+  height: 20px;
+  position: absolute;
+  border-radius: 2px;
+}
+progress::-webkit-progress-bar {
+  background: #ccc;
+}
+
+progress[value="1"]::-webkit-progress-value {
+  background: #cf0000;
+}
+progress[value="2"]::-webkit-progress-value {
+  background: #ffb000;
+}
+progress[value="3"]::-webkit-progress-value {
+  background: #ffe600;
+}
+progress[value="4"]::-webkit-progress-value {
+  background: #24990b;
+}
+
+progress[value="1"]::-moz-progress-bar {
+  background: #cf0000;
+}
+progress[value="2"]::-moz-progress-bar {
+  background: #ffb000;
+}
+progress[value="3"]::-moz-progress-bar {
+  background: #ffe600;
+}
+progress[value="4"]::-moz-progress-bar {
+  background: #24990b;
+}
+
+.status-label {
+  color: #fff;
+  font-size: 11px;
+  font-weight: bold;
+  width: 100px;
+  position: relative;
+  text-align: center;
+  display: block;
+  padding-top: 3px;
+  text-shadow: 0 0 3px rgba(0, 0, 0, .5);
 }
 
 /* CUSTOM PAGINATION */
 
 .pagination > .active a {
-    background-color: #0a4e70 !important;
-    border-color: #0a4e70 !important;
-    color: #fff;
+  background-color: #0a4e70 !important;
+  border-color: #0a4e70 !important;
+  color: #fff;
 }
 
 .pagination > li > a {
-    color: #0a4e70;
+  color: #0a4e70;
 }
