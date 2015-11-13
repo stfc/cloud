@@ -35,17 +35,17 @@ class VM(object):
         # build xml to be used for additional customisation
         extracontext=""
         if json.get("cpu"):
-            extracontext=extracontext+'CPU='+json.get("cpu")+'"\n'
+            extracontext=extracontext+'CPU="'+json.get("cpu")+'"\n'
         if json.get("vcpu"):
-            extracontext=extracontext+'VCPU='+json.get("vcpu")+'"\n'
+            extracontext=extracontext+'VCPU="'+json.get("vcpu")+'"\n'
         if json.get("memory"):
-            extracontext=extracontext+'MEMORY='+json.get("memory")+'"\n'
+            extracontext=extracontext+'MEMORY="'+json.get("memory")+'"\n'
         if json.get("sandbox"):
-            extracontext=extracontext+'AQ_SANDBOX='+json.get("sandbox")+'"\n'
+            extracontext=extracontext+'AQ_SANDBOX="'+json.get("sandbox")+'"\n'
         if json.get("personality"):
-            extracontext=extracontext+'AQ_PERSONALITY='+json.get("personality")+'"\n'
+            extracontext=extracontext+'AQ_PERSONALITY="'+json.get("personality")+'"\n'
         if json.get("archetype"):
-            extracontext=extracontext+'AQ_ARCHETYPE='+json.get("archetype")+'"\n'
+            extracontext=extracontext+'AQ_ARCHETYPE="'+json.get("archetype")+'"\n'
 
         request = [
             "%s:%s"%(FEDID,SESSION),      # auth token
