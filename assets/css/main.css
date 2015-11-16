@@ -339,6 +339,11 @@ fieldset[disabled] .btn-blue.active {
 .btn-lev4:hover {
   background-color: #036038;
 }
+/* input forms */
+.aq-form {
+    width: 33%;
+    float: left;
+}
 
 /* VM STATES */
 progress {

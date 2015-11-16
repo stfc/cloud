@@ -17,7 +17,10 @@ function createVM(selected_template)
 {
     var data = {
         "name" : $("#name").val().replace(/[^a-zA-Z 0-9-]+/g, ''),
-        "template_id": selected_template
+        "template_id": selected_template,
+        "archetype": $("#archetype").val(),
+        "personality": $("#personality").val(),
+        "sandbox": $("#sandbox").val(),
     };
 
     $.ajax({
