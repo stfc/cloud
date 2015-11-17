@@ -13,30 +13,28 @@
 
 {% block content %}
 <div class="row">
-{% set submenufocus = "home" %}
-{% include "home/homesubmenu.html" %}
-    <div class="col-md-10">
+    <div class="col-md-12">
+        <div class="jumbotron">
+            <h1 class="page-header">Welcome</h1>
+            <img src="/assets/images/clouds.png" style="float:right;width:300px;padding-left:40px" />
+            <p>
+                Welcome to the SCD Cloud. This service provides a private <abbr title="Infrastucture as a Service">IaaS</abbr> cloud resource for SCD users.
+                To start, select the login link at the top of the page and enter your federal username and password.
+            </p>
+            <p>
+                You should be aware that the SCD Cloud is still in active development. Please read the <a href="/tos">Terms of Service</a> before proceeding.
+            </p>
+            <p>
+                For any questions, problems or ideas email us at <a href="mailto:{{ email }}">{{ email }}</a>
+            </p>
+        </div>
         <div id="carousel" class="carousel slide" data-ride="carousel">
             <div class="carousel-inner" role="listbox">
                 <div class="item active">
-                    <h1 class="page-header">Welcome</h1>
-                    <img src="/assets/images/clouds.png" style="float:right;width:300px;padding-left:40px" />
-                    <p>
-                        Welcome to the SCD Cloud. This service provides a private <abbr title="Infrastucture as a Service">IaaS</abbr> cloud resource for SCD users.
-                        To start, select the login link at the top of the page and enter your federal username and password.
-                    </p>
-                    <p>
-                        You should be aware that the SCD Cloud is still in active development. Please read the <a href="/tos">Terms of Service</a> before proceeding.
-                    </p>
-                    <p>
-                        For any questions, problems or ideas email us at <a href="mailto:{{ email }}">{{ email }}</a>
-                    </p>
-                </div>
-                <div class="item">
                     <h1 class="page-header">Infrastructure</h1>
                     <img src="/assets/images/rack.png" style="width:170px;float:right;margin-top:-15px" />
                     <p>
-                        The cloud is based on <a href="http://opennebula.org">OpenNebula</a> for the virtualisation and <a href="http://ceph.com">CEPH</a> for the storage. For the hardware, we use 
+                        The cloud is based on <a href="http://opennebula.org">OpenNebula</a> for the virtualisation and <a href="http://ceph.com">CEPH</a> for the storage. For the hardware, we use
                         <ul>
                             <li>28x Dell R420 for the hypervisors</li>
                             <li>30x Dell R520 for the storage nodes</li>
@@ -66,7 +64,6 @@
             <ol class="carousel-indicators">
                 <li data-target="#carousel" data-slide-to="0" class="active"></li>
                 <li data-target="#carousel" data-slide-to="1"></li>
-                <li data-target="#carousel" data-slide-to="2"></li>
             </ol>
         </div>
     </div>

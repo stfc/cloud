@@ -29,20 +29,24 @@
 
                         <div id="navbar" class="navbar-collapse collapse">
                             <ul class="nav navbar-nav">
-                                <li{{ ' class="active"' if menufocus == 'machines' }}><a href="/machines">Machines</a></li>
+                                <li{{ ' class="active"' if title == 'Home' }}><a href="/">Home</a></li>
+                                <li{{ ' class="active"' if title == 'Terms of Service' }}><a href="/tos">Terms</a></li>
                             </ul>
                             <ul class="nav navbar-nav navbar-right">
-                                <li id="logouttoolbar" class="dropdown" style="display:none">
+                                <li class="logouttoolbar {{ 'active' if title == 'Machines' }}"><a href="/machines">My Machines</a></li>
+                                <li class="logouttoolbar {{ 'active' if title == 'Machine FAQ' }}"><a href="/machines/faq">FAQs</a></li>
+                                <li class="logouttoolbar" class="dropdown" style="display:none">
                                     <a href="#" data-toggle="dropdown" class="dropdown-toggle">
                                         <span class="glyphicon glyphicon-user"></span>
                                         <span id="user" style="padding:0 15px"></span>
                                         <b class="caret"></b>
                                     </a>
                                     <ul class="dropdown-menu" style="min-width:0px !important;width:100%">
+                                        <li><a href="/machines/ssh">SSH Key</a></li>
                                         <li><a href="#" id="logout" style="">Logout</a></li>
                                     </ul>
                                 </li>
-                                <li id="logintoolbar" style="display:none">
+                                <li class="logintoolbar" style="display:none">
                                     <a href="/login">
                                         <span class="glyphicon glyphicon-log-in"></span>
                                         <span style="padding:0 15px">Login</span>
