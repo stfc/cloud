@@ -3,7 +3,6 @@ import xmlrpclib
 import xml.etree.ElementTree as ET
 
 from socket import gethostbyaddr
-
 from helpers.vnctokens import *
 from helpers.auth import *
 from helpers.oneerror import *

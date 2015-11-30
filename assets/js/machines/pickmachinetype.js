@@ -31,6 +31,9 @@ function draw_buttons() {
     var os_flavour,release,type,image = null;
 
     if (selected_flavour === "") {
+        selected_release = "";
+        selected_type = "";
+        selected_template = "";
         for (os_flavour in image_list) {
             if (image_list.length == 1) {
                 selected_flavour = os_flavour;
@@ -78,6 +81,23 @@ function draw_buttons() {
         }
     }
 
+    else if (selected_type === "AQ Managed" && selected_template !== "") {
+        buttons += '<div class="input-group aq-form" role="group">';
+        buttons += '<label for="archetype">Archetype</label>';
+        buttons += '<input type="text" id="archetype" placeholder="" class="form-control noEnterSubmit" data-type="text" required />';
+        buttons += '</div>';
+        buttons += '<div class="input-group aq-form" role="group">';
+        buttons += '<label for="personality">Personality</label>';
+        buttons += '<input type="text" id="personality" placeholder="" class="form-control noEnterSubmit" data-type="text" required />';
+        buttons += '</div>';
+        buttons += '<div class="input-group aq-form" role="group">';
+        buttons += '<label for="sandbox">Sandbox</label>';
+        buttons += '<input type="text" id="sandbox" placeholder="" class="form-control noEnterSubmit" data-type="text" required />';
+        buttons += '</div>';
+        helptext = 'You have selected an Aquilon Managed machine, please enter an Archetype, Sandbox (user/sandbox) and/or Personality ';
+        controls = '<a class="btn btn-danger" id="buttonback" onclick="selected_type=\'\'; draw_buttons();">Back</a>';
+    }
+
     else if (selected_template === "") {
         for (var id in image_list[selected_flavour][selected_release][selected_type]) {
             image = image_list[selected_flavour][selected_release][selected_type][id];
@@ -93,6 +113,7 @@ function draw_buttons() {
                 selected_template = image_id;
                 helptext = '';
                 buttons = "Complete!<br> You chose " + image_name + ". " + image_description;
+                draw_buttons();
                 controls = '<a class="btn btn-danger" id="buttonback" onclick="selected_template=\'\';selected_type=\'\'; draw_buttons();">Back</a>';
             }
             else {
