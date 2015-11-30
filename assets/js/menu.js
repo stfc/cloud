@@ -3,13 +3,13 @@
  * depending on if the session cookie is set.
  */
 $(function() {
-    if ($.cookie('session') == undefined || $.cookie('session') == "") {
-        $("#logintoolbar").show();
-        $("#logouttoolbar").hide();
+    if ($.cookie('session') === undefined || $.cookie('session') === "") {
+        $(".logintoolbar").show();
+        $(".logouttoolbar").hide();
     } else {
         $("#user").html($.cookie('name'));
-        $("#logouttoolbar").show();
-        $("#logintoolbar").hide();
+        $(".logouttoolbar").show();
+        $(".logintoolbar").hide();
     }
 
     $('#logout').click(function() {
