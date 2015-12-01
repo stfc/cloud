@@ -27,7 +27,6 @@ class Quota(object):
         validateresponse(response)
         user_info = ET.fromstring(response[1])
 
-<<<<<<< HEAD
         grouprequest = [
             "%s:%s"%(FEDID,SESSION), # auth token
             -1                       # return details for current user
@@ -66,8 +65,6 @@ class Quota(object):
                 userquotamem = float(user_info.find('DEFAULT_USER_QUOTAS').find('VM_QUOTA').find('VM').find('MEMORY').text)
             except:
                 userquotamem = 0
-=======
->>>>>>> origin/resize-systemdisk
         try:
             userquotasys = float(user_info.find('VM_QUOTA').find('VM').find('SYSTEM_DISK_SIZE').text)
             # -1 indicates quota based of default value
@@ -156,18 +153,18 @@ class Quota(object):
             availablevm = userquotavm - userusedvm
         else :
             availablevm = groupquotavm - groupusedvm
-        # if (userquotacpu - userusedcpu) >= (groupquotacpu - groupusedcpu):
-        #     availablecpu = userquotacpu - userusedcpu
-        # else :
-        #     availablecpu = groupquotacpu - groupusedcpu
-        # if (userquotamem - userusedmem) >= (groupquotamem - groupusedmem):
-        #     availablemem = userquotamem - userusedmem
-        # else :
-        #     availablemem = groupquotamem - groupusedmem
-        # if (userquotasys - userusedsys) >= (groupquotasys - groupusedsys):
-        #     availablesys = userquotasys - userusedsys
-        # else :
-        #     availablesys = groupquotasys - groupusedsys
+        if (userquotacpu - userusedcpu) >= (groupquotacpu - groupusedcpu):
+            availablecpu = userquotacpu - userusedcpu
+        else :
+            availablecpu = groupquotacpu - groupusedcpu
+        if (userquotamem - userusedmem) >= (groupquotamem - groupusedmem):
+            availablemem = userquotamem - userusedmem
+        else :
+            availablemem = groupquotamem - groupusedmem
+        if (userquotasys - userusedsys) >= (groupquotasys - groupusedsys):
+            availablesys = userquotasys - userusedsys
+        else :
+            availablesys = groupquotasys - groupusedsys
 
         response = {
             'userquotavm' : userquotavm,
@@ -187,9 +184,9 @@ class Quota(object):
             'groupusedmem'      : groupusedmem,
             'groupusedsys'      : groupusedsys,
             'availablevm'   : availablevm,
-            # 'availablecpu'   : availablecpu,
-            # 'availablemem'   : availablemem,
-            # 'availablesys'   : availablesys,
+            'availablecpu'   : availablecpu,
+            'availablemem'   : availablemem,
+            'availablesys'   : availablesys,
 
         }
 
