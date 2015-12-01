@@ -18,8 +18,8 @@ var quota = {
                 }
             }
         }).done(function(json) {
-            quota.available = json["available"];
-            quota.used = json["used"];
+            quota.available = json["useravailablevm"];
+            quota.used = json["userusedvm"];
 
             drawPagination();
 
