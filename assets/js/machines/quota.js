@@ -1,5 +1,5 @@
 var quota = {
-    available: 0,
+    quota: 0,
     used: 0,
     update: function () {
         $.ajax({
@@ -18,15 +18,15 @@ var quota = {
                 }
             }
         }).done(function(json) {
-            quota.available = json["available"];
-            quota.used = json["used"];
+            quota.quota = json["userquotavm"];
+            quota.used = json["userusedvm"];
 
             drawPagination();
 
-            if (quota.available <= 0) {
+            if (quota.quota <= 0) {
                 $("#quota_vms").html("Unlimited");
             } else {
-                $("#quota_vms").html(quota.available);
+                $("#quota_vms").html(quota.quota);
             }
             $("#quota_vms_used").html(quota.used);
         });
