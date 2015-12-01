@@ -26,7 +26,7 @@ class Quota(object):
         response = server.one.user.info(*request)
         validateresponse(response)
         user_info = ET.fromstring(response[1])
-        
+
         try:
             available = user_info.find('VM_QUOTA').find('VM').find('VMS').text
             # -1 indicates quota based of default value
