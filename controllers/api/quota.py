@@ -36,45 +36,45 @@ class Quota(object):
         group_info = ET.fromstring(groupresponse[1])
 
         try:
-            useravailablevm = user_info.find('VM_QUOTA').find('VM').find('VMS').text
+            userquotavm = user_info.find('VM_QUOTA').find('VM').find('VMS').text
             # -1 indicates quota based of default value
-            if useravailablevm == "-1":
+            if userquotavm == "-1":
                 raise Exception
         except:
             try:
-                useravailablevm = user_info.find('DEFAULT_USER_QUOTAS').find('VM_QUOTA').find('VM').find('VMS').text
+                userquotavm = user_info.find('DEFAULT_USER_QUOTAS').find('VM_QUOTA').find('VM').find('VMS').text
             except:
-                useravailablevm = 0
+                userquotavm = 0
         try:
-            useravailablecpu = user_info.find('VM_QUOTA').find('VM').find('CPU').text
+            userquotacpu = user_info.find('VM_QUOTA').find('VM').find('CPU').text
             # -1 indicates quota based of default value
-            if useravailablecpu == "-1":
+            if userquotacpu == "-1":
                 raise Exception
         except:
             try:
-                useravailablecpu = user_info.find('DEFAULT_USER_QUOTAS').find('VM_QUOTA').find('VM').find('CPU').text
+                userquotacpu = user_info.find('DEFAULT_USER_QUOTAS').find('VM_QUOTA').find('VM').find('CPU').text
             except:
-                useravailablecpu = 0
+                userquotacpu = 0
         try:
-            useravailablemem = user_info.find('VM_QUOTA').find('VM').find('MEMORY').text
+            userquotamem = user_info.find('VM_QUOTA').find('VM').find('MEMORY').text
             # -1 indicates quota based of default value
-            if useravailablemem == "-1":
+            if userquotamem == "-1":
                 raise Exception
         except:
             try:
-                useravailablemem = user_info.find('DEFAULT_USER_QUOTAS').find('VM_QUOTA').find('VM').find('MEMORY').text
+                userquotamem = user_info.find('DEFAULT_USER_QUOTAS').find('VM_QUOTA').find('VM').find('MEMORY').text
             except:
-                useravailablemem = 0
+                userquotamem = 0
         try:
-            useravailablesys = user_info.find('VM_QUOTA').find('VM').find('SYSTEM_DISK_SIZE').text
+            userquotasys = user_info.find('VM_QUOTA').find('VM').find('SYSTEM_DISK_SIZE').text
             # -1 indicates quota based of default value
-            if useravailablesys == "-1":
+            if userquotasys == "-1":
                 raise Exception
         except:
             try:
-                useravailablesys = user_info.find('DEFAULT_USER_QUOTAS').find('VM_QUOTA').find('VM').find('SYSTEM_DISK_SIZE').text
+                userquotasys = user_info.find('DEFAULT_USER_QUOTAS').find('VM_QUOTA').find('VM').find('SYSTEM_DISK_SIZE').text
             except:
-                useravailablesys = 0
+                userquotasys = 0
         try:
             userusedvm = user_info.find('VM_QUOTA').find('VM').find('VMS_USED').text
         except:
@@ -93,45 +93,45 @@ class Quota(object):
             userusedsys = 0
 
         try:
-            groupavailablevm = group_info.find('VM_QUOTA').find('VM').find('VMS').text
+            groupquotavm = group_info.find('VM_QUOTA').find('VM').find('VMS').text
             # -1 indicates quota based of default value
-            if groupavailablevm == "-1":
+            if groupquotavm == "-1":
                 raise Exception
         except:
             try:
-                groupavailablevm = group_info.find('DEFAULT_GROUP_QUOTAS').find('VM_QUOTA').find('VM').find('VMS').text
+                groupquotavm = group_info.find('DEFAULT_GROUP_QUOTAS').find('VM_QUOTA').find('VM').find('VMS').text
             except:
-                groupavailablevm = 0
+                groupquotavm = 0
         try:
-            groupavailablecpu = group_info.find('VM_QUOTA').find('VM').find('CPU').text
+            groupquotacpu = group_info.find('VM_QUOTA').find('VM').find('CPU').text
             # -1 indicates quota based of default value
-            if groupavailablecpu == "-1":
+            if groupquotacpu == "-1":
                 raise Exception
         except:
             try:
-                groupavailablecpu = group_info.find('DEFAULT_GROUP_QUOTAS').find('VM_QUOTA').find('VM').find('CPU').text
+                groupquotacpu = group_info.find('DEFAULT_GROUP_QUOTAS').find('VM_QUOTA').find('VM').find('CPU').text
             except:
-                groupavailablecpu = 0
+                groupquotacpu = 0
         try:
-            groupavailablemem = group_info.find('VM_QUOTA').find('VM').find('MEMORY').text
+            groupquotamem = group_info.find('VM_QUOTA').find('VM').find('MEMORY').text
             # -1 indicates quota based of default value
-            if groupavailablemem == "-1":
+            if groupquotamem == "-1":
                 raise Exception
         except:
             try:
-                groupavailablemem = group_info.find('DEFAULT_GROUP_QUOTAS').find('VM_QUOTA').find('VM').find('MEMORY').text
+                groupquotamem = group_info.find('DEFAULT_GROUP_QUOTAS').find('VM_QUOTA').find('VM').find('MEMORY').text
             except:
-                groupavailablemem = 0
+                groupquotamem = 0
         try:
-            groupavailablesys = group_info.find('VM_QUOTA').find('VM').find('SYSTEM_DISK_SIZE').text
+            groupquotasys = group_info.find('VM_QUOTA').find('VM').find('SYSTEM_DISK_SIZE').text
             # -1 indicates quota based of default value
-            if groupavailablesys == "-1":
+            if groupquotasys == "-1":
                 raise Exception
         except:
             try:
-                groupavailablesys = group_info.find('DEFAULT_GROUP_QUOTAS').find('VM_QUOTA').find('VM').find('SYSTEM_DISK_SIZE').text
+                groupquotasys = group_info.find('DEFAULT_GROUP_QUOTAS').find('VM_QUOTA').find('VM').find('SYSTEM_DISK_SIZE').text
             except:
-                groupavailablesys = 0
+                groupquotasys = 0
         try:
             groupusedvm = group_info.find('VM_QUOTA').find('VM').find('VMS_USED').text
         except:
@@ -149,23 +149,45 @@ class Quota(object):
         except:
             groupusedsys = 0
 
+        if (userquotavm - userusedvm) >= (groupquotavm - groupusedvm):
+            availablevm = userquotavm - userusedvm
+        else :
+            availablevm = groupquotavm - groupusedvm
+        if (userquotacpu - userusedcpu) >= (groupquotacpu - groupusedcpu):
+            availablecpu = userquotacpu - userusedcpu
+        else :
+            availablecpu = groupquotacpu - groupusedcpu
+        if (userquotamem - userusedmem) >= (groupquotamem - groupusedmem):
+            availablemem = userquotamem - userusedmem
+        else :
+            availablemem = groupquotamem - groupusedmem
+        if (userquotasys - userusedsys) >= (groupquotasys - groupusedsys):
+            availablesys = userquotasys - userusedsys
+        else :
+            availablesys = groupquotasys - groupusedsys
+
         response = {
-            'useravailablevm' : useravailablevm,
-            'useravailablecpu' : useravailablecpu,
-            'useravailablemem' : useravailablemem,
-            'useravailablesys' : useravailablesys,
+            'userquotavm' : userquotavm,
+            'userquotacpu' : userquotacpu,
+            'userquotamem' : userquotamem,
+            'userquotasys' : userquotasys,
             'userusedvm'      : userusedvm,
             'userusedcpu'      : userusedcpu,
             'userusedmem'      : userusedmem,
             'userusedsys'      : userusedsys,
-            'groupavailablevm' : groupavailablevm,
-            'groupavailablecpu' : groupavailablecpu,
-            'groupavailablemem' : groupavailablemem,
-            'groupavailablesys' : groupavailablesys,
+            'groupquotavm' : groupquotavm
+            'groupquotacpu' : groupquotacpu,
+            'groupquotamem' : groupquotamem,
+            'groupquotasys' : groupquotasys,
             'groupusedvm'      : groupusedvm,
             'groupusedcpu'      : groupusedcpu,
             'groupusedmem'      : groupusedmem,
             'groupusedsys'      : groupusedsys,
+            'availablevm'   : availablevm,
+            'availablecpu'   : availablecpu,
+            'availablemem'   : availablemem,
+            'availablesys'   : availablesys,
+
         }
 
         return response
