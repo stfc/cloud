@@ -32,12 +32,27 @@ class VM(object):
 
         server = xmlrpclib.ServerProxy(HEADNODE)
 
+        # build xml to be used for additional customisation
+        extracontext=""
+        if json.get("cpu"):
+            extracontext=extracontext+'CPU="'+json.get("cpu")+'"\n'
+        if json.get("vcpu"):
+            extracontext=extracontext+'VCPU="'+json.get("vcpu")+'"\n'
+        if json.get("memory"):
+            extracontext=extracontext+'MEMORY="'+json.get("memory")+'"\n'
+        if json.get("sandbox"):
+            extracontext=extracontext+'AQ_SANDBOX="'+json.get("sandbox")+'"\n'
+        if json.get("personality"):
+            extracontext=extracontext+'AQ_PERSONALITY="'+json.get("personality")+'"\n'
+        if json.get("archetype"):
+            extracontext=extracontext+'AQ_ARCHETYPE="'+json.get("archetype")+'"\n'
+
         request = [
             "%s:%s"%(FEDID,SESSION),      # auth token
             int(json.get("template_id")), # template id
             json.get("name"),             # name of the new vm
             False,                        # start normally
-            ""                            # extra context variables
+            extracontext                  # extra context variables
         ]
         response = server.one.template.instantiate(*request)
         validateresponse(response)
@@ -141,14 +156,23 @@ class VM(object):
                 hostname = "-"
 
             # get/generate vnc token
-            token = getToken(FEDID, vm.find('ID').text)
-            if token == None:
-                token = createToken(FEDID, SESSION, vm.find('ID').text)
+            token = createToken(FEDID, SESSION, vm.find('ID').text)
 
-            if vm.find('LCM_STATE').text == "11":
-                state = "9"
-            else:
-                state = vm.find('STATE').text
+            if vm.find('STATE').text == "1":
+                state = "PENDING"
+            elif vm.find('STATE').text == "3":
+                if vm.find('LCM_STATE').text == "1":
+                    state = "TRANSFER"
+                elif vm.find('LCM_STATE').text == "2":
+                    state = "BUILDING"
+                elif vm.find('LCM_STATE').text == "11":
+                    state = "DELETING"
+                elif vm.find('LCM_STATE').text == "12":
+                    state = "EPILOG"
+                else:
+                    state = "RUNNING"
+            elif vm.find('STATE').text in ["4","5","8"]:
+                state = "POWERED OFF"
             if vm.find('TEMPLATE').find('VCPU') != None:
                 cpu = vm.find('TEMPLATE').find('VCPU').text
             else:

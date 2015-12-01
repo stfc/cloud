@@ -18,7 +18,8 @@ class Machines(object):
     def index(self):
         WSHOSTNAME = cherrypy.request.config.get("wshostname")
         WSPORT = cherrypy.request.config.get("wsport")
-        return {"wshostname" : WSHOSTNAME, "wsport" : WSPORT}
+        EMAIL = cherrypy.request.config.get("email")
+        return {"wshostname" : WSHOSTNAME, "wsport" : WSPORT, "email" : EMAIL}
 
 
     @cherrypy.expose
@@ -74,17 +75,17 @@ class Machines(object):
         goodwords = f.readlines()
         goodwords = [w.strip() for w in goodwords]
         f.close()
-        
+
         f = open(BADWORDS)
         badwords = f.readlines()
         badwords = [w.strip() for w in badwords]
         f.close()
-        
+
         name = []
         while len(name) < 2:
             word = goodwords[randint(0, len(goodwords) - 1)]
             word = word.replace("'","&#39").title()
             if not word in badwords:
                 name.append(word)
-        
+
         return " ".join(name)

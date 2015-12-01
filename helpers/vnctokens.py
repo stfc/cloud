@@ -35,11 +35,16 @@ def createToken(fedid, session, id):
     token = None
 
     if len(vm.find('HISTORY_RECORDS').findall('HISTORY')) != 0:
+        host = ''
+        for history in vm.find('HISTORY_RECORDS').findall('HISTORY'):
+            if history.find('ETIME').text == '0':
+                host = history.find('HOSTNAME').text
+        if host == '':
+            host = vm.find('HISTORY_RECORDS').find('HISTORY').find('HOSTNAME').text
         token = str(uuid.uuid4()) + "_" + str(id)
-        host = vm.find('HISTORY_RECORDS').find('HISTORY').find('HOSTNAME').text
         port = vm.find('TEMPLATE').find('GRAPHICS').find('PORT').text
         line = token + ": " + host + ":" + port
-    
+
         with open(WSTOCKENDIR + fedid, "a") as file:
             file.write(line + "\n")
 
@@ -74,15 +79,8 @@ def deleteToken(fedid, id):
         file.close()
 
     with open(WSTOCKENDIR + fedid, "r") as input:
-        with open(WSTOCKENDIR + fedid, "wb") as output: 
+        with open(WSTOCKENDIR + fedid, "wb") as output:
             for line in input:
                 match = regex.match(line)
                 if match.group(2) != str(id):
                     output.write(line)
-
-
-
-
-
-
-        
