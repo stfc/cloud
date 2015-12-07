@@ -51,11 +51,7 @@ $(function() {
 
         <button type="button" class="btn btn-blue pull-right" onclick="createVMdialog()"><img src="/assets/images/icon-vm.png" style="width:14px;margin-top:-1px;" />&nbsp;&nbsp;Create Machine</button>
 
-        <p>
-            You are currently using <span id="quota_vms_used" style="font-weight:bold"></span> out of
-            <span id="quota_vms" style="font-weight:bold"></span> VMs. To increase your quota, contact <a href="mailto:{{ email }}">{{ email }}</a>
-        </p>
-
+        <p>You are currently using <span id="quota_vms_used" style="font-weight:bold"></span> out of <span id="quota_vms" style="font-weight:bold"></span> VMs. To increase your quota, contact <a href="mailto:{{ email }}">{{ email }}</a></p>
 
         <br /><br /><br />
 
@@ -120,7 +116,6 @@ $(function() {
                     <br>
                     <fieldset>
                         <legend>Chose a Template</legend>
-
                         <div class="modal-body">
                             <div class="btn-group btn-group-justified" role="group" id="buttonbox"></div>
                             <div id="aq-form" class=""></div>
@@ -133,7 +128,6 @@ $(function() {
                                 </div>
                             </div>
                         </div>
-
                     </fieldset>
                     <br>
                     <fieldset>
@@ -218,4 +212,5 @@ $(function() {
             </div>
         </div>
     </div>
-    {% endblock %}
+</div>
+{% endblock %}
