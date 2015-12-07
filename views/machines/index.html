@@ -21,6 +21,7 @@ $(function() {
         quota.update();
     }, 5000);
 });
+
 </script>
 <script src="/assets/js/machines/novnc/util.js"></script>
 <script src="/assets/js/machines/vnc.js"></script>
@@ -138,15 +139,30 @@ $(function() {
                     <fieldset>
                         <legend>Resources</legend>
                         <div class="form-group">
-                            <label for="cpu" class="col-sm-3 control-label">Template CPU</label>
+                            <label for="cpu-input" class="col-sm-3 control-label">Template CPU</label>
                             <div class="col-sm-8">
-                                <p class="form-control-static" id="cpu"></p>
+                                <div class="rs-slider">
+                                    <span id="cpu-min" class="pull-left">?</span>
+                                    <span id="cpu-max" class="pull-right">?</span>
+                                    <input for="cpuOutput" oninput="cpuOutput.value=cpuInput.value" id="cpu-input" type="range" min="1" max="5" name="cpuInput" />
+                                </div>
+                                <input oninput="cpuInput.value=cpuOutput.value"
+                                id="cpu-output" class="rs-output" type="text" name="cpuOutput"
+                                for="cpuInput" oninput="cpuInput.value=cpuOutput.value" />
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="memory" class="col-sm-3 control-label">Template Memory</label>
+                            <label for="memory-input" class="col-sm-3 control-label">Template Memory</label>
                             <div class="col-sm-8">
-                                <p class="form-control-static" id="memory"></p>
+                                <div class="rs-slider">
+                                    <span id="mem-min" class="pull-left">?</span>
+                                    <span id="mem-max" class="pull-right">?</span>
+                                    <input for="memOutput" oninput="memOutput.value=memInput.value"
+                                    id="memory-input" type="range" min="0.5" max="0.5" step="0.5" name="memInput" />
+                                </div>
+                                <input oninput="memInput.value=memOutput.value"
+                                id="memory-output" class="rs-output" type="text" name="memOutput"
+                                for="memInput" oninput="memInput.value=memOutput.value" />
                             </div>
                         </div>
                     </fieldset>
