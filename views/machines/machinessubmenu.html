@@ -5,4 +5,19 @@
         <li{{ ' class="active"' if submenufocus == 'ssh' }}><a href="/machines/ssh">SSH Key</a></li>
         <li{{ ' class="active"' if submenufocus == 'faq' }}><a href="/machines/faq">FAQ</a></li>
     </ul>
+    <br><br>
+    <div id="stats">
+        <div class="panel panel-info">
+            <div class="panel-body">Useable Resources</div>
+            <div id="useable-resources" class="panel-footer"></div>
+        </div>
+        <div class="panel panel-info">
+            <div class="panel-body">User Stats</div>
+            <div id="user-stats" class="panel-footer"></div>
+        </div>
+        <div class="panel panel-info">
+            <div class="panel-body">Group Stats</div>
+            <div id="group-stats" class="panel-footer"></div>
+        </div>
+    </div>
 </div>
