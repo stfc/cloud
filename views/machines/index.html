@@ -130,7 +130,11 @@ $(function() {
                         </div>
                     </fieldset>
                     <br>
-                    <fieldset>
+                    <fieldset id="no-resources" class="">
+                        <legend>Resources</legend>
+                        <div class="alert alert-danger" role="alert"><p>You do not have the resources to create a new VM. Please delete uneeded ones or contact us at <a href="mailto:{{ email }}">{{ email }}</a> to discuss your quota.</p></div>
+                    </fieldset>
+                    <fieldset id="resources">
                         <legend>Resources</legend>
                         <div class="form-group">
                             <label for="cpu-input" class="col-sm-3 control-label">Template CPU</label>
@@ -164,7 +168,7 @@ $(function() {
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-blue" onclick="createVM(selected_template)">Create</button>
+                <button id="create-btn" type="button" class="btn btn-blue" onclick="">Create</button>
             </div>
         </div>
     </div>

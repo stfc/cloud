@@ -2,27 +2,40 @@
 
 function createVMdialog()
 {
-    if (quota.used == quota.available && quota.available !== 0) {
-        $("#errormessage").html('You have hit your quota of VMs. Please delete uneeded ones or contact us and request a quota increase.');
-        $("#error").show();
-        return;
+    if (vmavailable === 0 || cpuavailable === 0 || memavailable === 0 || sysavailable === 0 ) {
+        $("#resources").addClass('hide');
+        $("#no-resources").removeClass('hide');
+        $("#create-btn").attr('onclick', "").css('cursor', 'not-allowed');
+    } else {
+        $("#resources").removeClass('hide');
+        $("#no-resources").addClass('hide');
+        $("#create-btn").attr('onclick', "createVM(selected_template)").css('cursor', 'pointer');
     }
 
     $("#name").val("");
+    $('#cpu-input').val("1");
+    $('#cpu-output').val("1");
+    $('#memory-input').val("0.5");
+    $('#memory-output').val("0.5");
     $('#createvmdialog').modal('show');
     draw_buttons();
 }
 
 function createVM(selected_template)
 {
+    cpu = $("#cpu-input").val()/2;
+    memory = $("#memory-input").val()*1024;
     var data = {
         "name" : $("#name").val().replace(/[^a-zA-Z 0-9-]+/g, ''),
         "template_id": selected_template,
         "archetype": $("#archetype").val(),
         "personality": $("#personality").val(),
         "sandbox": $("#sandbox").val(),
+        "vcpu": $("#cpu-input").val(),
+        "cpu": '' + cpu,
+        "memory": '' + memory,
     };
-
+    console.log(data);
     $.ajax({
         type: "PUT",
         url: "/api/vm",

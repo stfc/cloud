@@ -105,9 +105,12 @@ function draw_buttons() {
             image_name = image.name;
             image_description = image.description;
             image_cpu = image.cpu;
-            image_memory = image.memory;
-            $("#cpu").html(image_cpu);
-            $("#memory").html(image_memory);
+            image_memory = image.memory/1024;
+
+            $('#cpu-input').val(image_cpu);
+            $('#cpu-output').val(image_cpu);
+            $('#memory-input').val(image_memory);
+            $('#memory-output').val(image_memory);
 
             if (image_list[selected_flavour][selected_release][selected_type].length == 1) {
                 selected_template = image_id;
