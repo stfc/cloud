@@ -21,6 +21,7 @@ $(function() {
         quota.update();
     }, 5000);
 });
+
 </script>
 <script src="/assets/js/machines/novnc/util.js"></script>
 <script src="/assets/js/machines/vnc.js"></script>
@@ -49,12 +50,6 @@ $(function() {
         </div>
 
         <button type="button" class="btn btn-blue pull-right" onclick="createVMdialog()"><img src="/assets/images/icon-vm.png" style="width:14px;margin-top:-1px;" />&nbsp;&nbsp;Create Machine</button>
-
-        <p>
-            You are currently using <span id="quota_vms_used" style="font-weight:bold"></span> out of
-            <span id="quota_vms" style="font-weight:bold"></span> VMs. To increase your quota, contact <a href="mailto:{{ email }}">{{ email }}</a>
-        </p>
-
 
         <br /><br /><br />
 
@@ -119,7 +114,6 @@ $(function() {
                     <br>
                     <fieldset>
                         <legend>Chose a Template</legend>
-
                         <div class="modal-body">
                             <div class="btn-group btn-group-justified" role="group" id="buttonbox"></div>
                             <div id="aq-form" class=""></div>
@@ -132,21 +126,39 @@ $(function() {
                                 </div>
                             </div>
                         </div>
-
                     </fieldset>
                     <br>
-                    <fieldset>
+                    <fieldset id="no-resources" class="">
+                        <legend>Resources</legend>
+                        <div class="alert alert-danger" role="alert"><p>You do not have the resources to create a new VM. Please delete uneeded ones or contact us at <a href="mailto:{{ email }}">{{ email }}</a> to discuss your quota.</p></div>
+                    </fieldset>
+                    <fieldset id="resources">
                         <legend>Resources</legend>
                         <div class="form-group">
-                            <label for="cpu" class="col-sm-3 control-label">Template CPU</label>
+                            <label for="cpu-input" class="col-sm-3 control-label">Template CPU</label>
                             <div class="col-sm-8">
-                                <p class="form-control-static" id="cpu"></p>
+                                <div class="rs-slider">
+                                    <span id="cpu-min" class="pull-left">?</span>
+                                    <span id="cpu-max" class="pull-right">?</span>
+                                    <input for="cpuOutput" oninput="cpuOutput.value=cpuInput.value" id="cpu-input" type="range" min="1" max="5" name="cpuInput" />
+                                </div>
+                                <input oninput="cpuInput.value=cpuOutput.value"
+                                id="cpu-output" class="rs-output" type="text" name="cpuOutput"
+                                for="cpuInput" oninput="cpuInput.value=cpuOutput.value" />
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="memory" class="col-sm-3 control-label">Template Memory</label>
+                            <label for="memory-input" class="col-sm-3 control-label">Template Memory</label>
                             <div class="col-sm-8">
-                                <p class="form-control-static" id="memory"></p>
+                                <div class="rs-slider">
+                                    <span id="mem-min" class="pull-left">?</span>
+                                    <span id="mem-max" class="pull-right">?</span>
+                                    <input for="memOutput" oninput="memOutput.value=memInput.value"
+                                    id="memory-input" type="range" min="0.5" max="0.5" step="0.5" name="memInput" />
+                                </div>
+                                <input oninput="memInput.value=memOutput.value"
+                                id="memory-output" class="rs-output" type="text" name="memOutput"
+                                for="memInput" oninput="memInput.value=memOutput.value" />
                             </div>
                         </div>
                     </fieldset>
@@ -154,7 +166,7 @@ $(function() {
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-blue" onclick="createVM(selected_template)">Create</button>
+                <button id="create-btn" type="button" class="btn btn-blue" onclick="">Create</button>
             </div>
         </div>
     </div>
@@ -202,4 +214,5 @@ $(function() {
             </div>
         </div>
     </div>
-    {% endblock %}
+</div>
+{% endblock %}

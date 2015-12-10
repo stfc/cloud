@@ -9,6 +9,22 @@ class Quota(object):
 
     exposed = True
 
+    def find_data(self, info, arg, type):
+
+        vm = info.find('VM_QUOTA').find('VM')
+        default_quotas='DEFAULT_'+type+'_QUOTAS'
+	default = info.find(default_quotas).find('VM_QUOTA').find('VM')
+
+        
+        if info.find('VM_QUOTA').find('VM') != None:
+            results = float(vm.find(arg).text)
+            if results == -1 and default.find(arg).text:
+                results = float(default.find(arg).text)
+        else:
+            results = float(default.find(arg).text)
+
+        return results
+
     @cherrypy.tools.isAuthorised()
     @cherrypy.tools.json_out()
     def GET(self):
@@ -35,159 +51,84 @@ class Quota(object):
         validateresponse(groupresponse)
         group_info = ET.fromstring(groupresponse[1])
 
-        try:
-            userquotavm = int(user_info.find('VM_QUOTA').find('VM').find('VMS').text)
-            # -1 indicates quota based of default value
-            if userquotavm == "-1":
-                raise Exception
-        except:
-            try:
-                userquotavm = int(user_info.find('DEFAULT_USER_QUOTAS').find('VM_QUOTA').find('VM').find('VMS').text)
-            except:
-                userquotavm = 0
-        try:
-            userquotacpu = float(user_info.find('VM_QUOTA').find('VM').find('CPU').text)
-            # -1 indicates quota based of default value
-            if userquotacpu == "-1":
-                raise Exception
-        except:
-            try:
-                userquotacpu = float(user_info.find('DEFAULT_USER_QUOTAS').find('VM_QUOTA').find('VM').find('CPU').text)
-            except:
-                userquotacpu = 0
-        try:
-            userquotamem = float(user_info.find('VM_QUOTA').find('VM').find('MEMORY').text)
-            # -1 indicates quota based of default value
-            if userquotamem == "-1":
-                raise Exception
-        except:
-            try:
-                userquotamem = float(user_info.find('DEFAULT_USER_QUOTAS').find('VM_QUOTA').find('VM').find('MEMORY').text)
-            except:
-                userquotamem = 0
-        try:
-            userquotasys = float(user_info.find('VM_QUOTA').find('VM').find('SYSTEM_DISK_SIZE').text)
-            # -1 indicates quota based of default value
-            if userquotasys == "-1":
-                raise Exception
-        except:
-            try:
-                userquotasys = float(user_info.find('DEFAULT_USER_QUOTAS').find('VM_QUOTA').find('VM').find('SYSTEM_DISK_SIZE').text)
-            except:
-                userquotasys = 0
-        try:
-            userusedvm = int(user_info.find('VM_QUOTA').find('VM').find('VMS_USED').text)
-        except:
-            userusedvm = 0
-        try:
-            userusedcpu = float(user_info.find('VM_QUOTA').find('VM').find('CPU_USED').text)
-        except:
-            userusedcpu = 0
-        try:
-            userusedmem = float(user_info.find('VM_QUOTA').find('VM').find('MEMORY_USED').text)
-        except:
-            userusedmem = 0
-        try:
-            userusedsys = float(user_info.find('VM_QUOTA').find('VM').find('SYSTEM_DISK_SIZE_USED').text)
-        except:
-            userusedsys = 0
-
-        try:
-            groupquotavm = int(group_info.find('VM_QUOTA').find('VM').find('VMS').text)
-            # -1 indicates quota based of default value
-            if groupquotavm == "-1":
-                raise Exception
-        except:
-            try:
-                groupquotavm = int(group_info.find('DEFAULT_GROUP_QUOTAS').find('VM_QUOTA').find('VM').find('VMS').text)
-            except:
-                groupquotavm = 0
-        try:
-            groupquotacpu = float(group_info.find('VM_QUOTA').find('VM').find('CPU').text)
-            # -1 indicates quota based of default value
-            if groupquotacpu == "-1":
-                raise Exception
-        except:
-            try:
-                groupquotacpu = float(group_info.find('DEFAULT_GROUP_QUOTAS').find('VM_QUOTA').find('VM').find('CPU').text)
-            except:
-                groupquotacpu = 0
-        try:
-            groupquotamem = float(group_info.find('VM_QUOTA').find('VM').find('MEMORY').text)
-            # -1 indicates quota based of default value
-            if groupquotamem == "-1":
-                raise Exception
-        except:
-            try:
-                groupquotamem = float(group_info.find('DEFAULT_GROUP_QUOTAS').find('VM_QUOTA').find('VM').find('MEMORY').text)
-            except:
-                groupquotamem = 0
-        try:
-            groupquotasys = float(group_info.find('VM_QUOTA').find('VM').find('SYSTEM_DISK_SIZE').text)
-            # -1 indicates quota based of default value
-            if groupquotasys == "-1":
-                raise Exception
-        except:
-            try:
-                groupquotasys = float(group_info.find('DEFAULT_GROUP_QUOTAS').find('VM_QUOTA').find('VM').find('SYSTEM_DISK_SIZE').text)
-            except:
-                groupquotasys = 0
-        try:
-            groupusedvm = int(group_info.find('VM_QUOTA').find('VM').find('VMS_USED').text)
-        except:
-            groupusedvm = 0
-        try:
-            groupusedcpu = float(group_info.find('VM_QUOTA').find('VM').find('CPU_USED').text)
-        except:
-            groupusedcpu = 0
-        try:
-            groupusedmem = float(group_info.find('VM_QUOTA').find('VM').find('MEMORY_USED').text)
-        except:
-            groupusedmem = 0
-        try:
-            groupusedsys = float(group_info.find('VM_QUOTA').find('VM').find('SYSTEM_DISK_SIZE_USED').text)
-        except:
-            groupusedsys = 0
-
-        if (userquotavm - userusedvm) >= (groupquotavm - groupusedvm):
-            availablevm = userquotavm - userusedvm
-        else :
-            availablevm = groupquotavm - groupusedvm
-        if (userquotacpu - userusedcpu) >= (groupquotacpu - groupusedcpu):
-            availablecpu = userquotacpu - userusedcpu
-        else :
-            availablecpu = groupquotacpu - groupusedcpu
-        if (userquotamem - userusedmem) >= (groupquotamem - groupusedmem):
-            availablemem = userquotamem - userusedmem
-        else :
-            availablemem = groupquotamem - groupusedmem
-        if (userquotasys - userusedsys) >= (groupquotasys - groupusedsys):
-            availablesys = userquotasys - userusedsys
-        else :
-            availablesys = groupquotasys - groupusedsys
-
+        # Build output
         response = {
-            'userquotavm' : userquotavm,
-            'userquotacpu' : userquotacpu,
-            'userquotamem' : userquotamem,
-            'userquotasys' : userquotasys,
-            'userusedvm'      : userusedvm,
-            'userusedcpu'      : userusedcpu,
-            'userusedmem'      : userusedmem,
-            'userusedsys'      : userusedsys,
-            'groupquotavm' : groupquotavm,
-            'groupquotacpu' : groupquotacpu,
-            'groupquotamem' : groupquotamem,
-            'groupquotasys' : groupquotasys,
-            'groupusedvm'      : groupusedvm,
-            'groupusedcpu'      : groupusedcpu,
-            'groupusedmem'      : groupusedmem,
-            'groupusedsys'      : groupusedsys,
-            'availablevm'   : availablevm,
-            'availablecpu'   : availablecpu,
-            'availablemem'   : availablemem,
-            'availablesys'   : availablesys,
+            'userquotavm'   : self.find_data(user_info, 'VMS', 'USER'),
+            'userquotacpu'  : self.find_data(user_info, 'CPU', 'USER'),
+            'userquotamem'  : self.find_data(user_info, 'MEMORY', 'USER')/1024,
+            'userquotasys'  : self.find_data(user_info, 'SYSTEM_DISK_SIZE', 'USER')/1024,
+            'userusedvm'    : self.find_data(user_info, 'VMS_USED', 'USER'),
+            'userusedcpu'   : self.find_data(user_info, 'CPU_USED', 'USER'),
+            'userusedmem'   : self.find_data(user_info, 'MEMORY_USED', 'USER')/1024,
+            'userusedsys'   : self.find_data(user_info, 'SYSTEM_DISK_SIZE_USED', 'USER')/1024,
 
+            'groupquotavm'  : self.find_data(group_info, 'VMS', 'GROUP'),
+            'groupquotacpu' : self.find_data(group_info, 'CPU', 'GROUP'),
+            'groupquotamem' : self.find_data(group_info, 'MEMORY', 'GROUP')/1024,
+            'groupquotasys' : self.find_data(group_info, 'SYSTEM_DISK_SIZE', 'GROUP')/1024,
+            'groupusedvm'   : self.find_data(group_info, 'VMS_USED', 'GROUP'),
+            'groupusedcpu'  : self.find_data(group_info, 'CPU_USED', 'GROUP'),
+            'groupusedmem'  : self.find_data(group_info, 'MEMORY_USED', 'GROUP')/1024,
+            'groupusedsys'  : self.find_data(group_info, 'SYSTEM_DISK_SIZE_USED', 'GROUP')/1024
         }
+
+        # Calculate the available resources
+        user_remaining_vm  = response['userquotavm'] - response['userusedvm']
+        user_remaining_cpu = response['userquotacpu'] - response['userusedcpu']
+        user_remaining_mem = response['userquotamem'] - response['userusedmem']
+        user_remaining_sys = response['userquotasys'] - response['userusedsys']
+
+        group_remaining_vm  = response['groupquotavm'] - response['groupusedvm']
+        group_remaining_cpu = response['groupquotacpu'] - response['groupusedcpu']
+        group_remaining_mem = response['groupquotamem'] - response['groupusedmem']
+        group_remaining_sys = response['groupquotasys'] - response['groupusedsys']
+
+        # VM
+        if response['userquotavm'] < 0 and response['groupquotavm'] < 0:
+            response['availablevm'] = cherrypy.request.config.get("unlimited-vm")
+        elif response['userquotavm'] < 0:
+            response['availablevm'] = group_remaining_vm
+        elif response['groupquotavm'] < 0:
+            response['availablevm'] = user_remaining_vm
+        elif user_remaining_vm <= group_remaining_vm:
+            response['availablevm'] = user_remaining_vm
+        else:
+            response['availablevm'] = group_remaining_vm
+
+        # CPU
+        if response['userquotacpu'] < 0 and response['groupquotacpu'] < 0:
+            response['availablecpu'] = cherrypy.request.config.get("unlimited-cpu")
+        elif response['userquotacpu'] < 0:
+            response['availablecpu'] = group_remaining_cpu
+        elif response['groupquotacpu'] < 0:
+            response['availablecpu'] = user_remaining_cpu
+        elif user_remaining_cpu <= group_remaining_cpu:
+            response['availablecpu'] = user_remaining_cpu
+        else:
+            response['availablecpu'] = group_remaining_cpu
+
+        # Memory
+        if response['userquotamem'] < 0 and response['groupquotamem'] < 0:
+            response['availablemem'] = cherrypy.request.config.get("unlimited-mem")
+        elif response['userquotamem'] < 0:
+            response['availablemem'] = group_remaining_mem
+        elif response['groupquotamem'] < 0:
+            response['availablemem'] = user_remaining_mem
+        elif user_remaining_mem <= group_remaining_mem:
+            response['availablemem'] = user_remaining_mem
+        else:
+            response['availablemem'] = group_remaining_mem
+
+        # Disk
+        if response['userquotasys'] < 0 and response['groupquotasys'] < 0:
+            response['availablesys'] = cherrypy.request.config.get("unlimited-sys")
+        elif response['userquotasys'] < 0:
+            response['availablesys'] = group_remaining_sys
+        elif response['groupquotasys'] < 0:
+            response['availablesys'] = user_remaining_sys
+        elif user_remaining_sys <= group_remaining_sys:
+            response['availablesys'] = user_remaining_sys
+        else:
+            response['availablesys'] = group_remaining_sys
 
         return response
