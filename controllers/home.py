@@ -20,3 +20,9 @@ class Home(object):
     @cherrypy.expose
     def login(self):
         pass
+
+    @cherrypy.expose
+    @cherrypy.tools.jinja(template="home/faq.html")
+    def faq(self):
+        EMAIL = cherrypy.request.config.get("email")
+        return {"email" : EMAIL}
