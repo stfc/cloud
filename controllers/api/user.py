@@ -30,8 +30,8 @@ class User(object):
         # must encode spaces in password otherwise opennebula gets upset
         request = [
             "%s:%s"%(json.get("username"),json.get("password").replace(" ", "%20")),
-            json.get("username"),  # username to generate token for
-            "dontleaveblank",      # not really sure, cannot be blank
+            json.get("username"),  # username to generate token for user
+            "",                    # must be an empty string to generate a random token
             EXPIRE                 # valid period in seconds
         ]
         response = server.one.user.login(*request)
@@ -82,7 +82,7 @@ class User(object):
         uid = user_info.find('ID').text
 
         if params.get("action") == 'sshkey':
-            if params.get("key"): 
+            if params.get("key"):
                 request = [
                     "%s:%s"%(FEDID,SESSION),                 # auth token
                     int(uid),                                # the user's id
