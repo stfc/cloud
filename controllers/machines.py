@@ -55,16 +55,6 @@ class Machines(object):
 
         return { 'key' : key }
 
-
-
-    @cherrypy.expose
-    @cherrypy.tools.jinja(template="machines/faq.html")
-    def faq(self):
-
-        EMAIL = cherrypy.request.config.get("email")
-        return {"email" : EMAIL}
-
-
     @cherrypy.expose
     def random(self):
 
