@@ -172,6 +172,8 @@ class VM(object):
                     state = "RUNNING"
             elif vm.find('STATE').text in ["4","5","8"]:
                 state = "POWERED OFF"
+            else:
+                state = "DONE"
             if vm.find('TEMPLATE').find('VCPU') != None:
                 cpu = vm.find('TEMPLATE').find('VCPU').text
             else:
