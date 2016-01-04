@@ -17,7 +17,11 @@ from controllers.api.quota import Quota
 from controllers.api.user import User
 from controllers.api.templatelist import TemplateList
 
-cherrypy.config.update("config/global.conf")
+cherrypy.config.update("config/default.conf")
+try:
+    cherrypy.config.update("config/global.conf")
+except IOError:
+    pass
 
 # PAGES
 home = Home()
