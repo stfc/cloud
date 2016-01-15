@@ -118,7 +118,7 @@ class VM(object):
 
         request = [
             "%s:%s"%(FEDID,SESSION),   # auth token
-            -3,                        # show only user's VMs
+            -2,                        # show only user's VMs
             int(offset),               # offest for pagination
             -1 * int(size),            # number of entries to return
             -1 if history == 0 else -2 # show either active or all VMs
