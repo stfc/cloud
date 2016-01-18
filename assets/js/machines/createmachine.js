@@ -28,9 +28,9 @@ function createVM(selected_template)
     var data = {
         "name" : $("#name").val().replace(/[^a-zA-Z 0-9-]+/g, ''),
         "template_id": selected_template,
-        "archetype": $("#archetype").val(),
-        "personality": $("#personality").val(),
-        "sandbox": $("#sandbox").val(),
+        "archetype": $("#archetype_options").val(),
+        "personality": $("#personality_options").val(),
+        "sandbox": $("#sandbox_options").val(),
         "vcpu": $("#cpu-input").val(),
         "cpu": '' + cpu,
         "memory": '' + memory,

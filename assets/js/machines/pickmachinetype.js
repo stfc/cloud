@@ -29,6 +29,7 @@ function draw_buttons() {
     controls = "";
     helptext = "";
     var os_flavour,release,type,image = null;
+    $("#aquilon-select").css("display", "none");
 
     if (selected_flavour === "") {
         selected_release = "";
@@ -82,20 +83,7 @@ function draw_buttons() {
     }
 
     else if (selected_type === "AQ Managed" && selected_template !== "") {
-        buttons += '<div class="input-group aq-form" role="group">';
-        buttons += '<label for="archetype">Archetype</label>';
-        buttons += '<input type="text" id="archetype" placeholder="" class="form-control noEnterSubmit" data-type="text" required />';
-        buttons += '</div>';
-        buttons += '<div class="input-group aq-form" role="group">';
-        buttons += '<label for="personality">Personality</label>';
-        buttons += '<input type="text" id="personality" placeholder="" class="form-control noEnterSubmit" data-type="text" required />';
-        buttons += '</div>';
-        buttons += '<div class="input-group aq-form" role="group">';
-        buttons += '<label for="sandbox">Sandbox</label>';
-        buttons += '<input type="text" id="sandbox" placeholder="" class="form-control noEnterSubmit" data-type="text" required />';
-        buttons += '</div>';
-        helptext = 'You have selected an Aquilon Managed machine, please enter an Archetype, Sandbox (user/sandbox) and/or Personality ';
-        controls = '<a class="btn btn-danger" id="buttonback" onclick="selected_type=\'\'; draw_buttons();">Back</a>';
+        pick_aquilon();
     }
 
     else if (selected_template === "") {

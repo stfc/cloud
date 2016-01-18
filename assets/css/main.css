@@ -341,8 +341,19 @@ fieldset[disabled] .btn-blue.active {
 }
 /* input forms */
 .aq-form {
-  width: 33%;
+  width: 50%;
   float: left;
+}
+.aq-form.first {
+  border-right: 1px solid #E5E5E5;
+}
+.aq-form select, .aq-form label {
+  width: 80%;
+  margin: 0 10%;
+  float: left;
+}
+.aq-form label {
+  padding-top: 20px;
 }
 
 /* VM STATES */
