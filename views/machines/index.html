@@ -20,6 +20,9 @@ $(function() {
     setInterval(function () {
         quota.update();
     }, 5000);
+    $('#show-all').change(function() {
+        drawTable();
+    });
 });
 
 </script>
@@ -49,6 +52,9 @@ $(function() {
             <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> <span id="errormessage"></span>
             <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         </div>
+
+        <span>Show Group VMs?</span>
+        <input id="show-all" type="checkbox">
 
         <button type="button" class="btn btn-blue pull-right" onclick="createVMdialog()"><img src="/assets/images/icon-vm.png" style="width:14px;margin-top:-1px;" />&nbsp;&nbsp;Create Machine</button>
 
