@@ -31,7 +31,11 @@ function draw_buttons() {
     var os_flavour,release,type,image = null;
     $("#aquilon-select").css("display", "none");
 
-    if (selected_flavour === "") {
+    if ($.isEmptyObject(image_list)) {
+        buttons = '<div class="alert alert-danger" role="alert"><p>You do not appear to have any templates available to you. Please contact <a href="mailto:' + EMAIL + '">' + EMAIL + '</a>.</p></div>';
+        $("#create-btn").attr('onclick', "").css('cursor', 'not-allowed');
+    }
+    else if (selected_flavour === "") {
         selected_release = "";
         selected_type = "";
         selected_template = "";
