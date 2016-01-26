@@ -3,19 +3,19 @@
  * depending on if the session cookie is set.
  */
 $(function() {
-    if ($.cookie('session') === undefined || $.cookie('session') === "") {
+    if (Cookies.get('session') === undefined || Cookies.get('session') === "") {
         $(".logintoolbar").show();
         $(".logouttoolbar").hide();
     } else {
-        $("#user").html($.cookie('name'));
+        $("#user").html(Cookies.get('name'));
         $(".logouttoolbar").show();
         $(".logintoolbar").hide();
     }
 
     $('#logout').click(function() {
-        $.removeCookie('session', {path : '/'});
-        $.removeCookie('name', {path : '/'});
-        $.removeCookie('fedid', {path : '/'});
+        Cookies.remove('session', {path : '/'});
+        Cookies.remove('name', {path : '/'});
+        Cookies.remove('fedid', {path : '/'});
         window.location.replace("/");
     });
 });

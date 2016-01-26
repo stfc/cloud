@@ -27,9 +27,9 @@ $(function() {
         }).done(function(json) {
             var date = new Date();
             date.setTime(date.getTime() + (json["expires"] * 1000));
-            $.cookie("session", json["session"], {expires : date, path : '/'});
-            $.cookie("name", json["name"], {expires : date, path : '/'});
-            $.cookie("fedid", json["fedid"], {expires : date, path : '/'});
+            Cookies.set("session", json["session"], {expires : date, path : '/'});
+            Cookies.set("name", json["name"], {expires : date, path : '/'});
+            Cookies.set("fedid", json["fedid"], {expires : date, path : '/'});
             window.location.replace("/machines");
         });
 
