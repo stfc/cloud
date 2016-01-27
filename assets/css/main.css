@@ -59,17 +59,6 @@ body {
   .navbar-wrapper .navbar {
     border-radius: 4px;
   }
-
-  body {
-    padding-top: 100px;
-  }
-}
-
-
-@media (max-width: 768px) {
-  body {
-    padding-top: 80px;
-  }
 }
 
 .page-header {
