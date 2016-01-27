@@ -1,6 +1,6 @@
 /*jshint sub:true*/
 var MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-if ($.cookie("showall") == "true") {
+if (Cookies.get("showall") == "true") {
     $('#show-all').prop('checked', true);
 }
 
@@ -20,7 +20,7 @@ function formatDate(timestamp)
 function drawTable()
 {
     var show = $('#show-all').prop('checked');
-    $.cookie("showall", show, {path : '/'});
+    Cookies.get("showall", show, {path : '/'});
     $.ajax({
         type: "GET",
         url: "/api/vm?size=" + pagesize + "&offset=" + offset,
