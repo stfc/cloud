@@ -26,20 +26,26 @@ $(function() {
 });
 
 </script>
-<script src="/assets/js/machines/novnc/util.js"></script>
-<script src="/assets/js/machines/vnc.js"></script>
-
+<!-- Other -->
 <script src="/assets/components/bootstrap/js/bootstrap-select-1.9.4.min.js"></script>
 <script src="/assets/js/jquery.paging.min.js"></script>
 
+<!-- Main -->
 <script src="/assets/js/machines/quota.js"></script>
 <script src="/assets/js/machines/pagination.js"></script>
-<script src="/assets/js/machines/create/pick_aquilon.js"></script>
-<script src="/assets/js/machines/pickmachinetype.js"></script>
-<script src="/assets/js/machines/createmachine.js"></script>
 <script src="/assets/js/machines/listmachines.js"></script>
-<script src="/assets/js/machines/deletemachine.js"></script>
-<script src="/assets/js/machines/bootmachine.js"></script>
+<!-- novnc -->
+<script src="/assets/js/machines/novnc/util.js"></script>
+<script src="/assets/js/machines/vnc.js"></script>
+
+<!-- Manage -->
+<script src="/assets/js/machines/manage/machine-boot.js"></script>
+<script src="/assets/js/machines/manage/machine-delete.js"></script>
+<script src="/assets/js/machines/manage/machine-create.js"></script>
+<!-- Create VM -->
+<script src="/assets/js/machines/manage/create/pick-aquilon.js"></script>
+<script src="/assets/js/machines/manage/create/pick-template.js"></script>
+
 {% endblock %}
 
 {% block content %}
@@ -88,9 +94,9 @@ $(function() {
     </div>
 </div>
 
-{% include "machines/create/create_window.html" %}
+{% include "machines/manage/create/index.html" %}
 
-{% include "machines/delete/delete.html" %}
+{% include "machines/manage/machine-delete.html" %}
 
 {% include "machines/novnc/novnc.html" %}
 
