@@ -51,25 +51,6 @@ var quota = {
             memavailable = json_out["availablemem"];
             sysavailable = json_out["availablesys"];
 
-            $("#useable-resources").html([
-                '<p>VMs: '+vmavailable+'</p>',
-                '<p>CPU: '+cpuavailable+'</p>',
-                '<p>Memory: '+memavailable+' GB</p>',
-                '<p>Disk: '+sysavailable+' GB</p>'
-            ]);
-            $("#user-stats").html([
-                '<p>VMs: '+userusedvm+' / '+userquotavm+'</p>',
-                '<p>CPU: '+userusedcpu+' / '+userquotacpu+'</p>',
-                '<p>Memory: '+userusedmem+' / '+userquotamem+' GB</p>',
-                '<p>Disk: '+userusedsys+' / '+userquotasys+' GB</p>'
-            ]);
-            $("#group-stats").html([
-                '<p>VMs: '+groupusedvm+' / '+groupquotavm+'</p>',
-                '<p>CPU: '+groupusedcpu+' / '+groupquotacpu+'</p>',
-                '<p>Memory: '+groupusedmem+' / '+groupquotamem+' GB</p>',
-                '<p>Disk: '+groupusedsys+' / '+groupquotasys+' GB</p>'
-            ]);
-
             // Sliders
             $('#cpu-input').attr('max', Math.floor(cpuavailable));
             $('#memory-input').attr('max', memavailable);
@@ -80,8 +61,120 @@ var quota = {
             $("#mem-min").html("0.5 GB");
             $("#mem-max").html(memavailable + " GB");
 
-            // Pagination
-            drawPagination();
+            dial = {
+                'inputColor'  : '#666',
+                'fgColor'     : '#6897B3',
+                'bgColor'     : '#EEEEEE',
+                'min'         : '0',
+                'readOnly'    : 'true',
+                'width'       : '70',
+                'height'      : '70',
+                'thickness'   : '.20',
+            };
+
+            colour_vm = {
+                'inputColor'  : '#ef4600',
+                'fgColor'     : '#ef4600'
+            };
+            colour_cpu = {
+                'inputColor'  : '#00a056',
+                'fgColor'     : '#00a056'
+            };
+            colour_mem = {
+                'inputColor'  : '#0053b4',
+                'fgColor'     : '#0053b4'
+            };
+            colour_sys = {
+                'inputColor'  : '#b40053',
+                'fgColor'     : '#b40053'
+            };
+
+            // Available
+            $('.available-vm').val(vmavailable).trigger('change');
+            $(".available-vm").knob($.extend({
+                'max': vmavailable
+            }, dial, colour_vm));
+
+            $('.available-cpu').val(cpuavailable).trigger('change');
+            $(".available-cpu").knob($.extend({
+                'max': cpuavailable
+            }, dial, colour_cpu));
+
+            $('.available-mem').val(memavailable).trigger('change');
+            $(".available-mem").knob($.extend({
+                'max': memavailable
+            }, dial, colour_mem));
+
+            $('.available-sys').val(sysavailable).trigger('change');
+            $(".available-sys").knob($.extend({
+                'max': sysavailable
+            }, dial, colour_sys));
+
+            // User
+            $('.user-vm').val(userusedvm).trigger('change');
+            $(".user-vm").knob($.extend({
+                'max': userquotavm,
+                'format'      : function (value) {
+                    return value + "/" + userquotavm;
+                }
+            }, dial, colour_vm));
+
+            $('.user-cpu').val(userusedcpu).trigger('change');
+            $(".user-cpu").knob($.extend({
+                'max': userquotacpu,
+                'format'      : function (value) {
+                    return value + '/' + userquotacpu;
+                }
+            }, dial, colour_cpu));
+
+            $('.user-mem').val(userusedmem).trigger('change');
+            $(".user-mem").knob($.extend({
+                'max': userquotamem,
+                'format'      : function (value) {
+                    return value + '/GB' + userquotamem;
+                }
+            }, dial, colour_mem));
+
+            $('.user-sys').val(userusedsys).trigger('change');
+            $(".user-sys").knob($.extend({
+                'max': userquotasys,
+                'format'      : function (value) {
+                    return value + '/' + userquotasys + 'GB';
+                }
+            }, dial, colour_sys));
+
+            // Group
+            $('.group-vm').val(groupusedvm).trigger('change');
+            $(".group-vm").knob($.extend({
+                'max': groupquotavm,
+                'format'      : function (value) {
+                    return value + '/' + groupquotavm;
+                }
+            }, dial, colour_vm));
+
+            $('.group-cpu').val(groupusedcpu).trigger('change');
+            $(".group-cpu").knob($.extend({
+                'max': groupquotacpu,
+                'format'      : function (value) {
+                    return value + '/' + groupquotacpu;
+                }
+            }, dial, colour_cpu));
+
+            $('.group-mem').val(groupusedmem).trigger('change');
+            $(".group-mem").knob($.extend({
+                'max': groupquotamem,
+                'format'      : function (value) {
+                    return value + '/' + groupquotamem;
+                }
+            }, dial, colour_mem));
+
+            $('.group-sys').val(groupusedsys).trigger('change');
+            $(".group-sys").knob($.extend({
+                'max': groupquotasys,
+                'format'      : function (value) {
+                    return value + '/' + groupquotasys + 'GB';
+                }
+            }, dial, colour_sys));
         });
     }
 };
