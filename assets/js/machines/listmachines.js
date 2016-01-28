@@ -26,9 +26,9 @@ function drawTable()
         url: "/api/vm?size=" + pagesize + "&offset=" + offset,
         statusCode: {
             403: function() {
-                $.removeCookie('session', {path : '/'});
-                $.removeCookie('name', {path : '/'});
-                $.removeCookie('fedid', {path : '/'});
+                Cookie.remove('session', {path : '/'});
+                Cookie.remove('name', {path : '/'});
+                Cookie.remove('fedid', {path : '/'});
                 window.location.replace("/login");
             },
             500: function() {
