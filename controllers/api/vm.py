@@ -113,20 +113,15 @@ class VM(object):
         HEADNODE = cherrypy.request.config.get("headnode")
         FEDID = cherrypy.request.cookie.get('fedid').value
         SESSION = cherrypy.request.cookie.get('session').value
-        SHOWALL = cherrypy.request.cookie.get('showall').value
-        if SHOWALL == "true":
-            show_vms = -2
-        else :
-            show_vms = -3
 
         server = xmlrpclib.ServerProxy(HEADNODE)
 
         request = [
-            "%s:%s"%(FEDID,SESSION),   # auth token
-            show_vms,                  # show only user's VMs or group VMs
-            int(offset),               # offest for pagination
-            -1 * int(size),            # number of entries to return
-            -1 if history == 0 else -2 # show either active or all VMs
+            "%s:%s"%(FEDID,SESSION),    # auth token
+            -2,                         # show only user's VMs or group VMs
+            0,                          # offest for pagination
+            -1,                         # number of entries to return
+            -1 if history == 0 else -2  # show either active or all VMs
         ]
         response = server.one.vmpool.info(*request)
         validateresponse(response)
@@ -197,7 +192,7 @@ class VM(object):
                 'token'    : token
             })
 
-        return json
+        return {"data":json}
 
 
     '''
