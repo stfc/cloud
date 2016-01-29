@@ -17,13 +17,33 @@ function formatDate(timestamp)
     return datestring;
 }
 
+var vmlist = $('#vm-list').DataTable( {
+    "columns": [
+        { data: 'name'},
+        { data: 'hostname'},
+        { data: 'state'},
+        { data: 'stime'},
+        { data: 'cpu'},
+        { data: 'memory'},
+        { data: 'type'},
+        { data: 'token'},
+        { data: 'id'},
+    ],
+    "columnDefs": [
+            {
+                "orderable": false,
+                "targets": [7, 8]
+            }
+        ]
+});
+$.fn.dataTable.ext.errMode = 'throw';
 function drawTable()
 {
     var show = $('#show-all').prop('checked');
     Cookies.get("showall", show, {path : '/'});
     $.ajax({
         type: "GET",
-        url: "/api/vm?size=" + pagesize + "&offset=" + offset,
+        url: "/api/vm",
         statusCode: {
             403: function() {
                 Cookie.remove('session', {path : '/'});
@@ -36,11 +56,11 @@ function drawTable()
                 $("#error").show();
             }
         }
-    }).done(function(json) {
-        var html = "";
+    }).done(function(data) {
+        vmlist.clear();
 
-        $.each(json, function(index, vm) {
-            state = vm['state'];
+        for (row of data["data"]) {
+            state = row['state'];
             disabled = (state != "RUNNING" ? "disabled" : "");
 
             if (state === "POWERED OFF") {
@@ -59,34 +79,25 @@ function drawTable()
                 state_val = 4;
             }
             if (state === "POWERED OFF") {
-                button = '<td><button type="button" class="btn btn-success btn-xs" title="Boot Machine" onclick="bootVM(' + vm['id'] + ')"><span class="glyphicon glyphicon-arrow-up" style="vertical-align:middle;margin-top:-2px"></span></button></td>';
+                row['id'] = '<button type="button" class="btn btn-success btn-xs" title="Boot Machine" onclick="bootVM(' + row['id'] + ')"><span class="glyphicon glyphicon-arrow-up" style="vertical-align:middle;margin-top:-2px"></span></button>';
             } else {
-                button = '<td><button type="button" class="btn btn-danger btn-xs" title="Delete Machine" onclick="deleteVMdialog(' + vm['id'] + ')"><span class="glyphicon glyphicon-remove" style="vertical-align:middle;margin-top:-2px"></span></button></td>';
+                row['id'] = '<button type="button" class="btn btn-danger btn-xs" title="Delete Machine" onclick="deleteVMdialog(' + row['id'] + ')"><span class="glyphicon glyphicon-remove" style="vertical-align:middle;margin-top:-2px"></span></button>';
             }
 
-            html += '<tr>';
-            html += '<td>' + vm['name'] + '</td>';
-            html += '<td>' + vm['hostname'] + '</td>';
-            html += '<td><span class="status-label status-label-'+state_val+'">'+state+'</span><progress max="4" value="'+state_val+'"></progress></td>';
-            html += '<td>' + vm['type'] + '</td>';
-            html += '<td>' + formatDate(vm['stime']) + '</td>';   // move date formattion into own function
-            html += '<td style="text-align:center">' + vm['cpu'] + '</td>';
-            html += '<td style="text-align:center">' + (vm['memory']/1024) + "GB" + '</td>';
-            html += '<td>';
-            html += '<button type="button" class="btn btn-blue btn-xs" title="Launch Desktop GUI" onclick="vncdialog(\'' + vm['token'] + '\', \'' + vm['name'] + '\')" ' + disabled + '>';
-            html += '<img src="/assets/images/icon-display.png" style="width:14px;margin-top:-2px" />';
-            html += '</button>';
-            html += '</td>';
-            html += button;
-            html += '</tr>';
-        });
+            row['token'] = '<button type="button" class="btn btn-blue btn-xs" title="Launch Desktop GUI" onclick="vncdialog(\'' + row['token'] + '\', \'' + row['name'] + '\')" ' + disabled + '><img src="/assets/images/icon-display.png" style="width:14px;margin-top:-2px" /></button>';
 
-        if (html !== "") {
-            $("#vms").empty();
-            $("#vms").append(html);
+            row['memory'] = row['memory']/1024 + "GB";
+
+            row['state'] = '<span class="status-label status-label-'+state_val+'">'+state+'</span><progress max="4" value="'+state_val+'"></progress>';
+
+            row['stime'] = formatDate(row['stime']);
+
+            row['etime'] = row['etime'];
+
+            delete row['etime'];
+            vmlist.row.add(row);
         }
-
-        $("#error").hide();
+        vmlist.draw(false); // 'false' saves the paging position
     });
 }
 

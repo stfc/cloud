@@ -5,6 +5,7 @@
 
 {% block css %}
 <link rel="stylesheet" href="/assets/components/bootstrap/css/bootstrap-select-1.9.4.min.css" type="text/css" />
+<link rel="stylesheet" href="/assets/components/bootstrap/css/dataTables.bootstrap-1.10.10.min.css" type="text/css" />
 <link rel="stylesheet" href="/assets/css/machines/styles.css" type="text/css" />
 
 {% endblock %}
@@ -22,21 +23,23 @@ $(function() {
     quota.update();
     setInterval(function () {
         quota.update();
-    }, 5000);
-    $('#show-all').change(function() {
         drawTable();
-    });
+    }, 5000);
+    // $('#show-all').change(function() {
+    //     drawTable();
+    // });
 });
 
 </script>
 <!-- Other -->
 <script src="/assets/components/bootstrap/js/bootstrap-select-1.9.4.min.js"></script>
-<script src="/assets/js/jquery.paging.min.js"></script>
 <script src="/assets/components/jquery/jquery.knob-1.2.11.min.js"></script>
+<!-- DataTables -->
+<script src="/assets/components/jquery/jquery.dataTables-1.10.10.min.js"></script>
+<script src="/assets/components/bootstrap/js/dataTables.bootstrap-1.10.10.min.js"></script>
 
 <!-- Main -->
 <script src="/assets/js/machines/quota.js"></script>
-<script src="/assets/js/machines/pagination.js"></script>
 <script src="/assets/js/machines/listmachines.js"></script>
 <!-- novnc -->
 <script src="/assets/js/machines/novnc/util.js"></script>
@@ -66,28 +69,21 @@ $(function() {
         <span>Show Group VMs?</span>
         <input id="show-all" type="checkbox">
 
-        <div class="table-responsive">
-            <table class="table table-hover">
-                <thead>
-                    <tr>
-                        <th class="col-sm-3">Name</th>
-                        <th class="col-sm-3">Hostname</th>
-                        <th class="col-sm-2">State</th>
-                        <th class="col-sm-2">Type</th>
-                        <th class="col-sm-4">Created</th>
-                        <th>CPU</th>
-                        <th>RAM</th>
-                        <th></th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody id="vms">
-                    <tr>
-                        <td colspan="9" class="text-center"><br />It looks like you do not have any Virtual Machines. Why don't you create one?<br /><br /></td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+        <table id="vm-list" class="table" cellspacing="0" width="100%">
+            <thead>
+                <tr>
+                    <th>VM name</th>
+                    <th>Hostname</th>
+                    <th>State</th>
+                    <th>Created</th>
+                    <th>CPU</th>
+                    <th>RAM</th>
+                    <th>Type</th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+        </table>
     </div>
     {% include "machines/resources.html" %}
 </div>
