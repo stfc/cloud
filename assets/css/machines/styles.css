@@ -134,8 +134,26 @@ progress[value="4"]::-moz-progress-bar {
   border-color: #0b4282;
   background-image: linear-gradient(to bottom, #004d8d 0%, #00418d 100%);
 }
+.panel-body {
+  padding-bottom: 30px;
+}
+
 .col-md-3 {
-  padding: 0 10px;
+  padding: 0;
+}
+.col-md-4 {
+  width: 33% !important;
+  float: left;
+}
+
+.resource-header {
+  text-align: center;
+  padding-right: 10%;
+}
+.resource-text {
+  text-align: center;
+  padding-right: 10%;
+  font-size: 12px;
 }
 
 .table-responsive {
