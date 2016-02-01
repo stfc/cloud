@@ -67,7 +67,7 @@ function drawTable()
             html += '<tr>';
             html += '<td>' + vm['name'] + '</td>';
             html += '<td>' + vm['hostname'] + '</td>';
-            html += '<td><progress max="4" value="'+state_val+'"></progress><span class="status-label">'+state+'</span></td>';
+            html += '<td><span class="status-label status-label-'+state_val+'">'+state+'</span><progress max="4" value="'+state_val+'"></progress></td>';
             html += '<td>' + vm['type'] + '</td>';
             html += '<td>' + formatDate(vm['stime']) + '</td>';   // move date formattion into own function
             html += '<td style="text-align:center">' + vm['cpu'] + '</td>';

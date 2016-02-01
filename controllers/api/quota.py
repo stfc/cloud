@@ -15,7 +15,7 @@ class Quota(object):
         default_quotas='DEFAULT_'+type+'_QUOTAS'
 	default = info.find(default_quotas).find('VM_QUOTA').find('VM')
 
-        
+
         if info.find('VM_QUOTA').find('VM') != None:
             results = float(vm.find(arg).text)
             if results == -1 and default.find(arg).text:
@@ -86,49 +86,69 @@ class Quota(object):
         # VM
         if response['userquotavm'] < 0 and response['groupquotavm'] < 0:
             response['availablevm'] = cherrypy.request.config.get("unlimited-vm")
+            response['availablequotavm'] = cherrypy.request.config.get("unlimited-vm")
         elif response['userquotavm'] < 0:
             response['availablevm'] = group_remaining_vm
+            response['availablequotavm'] = response['groupquotavm']
         elif response['groupquotavm'] < 0:
             response['availablevm'] = user_remaining_vm
+            response['availablequotavm'] = response['userquotavm']
         elif user_remaining_vm <= group_remaining_vm:
             response['availablevm'] = user_remaining_vm
+            response['availablequotavm'] = response['userquotavm']
         else:
             response['availablevm'] = group_remaining_vm
+            response['availablequotavm'] = response['groupquotavm']
 
         # CPU
         if response['userquotacpu'] < 0 and response['groupquotacpu'] < 0:
             response['availablecpu'] = cherrypy.request.config.get("unlimited-cpu")
+            response['availablequotacpu'] = cherrypy.request.config.get("unlimited-cpu")
         elif response['userquotacpu'] < 0:
             response['availablecpu'] = group_remaining_cpu
+            response['availablequotacpu'] = response['groupquotacpu']
         elif response['groupquotacpu'] < 0:
             response['availablecpu'] = user_remaining_cpu
+            response['availablequotacpu'] = response['userquotacpu']
         elif user_remaining_cpu <= group_remaining_cpu:
             response['availablecpu'] = user_remaining_cpu
+            response['availablequotacpu'] = response['userquotacpu']
         else:
             response['availablecpu'] = group_remaining_cpu
+            response['availablequotacpu'] = response['groupquotacpu']
 
         # Memory
         if response['userquotamem'] < 0 and response['groupquotamem'] < 0:
             response['availablemem'] = cherrypy.request.config.get("unlimited-mem")
+            response['availablequotamem'] = cherrypy.request.config.get("unlimited-mem")
         elif response['userquotamem'] < 0:
             response['availablemem'] = group_remaining_mem
+            response['availablequotamem'] = response['groupquotamem']
         elif response['groupquotamem'] < 0:
             response['availablemem'] = user_remaining_mem
+            response['availablequotamem'] = response['userquotamem']
         elif user_remaining_mem <= group_remaining_mem:
             response['availablemem'] = user_remaining_mem
+            response['availablequotamem'] = response['userquotamem']
         else:
             response['availablemem'] = group_remaining_mem
+            response['availablequotamem'] = response['groupquotamem']
 
         # Disk
         if response['userquotasys'] < 0 and response['groupquotasys'] < 0:
             response['availablesys'] = cherrypy.request.config.get("unlimited-sys")
+            response['availablequotasys'] = cherrypy.request.config.get("unlimited-sys")
         elif response['userquotasys'] < 0:
             response['availablesys'] = group_remaining_sys
+            response['availablequotasys'] = response['groupquotasys']
         elif response['groupquotasys'] < 0:
             response['availablesys'] = user_remaining_sys
+            response['availablequotasys'] = response['userquotasys']
         elif user_remaining_sys <= group_remaining_sys:
             response['availablesys'] = user_remaining_sys
+            response['availablequotasys'] = response['userquotasys']
         else:
             response['availablesys'] = group_remaining_sys
+            response['availablequotasys'] = response['groupquotasys']
 
         return response

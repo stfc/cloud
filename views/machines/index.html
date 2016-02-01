@@ -5,6 +5,8 @@
 
 {% block css %}
 <link rel="stylesheet" href="/assets/components/bootstrap/css/bootstrap-select-1.9.4.min.css" type="text/css" />
+<link rel="stylesheet" href="/assets/css/machines/styles.css" type="text/css" />
+
 {% endblock %}
 
 {% block javascript %}
@@ -30,6 +32,7 @@ $(function() {
 <!-- Other -->
 <script src="/assets/components/bootstrap/js/bootstrap-select-1.9.4.min.js"></script>
 <script src="/assets/js/jquery.paging.min.js"></script>
+<script src="/assets/components/jquery/jquery.knob-1.2.11.min.js"></script>
 
 <!-- Main -->
 <script src="/assets/js/machines/quota.js"></script>
@@ -51,10 +54,10 @@ $(function() {
 
 {% block content %}
 <div class="row">
-    {% set submenufocus = "machines" %}
-    {% include "machines/machinessubmenu.html" %}
-    <div class="col-md-10">
-        <h1 class="page-header">Machines</h1>
+    <div class="col-md-12">
+        <h1 class="page-header">Machines
+            <button type="button" class="btn btn-green pull-right" onclick="createVMdialog()"><span class="glyphicon glyphicon-plus" style="font-size:15px"></span>&nbsp;&nbsp;New Machine</button>
+        </h1>
         <div id="error" class="alert alert-danger text-center" role="alert" style="display:none">
             <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> <span id="errormessage"></span>
             <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -62,10 +65,6 @@ $(function() {
 
         <span>Show Group VMs?</span>
         <input id="show-all" type="checkbox">
-
-        <button type="button" class="btn btn-blue pull-right" onclick="createVMdialog()"><img src="/assets/images/icon-vm.png" style="width:14px;margin-top:-1px;" />&nbsp;&nbsp;Create Machine</button>
-
-        <br /><br /><br />
 
         <div class="table-responsive">
             <table class="table table-hover">
@@ -89,10 +88,8 @@ $(function() {
                 </tbody>
             </table>
         </div>
-        <div style="text-align:center">
-            <ul class="pagination"></ul>
-        </div>
     </div>
+    {% include "machines/resources.html" %}
 </div>
 
 {% include "machines/manage/create/index.html" %}
