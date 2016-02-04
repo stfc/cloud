@@ -112,6 +112,18 @@ progress[value="4"]::-moz-progress-bar {
 .status-label-4 {color: #24990b;}
 
 
+.pagination > .active > a, .pagination > .active > a:focus, .pagination > .active > a:hover, .pagination > .active > span, .pagination > .active > span:focus, .pagination > .active > span:hover {
+  cursor: default;
+  color: #fff;
+  background-color: #00418d;
+  border-color: #0b4282;
+  background-image: linear-gradient(to bottom, #004d8d 0%, #00418d 100%);
+}
+.pagination > li > a, .pagination > li > span {
+  color: #00418d;
+}
+
+
 
 /* RESOURCE SLIDERS */
 .rs-output {
@@ -158,4 +170,49 @@ progress[value="4"]::-moz-progress-bar {
 
 .table-responsive {
   min-height: 322px;
+}
+
+.table-filters label {
+  padding: 0 6px;
+}
+
+#vm-list_paginate {
+  text-align: center;
+  padding-right: 160px;
+  padding-top: 8px;
+  border-top: 1px solid #eee;
+}
+
+#vm-list_info {
+  float: right;
+  margin-top: -44px;
+}
+
+#vm-list_length {
+  float: left;
+  margin-top: 11px;
+}
+
+.bottom {
+  margin-top: 20px;
+}
+
+#filter-button {
+  float: right;
+  height: 34px;
+  width: 34px;
+  margin-top: -42px;
+}
+#filter-button span {
+  font-size: 20px;
+  margin-left: -5px;
+}
+
+#vm-list_filter {
+  float: right;
+  margin-top: -48px;
+  margin-right: 40px;
+}
+#vm-list_filter input {
+  height: 34px;
 }

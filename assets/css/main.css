@@ -41,6 +41,16 @@ h1 {
   font-size: 50px;
 }
 
+a:focus, a:active {
+  outline: 0;
+}
+
+.form-control:focus {
+  border-color: #004d8d;
+  outline: 0px none;
+  box-shadow: none;
+}
+
 .page-header {
   padding-bottom: 9px;
   margin: 00px 0px 20px;
@@ -56,15 +66,9 @@ NAVBAR & LOGO
   font-size:20px;
 }
 
-.navbar-custom .navbar-brand:hover,
-.navbar-custom .navbar-brand:focus {
-  text-shadow: 0px 0px 3px #4EBEF4;
-  background-color: transparent;
-}
-
 /* === Navbar === */
 .navbar-custom {
-  background-color: #003b63;
+  background-color: #00418d;
   border-color: #002742;
   background-image: linear-gradient(to bottom, #004d8d 0%, #00418d 100%);
 }
