@@ -179,17 +179,25 @@ class VM(object):
             else:
                 cpu = vm.find('TEMPLATE').find('CPU').text
 
+            if vm.find('PERMISSIONS/GROUP_M').text == "1" or vm.find('PERMISSIONS/GROUP_A').text == "1" or vm.find('PERMISSIONS/OTHER_M').text == "1" or vm.find('PERMISSIONS/OTHER_A').text == "1" :
+                candelete = True
+            else:
+                candelete = False
+
             json.append({
                 'id'       : vm.find('ID').text,
                 'name'     : vm.find('NAME').text,
                 'hostname' : hostname,
+                'user'     : vm.find('UNAME').text,
+                'group'    : vm.find('GNAME').text,
                 'state'    : state,
                 'stime'    : vm.find('STIME').text,
                 'etime'    : vm.find('ETIME').text,
                 'cpu'      : cpu,
                 'memory'   : vm.find('TEMPLATE').find('MEMORY').text,
                 'type'     : template_type,
-                'token'    : token
+                'token'    : token,
+                'candelete': candelete
             })
 
         return {"data":json}
