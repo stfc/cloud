@@ -19,21 +19,19 @@ var WSPORT = "{{ wsport }}";
 var EMAIL = "{{ email }}";
 
 $(function() {
-    drawTable();
     quota.update();
+    drawTable();
     setInterval(function () {
         quota.update();
         drawTable();
     }, 5000);
-    // $('#show-all').change(function() {
-    //     drawTable();
-    // });
 });
 
 </script>
 <!-- Other -->
 <script src="/assets/components/bootstrap/js/bootstrap-select-1.9.4.min.js"></script>
 <script src="/assets/components/jquery/jquery.knob-1.2.11.min.js"></script>
+<script src="/assets/components/jquery/moment.js"></script>
 <!-- DataTables -->
 <script src="/assets/components/jquery/jquery.dataTables-1.10.10.min.js"></script>
 <script src="/assets/components/bootstrap/js/dataTables.bootstrap-1.10.10.min.js"></script>
@@ -66,27 +64,41 @@ $(function() {
             <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         </div>
 
-        <span>Show Group VMs?</span>
-        <input id="show-all" type="checkbox">
+        <ul class="nav nav-tabs" role="tablist">
+            <li id="my-vms" class="active">
+                <a href="" class="filter" data-toggle="tab" onclick="drawTable()">My VMs</a>
+            </li>
+            <li id="all-vms">
+                <a href="" class="filter" data-toggle="tab" onclick="drawTable()">All VMs</a>
+            </li>
+        </ul>
+        <button type="button" class="btn btn-default" id="filter-button" title="Table Filters" onclick="filterTableDialog()"><span class="glyphicon glyphicon-cog"></span></button>
+        <div class="tab-content">
+            <div class="tab-pane active">
+                <table id="vm-list" class="table" cellspacing="0" width="100%">
+                    <thead>
+                        <tr>
+                            <th>VM name</th>
+                            <th>Owner</th>
+                            <th>Project</th>
+                            <th>Hostname</th>
+                            <th>State</th>
+                            <th>Created</th>
+                            <th>Type</th>
+                            <th>CPU</th>
+                            <th>RAM</th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                </table>
 
-        <table id="vm-list" class="table" cellspacing="0" width="100%">
-            <thead>
-                <tr>
-                    <th>VM name</th>
-                    <th>Hostname</th>
-                    <th>State</th>
-                    <th>Created</th>
-                    <th>CPU</th>
-                    <th>RAM</th>
-                    <th>Type</th>
-                    <th></th>
-                    <th></th>
-                </tr>
-            </thead>
-        </table>
+            </div>
+        </div>
     </div>
     {% include "machines/resources.html" %}
 </div>
+{% include "machines/filters.html" %}
 
 {% include "machines/manage/create/index.html" %}
 

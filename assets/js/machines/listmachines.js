@@ -1,46 +1,55 @@
-/*jshint sub:true*/
-var MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-if (Cookies.get("showall") == "true") {
-    $('#show-all').prop('checked', true);
-}
-
-function formatDate(timestamp)
-{
-    var date = new Date(timestamp*1000);
-    var datestring = "";
-    datestring += ("0" + date.getUTCDate()).slice(-2) + " ";
-    datestring += MONTHS[date.getUTCMonth()] + " ";
-    datestring += date.getUTCFullYear() + " ";
-    datestring += ("0" + date.getUTCHours()).slice(-2) + ":";
-    datestring += ("0" + date.getUTCMinutes()).slice(-2) + ":";
-    datestring += ("0" + date.getUTCSeconds()).slice(-2);
-    return datestring;
-}
-
+// Set DataTables
 var vmlist = $('#vm-list').DataTable( {
     "columns": [
         { data: 'name'},
+        { data: 'user'},
+        { data: 'group'},
         { data: 'hostname'},
         { data: 'state'},
         { data: 'stime'},
+        { data: 'type'},
         { data: 'cpu'},
         { data: 'memory'},
-        { data: 'type'},
         { data: 'token'},
-        { data: 'id'},
+        { data: 'id'}
     ],
     "columnDefs": [
-            {
-                "orderable": false,
-                "targets": [7, 8]
-            }
-        ]
+        {
+            "width": "1px",
+            "targets": [7, 8, 9, 10]
+        },
+        {
+            "orderable": false,
+            "targets": [9, 10] // Stop 'VNC' and 'Delete' form being orderable
+        },
+        {
+            "visible": false,
+            "targets": [2] // Hide 'Project' column by default
+        }
+    ],
+    "dom": '<"top"f>t<"bottom"lpi><"clear">'
 });
-$.fn.dataTable.ext.errMode = 'throw';
-function drawTable()
-{
-    var show = $('#show-all').prop('checked');
-    Cookies.get("showall", show, {path : '/'});
+
+$.fn.dataTable.ext.errMode = 'throw'; // Prints DataTable errors to console
+
+function filterTableDialog(id) {
+    $('#filtertabledialog').modal('show');
+}
+
+$('.show-hide').change( 'click', function (e) {
+    e.preventDefault();
+
+    // Get the column API object
+    var column = vmlist.column( $(this).attr('data-column') );
+
+    // Toggle the visibility
+    column.visible( ! column.visible() );
+});
+
+var fedid = Cookies.get('fedid');
+$('#all-vms').hide();
+
+function drawTable() {
     $.ajax({
         type: "GET",
         url: "/api/vm",
@@ -81,7 +90,11 @@ function drawTable()
             if (state === "POWERED OFF") {
                 row['id'] = '<button type="button" class="btn btn-success btn-xs" title="Boot Machine" onclick="bootVM(' + row['id'] + ')"><span class="glyphicon glyphicon-arrow-up" style="vertical-align:middle;margin-top:-2px"></span></button>';
             } else {
-                row['id'] = '<button type="button" class="btn btn-danger btn-xs" title="Delete Machine" onclick="deleteVMdialog(' + row['id'] + ')"><span class="glyphicon glyphicon-remove" style="vertical-align:middle;margin-top:-2px"></span></button>';
+                if (row['user'] === fedid || row['candelete'] === true) {
+                    row['id'] = '<button type="button" class="btn btn-danger btn-xs" title="Delete Machine" onclick="deleteVMdialog(' + row['id'] + ')"><span class="glyphicon glyphicon-remove" style="vertical-align:middle;margin-top:-2px"></span></button>';
+                } else {
+                    row['id'] = '<button type="button" class="btn btn-default btn-xs" title="You do not own this machine" onclick=""><span class="glyphicon glyphicon-remove" style="vertical-align:middle;margin-top:-2px"></span></button>';
+                }
             }
 
             row['token'] = '<button type="button" class="btn btn-blue btn-xs" title="Launch Desktop GUI" onclick="vncdialog(\'' + row['token'] + '\', \'' + row['name'] + '\')" ' + disabled + '><img src="/assets/images/icon-display.png" style="width:14px;margin-top:-2px" /></button>';
@@ -90,15 +103,27 @@ function drawTable()
 
             row['state'] = '<span class="status-label status-label-'+state_val+'">'+state+'</span><progress max="4" value="'+state_val+'"></progress>';
 
-            row['stime'] = formatDate(row['stime']);
+            row['stime'] = "<span title='" + moment.unix(row['stime']).format("YYYY/MM/DD - h:mm:ss a") + "'>" + moment.unix(row['stime']).fromNow() + "</span>";
 
-            row['etime'] = row['etime'];
-
-            delete row['etime'];
-            vmlist.row.add(row);
+            // Check to see what view user is on
+            if ($("#my-vms").hasClass('active')) {
+                if (row['user'] === fedid) {
+                    vmlist.row.add(row);
+                } else {
+                    // Do not return row
+                    $('#all-vms').show(); // Show 'All VMs' tab
+                }
+            } else {
+                vmlist.row.add(row);
+            }
         }
         vmlist.draw(false); // 'false' saves the paging position
     });
+    // if ($("#my-vms").hasClass('active')) {
+    //     vmlist.column(1).visible(false);
+    // } else {
+    //     vmlist.column(1).visible(true);
+    // }
 }
 
 // stop form submission on enter
