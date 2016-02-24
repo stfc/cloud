@@ -66,6 +66,7 @@ function drawTable() {
             }
         }
     }).done(function(data) {
+        $('#all-vms').hide();
         vmlist.clear();
 
         for (row of data["data"]) {
@@ -114,16 +115,14 @@ function drawTable() {
                     $('#all-vms').show(); // Show 'All VMs' tab
                 }
             } else {
+                if ($("#all-vms").hasClass('active')) {
+                    $('#all-vms').show();
+                }
                 vmlist.row.add(row);
             }
         }
         vmlist.draw(false); // 'false' saves the paging position
     });
-    // if ($("#my-vms").hasClass('active')) {
-    //     vmlist.column(1).visible(false);
-    // } else {
-    //     vmlist.column(1).visible(true);
-    // }
 }
 
 // stop form submission on enter
