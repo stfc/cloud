@@ -57,6 +57,12 @@ a:focus, a:active {
   border-bottom: 1px solid rgb(238, 238, 238);
 }
 
+.alert-danger {
+  color: #ffffff;
+  border: none;
+  background: #9f0000;
+}
+
 /*================================
 NAVBAR & LOGO
 ================================*/
