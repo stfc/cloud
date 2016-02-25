@@ -1,7 +1,6 @@
-/*jshint sub:true*/
+$("#name-error").hide();
 
-function createVMdialog()
-{
+function createVMdialog() {
     if (vmavailable === 0 || cpuavailable === 0 || memavailable === 0 || sysavailable === 0 ) {
         $("#resources").addClass('hide');
         $("#no-resources").removeClass('hide');
@@ -9,7 +8,7 @@ function createVMdialog()
     } else {
         $("#resources").removeClass('hide');
         $("#no-resources").addClass('hide');
-        $("#create-btn").attr('onclick', "createVM(selected_template)").css('cursor', 'pointer');
+        $("#create-btn").attr('onclick', "fetch_values(selected_template)").css('cursor', 'pointer');
     }
 
     $("#name").val("");
@@ -21,12 +20,19 @@ function createVMdialog()
     draw_buttons();
 }
 
-function createVM(selected_template)
-{
+function randomname() {
+    $.get("/machines/random", function(data) {
+        $("#name").val(data);
+    });
+}
+
+function fetch_values(selected_template) {
+    $("#name-error").hide();
+    $("#vm-error").hide();
+
     cpu = $("#cpu-input").val()/2;
     memory = $("#memory-input").val()*1024;
     var data = {
-        "name" : $("#name").val().replace(/[^a-zA-Z 0-9-]+/g, ''),
         "template_id": selected_template,
         "archetype": $("#archetype_options").val(),
         "personality": $("#personality_options").val(),
@@ -35,6 +41,31 @@ function createVM(selected_template)
         "cpu": '' + cpu,
         "memory": '' + memory,
     };
+    check_name(data);
+}
+
+function check_name(data) {
+    badwords_url = 'https://raw.githubusercontent.com/' +
+    'shutterstock/List-of-Dirty-Naughty-Obscene-and-Otherwise-Bad-Words/master/en';
+    vmname = $("#name").val().replace(/[^a-z A-Z 0-9 .@_-]+/g, ' ');
+    test = vmname.toLowerCase();
+    $.get(badwords_url, function(words) {
+        data['name'] = '';
+        // Remove new lines and replace with | then cut off the last |
+        badwords = words.replace(/\r?\n|\r/g, '|').slice("|", -1);
+        regexp = new RegExp("(" + badwords + ")", "g");
+        if (test.match(regexp)) {
+            $("#name-errormessage").html("Please try a different name. '<b>"+ vmname +"</b>' contains blocked words.");
+            $("#name-error").show();
+            data['name'] = '';
+        } else {
+            data['name'] = vmname;
+        }
+        create_VM(data);
+    });
+}
+
+function create_VM(data) {
     console.log(data);
     $.ajax({
         type: "PUT",
@@ -65,12 +96,5 @@ function createVM(selected_template)
         selected_release = "";
         selected_type = "";
         selected_template = "";
-    });
-}
-
-function randomname()
-{
-    $.get("/machines/random", function(data) {
-        $("#name").val(data);
     });
 }
