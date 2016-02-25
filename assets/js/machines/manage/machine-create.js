@@ -1,38 +1,49 @@
-$('#name-error').hide();
+// Error handler
+function creation_error(id, text) {
+    icon = '<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> ';
+    body = '<span>' + text + '</span><br>';
+    $('#' + id).append(icon + body).show();
+}
 
+// Set defaults when modal opened
 function createVMdialog() {
-    if (vmavailable === 0 || cpuavailable === 0 || memavailable === 0 || sysavailable === 0 ) {
-        $('#resources').addClass('hide');
-        $('#no-resources').removeClass('hide');
-        $('#create-btn').attr('onclick', '').css('cursor', 'not-allowed');
-    } else {
-        $('#resources').removeClass('hide');
-        $('#no-resources').addClass('hide');
-        $('#create-btn').attr('onclick', 'fetch_values(selected_template)').css('cursor', 'pointer');
-    }
+    $('.creation-error').hide(); // Hide all errors
+    $('#create-btn').attr('onclick', 'fetch_values(selected_template)').css('cursor', 'pointer');
 
+    // Set name and all template options to empty
     $('#name').val('');
+    selected_flavour = '';
+    selected_release = '';
+    selected_type = '';
+    selected_template = '';
+    draw_buttons();
+
+    // templatelist
     $('#cpu-input').val('1');
     $('#cpu-output').val('1');
     $('#memory-input').val('0.5');
     $('#memory-output').val('0.5');
+    // Show modal window
     $('#createvmdialog').modal('show');
-    draw_buttons();
 }
 
+// Populate name field with random name
 function randomname() {
     $.get('/machines/random', function(data) {
         $('#name').val(data);
     });
 }
 
+// Populate array to send to /api/vm.py - Triggered by 'create' button
 function fetch_values(selected_template) {
-    $('#name-error').hide();
-    $('#vm-error').hide();
+    // Clear and hide on to reset errors
+    $('.creation-error').empty().hide();
 
     cpu = $('#cpu-input').val()/2;
     memory = $('#memory-input').val()*1024;
+
     var data = {
+        // 'name' gets added if check_errors() is happy
         'template_id': selected_template,
         'archetype': $('#archetype_options').val(),
         'personality': $('#personality_options').val(),
@@ -41,32 +52,57 @@ function fetch_values(selected_template) {
         'cpu': '' + cpu,
         'memory': '' + memory,
     };
-    check_name(data);
+    check_errors(data, selected_template);
 }
 
-function check_name(data) {
+// Check the VM name for blocked words and other errors
+function check_errors(data, selected_template) {
     badwords_url = 'https://raw.githubusercontent.com/' +
     'shutterstock/List-of-Dirty-Naughty-Obscene-and-Otherwise-Bad-Words/master/en';
-    vmname = $('#name').val().replace(/[^a-z A-Z 0-9 .@_-]+/g, ' ');
-    test = vmname.toLowerCase();
+
+    print_name = $('#name').val().replace(/[^a-z A-Z 0-9 .@_-]+/g, ' ');
+    name = print_name.toLowerCase();
+
     $.get(badwords_url, function(words) {
-        data['name'] = '';
+        data['name'] = 'badname';
+
         // Remove new lines and replace with | then cut off the last |
         badwords = words.replace(/\r?\n|\r/g, '|').slice('|', -1);
         regexp = new RegExp('(' + badwords + ')', 'g');
-        if (test.match(regexp)) {
-            $('#name-errormessage').html('Please try a different name. "<b>'+ vmname +'</b>" contains blocked words.');
-            $('#name-error').show();
-            data['name'] = '';
+
+        // Check if name has any bad words
+        if (name.match(regexp)) {
+            creation_error('name-creation-error', 'Please try a different name. "<b>'+ print_name +'</b>" contains blocked words.');
         } else {
-            data['name'] = vmname;
+            data['name'] = print_name;
         }
-        create_VM(data);
+
+        // Show warning if no name
+        if (data['name'] === '') {
+            creation_error('name-creation-error','Please enter a name.');
+        }
+
+        // Show warning if no template
+        if (selected_template === '') {
+            creation_error('template-creation-error','Please enter a Template.');
+        }
+
+        // Show warning if no resources
+        if (vmavailable > 0 && cpuavailable > 0 && memavailable > 0 && sysavailable > 0 ) {
+            resources = true;
+        } else {
+            creation_error('resource-creation-error','You do not have the resources to create a new VM. Please delete uneeded VMs or contact us to discuss your quota.');
+        }
+
+        // If all fields are good send data to /api/vm.py
+        if (data['name'].length > 0 && data['name'] !== 'badname' && selected_template.length > 0 && resources === true) {
+            create_VM(data);
+        }
     });
 }
 
+// Create VM
 function create_VM(data) {
-    console.log(data);
     $.ajax({
         type: 'PUT',
         url: '/api/vm',
@@ -74,8 +110,7 @@ function create_VM(data) {
         data: JSON.stringify(data),
         statusCode: {
             400: function() {
-                $('#vm-errormessage').html('Make sure you have given your VM a name and selected an template.');
-                $('#vm-error').show();
+                creation_error('main-creation-error', 'We were unable to create your VM. If this problem persists, please contact us.');
             },
             403: function() {
                 Cookie.remove('session', {path : '/'});
@@ -84,17 +119,12 @@ function create_VM(data) {
                 window.location.replace('/login');
             },
             500: function() {
-                $('#errormessage').html('The cloud may be experiencing problems. Please try again later.');
-                $('#error').show();
+                creation_error('main-creation-error', 'Unable to connect to the cloud. If this problem persists, please contact us.');
             }
         }
     }).done(function(json) {
         drawTable();
         quota.update();
         $('#createvmdialog').modal('hide');
-        selected_flavour = '';
-        selected_release = '';
-        selected_type = '';
-        selected_template = '';
     });
 }
