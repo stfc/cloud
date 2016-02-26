@@ -1,6 +1,6 @@
 function pick_aquilon() {
     var i;
-    $("#aquilon-select").css("display", "table");
+    $('#aquilon-select').css('display', 'table');
 
     // User
     $.get('/aquilon/principal.csv', function(data) {
@@ -9,16 +9,16 @@ function pick_aquilon() {
         for (u of data) {
             user_options.push(u.split('@', 1)[0]);
         }
-        $("#user_options").html('<option value="">None Selected</option>');
+        $('#user_options').html('<option value="">None Selected</option>');
         for (u of user_options) {
             if (u && !u.startsWith('HTTP')) {
-                $("#user_options").append('<option value="' + u + '">' + u + '</option>');
+                $('#user_options').append('<option value="' + u + '">' + u + '</option>');
             }
         }
 
         // Sandbox
-        $("#sandbox_options").html('<option value="">None Selected</option>');
-        $("#user_options").change(function () {
+        $('#sandbox_options').html('<option value="">None Selected</option>');
+        $('#user_options').change(function () {
             selected_archetype = $('#user_options').val();
             $.get('/aquilon/find/sandbox?owner='+selected_archetype, function(data) {
                 data = data.split('\n');
@@ -26,10 +26,10 @@ function pick_aquilon() {
                 for (s of data) {
                     sandbox_options.push(s.split('@', 1)[0]);
                 }
-                $("#sandbox_options").html('<option value="">None Selected</option>');
+                $('#sandbox_options').html('<option value="">None Selected</option>');
                 for (s of sandbox_options) {
                     if (s) {
-                        $("#sandbox_options").append('<option value="' + $("#user_options").val() +'/' + s + '">' + s + '</option>');
+                        $('#sandbox_options').append('<option value="' + $('#user_options').val() +'/' + s + '">' + s + '</option>');
                     }
                 }
             });
@@ -43,16 +43,16 @@ function pick_aquilon() {
         for (a of data) {
             archetype_options.push(a.split('@', 1)[0]);
         }
-        $("#archetype_options").html('<option value="">None Selected</option>');
+        $('#archetype_options').html('<option value="">None Selected</option>');
         for (a of archetype_options) {
             if (a) {
-                $("#archetype_options").append('<option value="' + a + '">' + a + '</option>');
+                $('#archetype_options').append('<option value="' + a + '">' + a + '</option>');
             }
         }
 
         // Personality
-        $("#personality_options").html('<option value="">None Selected</option>');
-        $("#archetype_options").change(function () {
+        $('#personality_options').html('<option value="">None Selected</option>');
+        $('#archetype_options').change(function () {
             selected_archetype = $('#archetype_options').val();
             $.get('/aquilon/personality.csv?archetype='+selected_archetype, function(data) {
                 data = data.split('\n');
@@ -60,10 +60,10 @@ function pick_aquilon() {
                 for (p of data) {
                     personality_options.push(p.split('@', 1)[0]);
                 }
-                $("#personality_options").html('<option value="">None Selected</option>');
+                $('#personality_options').html('<option value="">None Selected</option>');
                 for (p of personality_options) {
                     if (p) {
-                        $("#personality_options").append('<option value="' + p + '">' + p + '</option>');
+                        $('#personality_options').append('<option value="' + p + '">' + p + '</option>');
                     }
                 }
             });

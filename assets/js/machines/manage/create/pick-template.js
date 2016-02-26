@@ -1,23 +1,23 @@
-var image_list = "";
-var selected_flavour = "";
-var selected_release = "";
-var selected_type = "";
-var selected_template = "";
+var image_list = '';
+var selected_flavour = '';
+var selected_release = '';
+var selected_type = '';
+var selected_template = '';
 
 $.ajax({
-    type: "GET",
-    url: "/api/templatelist",
-    dataType:'json',
+    type: 'GET',
+    url: '/api/templatelist',
+    dataType: 'json',
     statusCode: {
         403: function() {
             Cookie.remove('session', {path : '/'});
             Cookie.remove('name', {path : '/'});
             Cookie.remove('fedid', {path : '/'});
-            window.location.replace("/login");
+            window.location.replace('/login');
         },
         500: function() {
-            $("#errormessage").html("The cloud may be experiencing problems. Please try again later.");
-            $("#error").show();
+            $('#errormessage').html('The cloud may be experiencing problems. Please try again later.');
+            $('#error').show();
         }
     }
 }).done(function(data) {
@@ -25,20 +25,20 @@ $.ajax({
 });
 
 function draw_buttons() {
-    buttons = "";
-    controls = "";
-    helptext = "";
+    buttons = '';
+    controls = '';
+    helptext = '';
     var os_flavour,release,type,image = null;
-    $("#aquilon-select").css("display", "none");
+    $('#aquilon-select').css('display', 'none');
 
     if ($.isEmptyObject(image_list)) {
         buttons = '<div class="alert alert-danger" role="alert"><p>You do not appear to have any templates available to you. Please contact <a href="mailto:' + EMAIL + '">' + EMAIL + '</a>.</p></div>';
-        $("#create-btn").attr('onclick', "").css('cursor', 'not-allowed');
+        $('#create-btn').attr('onclick', '').css('cursor', 'not-allowed');
     }
-    else if (selected_flavour === "") {
-        selected_release = "";
-        selected_type = "";
-        selected_template = "";
+    else if (selected_flavour === '') {
+        selected_release = '';
+        selected_type = '';
+        selected_template = '';
         for (os_flavour in image_list) {
             if (image_list.length == 1) {
                 selected_flavour = os_flavour;
@@ -52,7 +52,7 @@ function draw_buttons() {
         }
     }
 
-    else if (selected_release === "") {
+    else if (selected_release === '') {
         for (release in image_list[selected_flavour]) {
             if (image_list[selected_flavour].length == 1) {
                 selected_release = release;
@@ -68,7 +68,7 @@ function draw_buttons() {
         }
     }
 
-    else if (selected_type === "") {
+    else if (selected_type === '') {
         image_cpu = '';
         image_memory = '';
         for (type in image_list[selected_flavour][selected_release]) {
@@ -86,11 +86,11 @@ function draw_buttons() {
         }
     }
 
-    else if (selected_type === "AQ Managed" && selected_template !== "") {
+    else if (selected_type === 'AQ Managed' && selected_template !== '') {
         pick_aquilon();
     }
 
-    else if (selected_template === "") {
+    else if (selected_template === '') {
         for (var id in image_list[selected_flavour][selected_release][selected_type]) {
             image = image_list[selected_flavour][selected_release][selected_type][id];
             image_id = image.id;
@@ -107,7 +107,7 @@ function draw_buttons() {
             if (image_list[selected_flavour][selected_release][selected_type].length == 1) {
                 selected_template = image_id;
                 helptext = '';
-                buttons = "Complete!<br> You chose " + image_name + ". " + image_description;
+                buttons = 'Complete!<br> You chose ' + image_name + '. ' + image_description;
                 draw_buttons();
                 controls = '<a class="btn btn-danger" id="buttonback" onclick="selected_template=\'\';selected_type=\'\'; draw_buttons();">Back</a>';
             }
@@ -120,10 +120,10 @@ function draw_buttons() {
     }
 
     else {
-        buttons = "Complete!<br> You chose " + image_name + ". " + image_description;
+        buttons = 'Complete!<br> You chose ' + image_name + '. ' + image_description;
         controls = '<a class="btn btn-danger" id="buttonback" onclick="selected_template=\'\'; draw_buttons();">Back</a>';
     }
-    $("#buttonbox").html(buttons);
-    $("#helpbox").html(helptext);
-    $("#controlbox").html(controls);
+    $('#buttonbox').html(buttons);
+    $('#helpbox').html(helptext);
+    $('#controlbox').html(controls);
 }
