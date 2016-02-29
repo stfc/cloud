@@ -63,6 +63,32 @@ a:focus, a:active {
   background: #9f0000;
 }
 
+.alert.global-alert {
+    border-radius: 0;
+}
+
+.global-alert {
+    padding-left: 10%;
+    padding-right: 10%;
+}
+
+.global-alert h4, .global-alert p {
+    text-align: center;
+}
+
+.global-alert .close {
+    margin-left: -70px;
+}
+
+.global-alert .text {
+    font-size: 14px;
+    text-shadow: none;
+}
+
+.global-alert .signature {
+    float: right;
+}
+
 /*================================
 NAVBAR & LOGO
 ================================*/
