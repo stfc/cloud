@@ -45,7 +45,7 @@ def createToken(fedid, session, id):
         port = vm.find('TEMPLATE').find('GRAPHICS').find('PORT').text
         line = token + ": " + host + ":" + port
 
-        with open(WSTOCKENDIR + fedid, "a") as file:
+        with open(WSTOCKENDIR + fedid+"_"+str(id), "w") as file:
             file.write(line + "\n")
 
     return token
@@ -55,12 +55,12 @@ def getToken(fedid, id):
 
     WSTOCKENDIR = cherrypy.request.config.get("wstokendir")
 
-    if os.path.exists(WSTOCKENDIR + fedid) == False:
-        file = open(WSTOCKENDIR + fedid, 'w+')
+    if os.path.exists(WSTOCKENDIR + fedid+'_'+str(id)) == False:
+        file = open(WSTOCKENDIR + fedid + '_' + str(id), 'w+')
         file.close()
 
     token = None
-    with open(WSTOCKENDIR + fedid, "r") as input:
+    with open(WSTOCKENDIR + fedid + '_' + str(id), "r") as input:
         for line in input:
             match = regex.match(line)
             if match.group(2) == str(id):

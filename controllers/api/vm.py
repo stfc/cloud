@@ -155,7 +155,9 @@ class VM(object):
                 hostname = "-"
 
             # get/generate vnc token
-            token = createToken(FEDID, SESSION, vm.find('ID').text)
+            token = getToken(FEDID, vm.find('ID').text)
+            if token == None:
+                token = createToken(FEDID, SESSION, vm.find('ID').text)
 
             if vm.find('STATE').text == "1":
                 state = "PENDING"
