@@ -3,4 +3,4 @@
 *.swp
 /tokens
 global.conf
-/config/badwords
+/assets/badwords
