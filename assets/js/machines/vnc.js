@@ -47,7 +47,6 @@ function updateState(rfb, state, oldstate, msg) {
     var s, sb, cad, level;
     s = $D('noVNC_status');
     sb = $D('noVNC_status_bar');
-    cad = $D('sendCtrlAltDelButton');
     switch (state) {
         case 'failed':       level = "error";  break;
         case 'fatal':        level = "error";  break;
@@ -55,13 +54,6 @@ function updateState(rfb, state, oldstate, msg) {
         case 'disconnected': level = "normal"; break;
         case 'loaded':       level = "normal"; break;
         default:             level = "warn";   break;
-    }
-
-    if (state === "normal") {
-        cad.disabled = false;
-    } else {
-        cad.disabled = true;
-        xvpInit(0);
     }
 
     if (typeof(msg) !== 'undefined') {
