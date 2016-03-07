@@ -57,8 +57,8 @@ function fetch_values(selected_template) {
 
 // Check the VM name for blocked words and other errors
 function check_errors(data, selected_template) {
-    badwords_url = 'https://raw.githubusercontent.com/' +
-    'shutterstock/List-of-Dirty-Naughty-Obscene-and-Otherwise-Bad-Words/master/en';
+    badwords_url = '/assets/badwords';
+    console.log(badwords_url);
 
     print_name = $('#name').val().replace(/[^a-z A-Z 0-9 .@_-]+/g, ' ');
     name = print_name.toLowerCase();
