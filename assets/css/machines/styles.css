@@ -47,7 +47,7 @@
 .aq-form.first {
   border-right: 1px solid #E5E5E5;
 }
-.aq-form select, .aq-form label {
+.aq-form .form-control, .aq-form label {
   width: 80%;
   margin: 0 10%;
   float: left;
