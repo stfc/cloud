@@ -57,20 +57,9 @@ class Machines(object):
 
     @cherrypy.expose
     def random(self):
-
-        GOODWORDS = cherrypy.request.config.get("goodwords")
-        BADWORDS = cherrypy.request.config.get("badwords")
-
-        f = open(GOODWORDS)
-        goodwords = f.readlines()
-        goodwords = [w.strip() for w in goodwords]
-        f.close()
-
-        f = open(BADWORDS)
-        badwords = f.readlines()
-        badwords = [w.strip() for w in badwords]
-        f.close()
-
+        
+        goodwords = cherrypy.config.goodwords
+        badwords = cherrypy.config.badwords
         name = []
         while len(name) < 2:
             word = goodwords[randint(0, len(goodwords) - 1)]
