@@ -23,6 +23,19 @@ try:
 except IOError:
     pass
 
+GOODWORDS = cherrypy.config.get("goodwords")
+BADWORDS = cherrypy.config.get("badwords")
+
+f = open(GOODWORDS)
+goodwords = f.readlines()
+cherrypy.config.goodwords = [w.strip() for w in goodwords]
+f.close()
+
+f = open(BADWORDS)
+badwords = f.readlines()
+cherrypy.config.badwords = [w.strip() for w in badwords]
+f.close()
+
 # PAGES
 home = Home()
 home.machines = Machines()
