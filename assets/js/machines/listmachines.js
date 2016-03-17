@@ -24,7 +24,7 @@ var vmlist = $('#vm-list').DataTable( {
         },
         {
             "visible": false,
-            "targets": [2] // Hide 'Project' column by default
+            "targets": [1, 2] // Hide 'Project' column by default
         }
     ],
     "dom": '<"top"f>t<"bottom"lpi><"clear">'
@@ -110,17 +110,17 @@ function drawTable() {
             if ($("#my-vms").hasClass('active')) {
                 if (row['user'] === fedid) {
                     vmlist.row.add(row);
-                    vmlist.column( 1 ).visible( false );
                 } else {
                     // Do not return row
                     $('#all-vms').show(); // Show 'All VMs' tab
+                    vmlist.column( 1 ).visible( false );
                 }
             } else {
                 if ($("#all-vms").hasClass('active')) {
                     $('#all-vms').show();
+                    vmlist.column( 1 ).visible( true );
                 }
                 vmlist.row.add(row);
-                vmlist.column( 1 ).visible( true );
             }
         }
         vmlist.draw(false); // 'false' saves the paging position
