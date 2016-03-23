@@ -91,7 +91,12 @@ function drawHistory()
 
             row['stime'] = moment.unix(row['stime']).format("YYYY/MM/DD - h:mm:ss a");
 
-            row['etime'] = moment.unix(row['etime']).format("YYYY/MM/DD - h:mm:ss a");
+            if (row['etime'] == 0) {
+
+                row['etime'] = "";
+            } else {
+                row['etime'] = moment.unix(row['etime']).format("YYYY/MM/DD - h:mm:ss a");
+            }
 
             delete row['id'];
 
