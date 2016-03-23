@@ -176,19 +176,19 @@ progress[value="4"]::-moz-progress-bar {
   padding: 0 6px;
 }
 
-#vm-list_paginate {
+#vm-list_paginate, #vm-history_paginate {
   text-align: center;
   padding-right: 160px;
   padding-top: 8px;
   border-top: 1px solid #eee;
 }
 
-#vm-list_info {
+#vm-list_info, #vm-history_info {
   float: right;
   margin-top: -44px;
 }
 
-#vm-list_length {
+#vm-list_length, #vm-history_length {
   float: left;
   margin-top: 11px;
 }
@@ -208,11 +208,11 @@ progress[value="4"]::-moz-progress-bar {
   margin-left: -5px;
 }
 
-#vm-list_filter {
+#vm-list_filter, #vm-history_filter {
   float: right;
   margin-top: -48px;
   margin-right: 40px;
 }
-#vm-list_filter input {
+#vm-list_filter input, #vm-history_filter input {
   height: 34px;
 }
