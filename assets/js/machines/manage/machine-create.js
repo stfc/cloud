@@ -113,10 +113,7 @@ function create_VM(data) {
                 creation_error('main-creation-error', 'We were unable to create your VM. If this problem persists, please contact us.');
             },
             403: function() {
-                Cookie.remove('session', {path : '/'});
-                Cookie.remove('name', {path : '/'});
-                Cookie.remove('fedid', {path : '/'});
-                window.location.replace('/login');
+                exceptions("403");
             },
             500: function() {
                 creation_error('main-creation-error', 'Unable to connect to the cloud. If this problem persists, please contact us.');

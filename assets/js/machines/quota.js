@@ -7,10 +7,7 @@ var quota = {
             url: "/api/quota",
             statusCode: {
                 403: function() {
-                    Cookie.remove('session', {path : '/'});
-                    Cookie.remove('name', {path : '/'});
-                    Cookie.remove('fedid', {path : '/'});
-                    window.location.replace("/login");
+                    exceptions("403");
                 },
                 500: function() {
                     $("#errormessage").html("The cloud may be experiencing problems. Please try again later.");

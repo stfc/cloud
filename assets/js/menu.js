@@ -13,10 +13,7 @@ $(function() {
     }
 
     $('#logout').click(function() {
-        Cookies.remove('session', {path : '/'});
-        Cookies.remove('name', {path : '/'});
-        Cookies.remove('fedid', {path : '/'});
-        window.location.replace("/");
+        exceptions("403");
     });
 });
 
@@ -48,5 +45,14 @@ function note_members(id, type, title, body) {
         output += '<p>' + body + '</p><span class="signature">~ The Cloud Team</span><br>';
         output += '</div></div>';
         $('#site-messages').append(output);
+    }
+}
+
+function exceptions(error_number) {
+    if (error_number == "403") {
+        Cookies.remove('session', {path : '/'});
+        Cookies.remove('name', {path : '/'});
+        Cookies.remove('fedid', {path : '/'});
+        window.location.replace("/login");
     }
 }
