@@ -13,10 +13,7 @@ function deleteVM()
         url: '/api/vm?' + $.param({'id': id}),
         statusCode: {
             403: function() {
-                Cookie.remove('session', {path : '/'});
-                Cookie.remove('name', {path : '/'});
-                Cookie.remove('fedid', {path : '/'});
-                window.location.replace('/login');
+                exceptions("403");
             },
             500: function(data) {
                 $('#errormessage').html('The cloud may be experiencing problems. Please try again later.');
