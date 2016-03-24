@@ -1,34 +1,52 @@
 $(function () {
     drawHistory();
 });
-var MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-
-function formatDate(timestamp)
-{
-    var date = new Date(timestamp*1000);
-    var datestring = "";
-    datestring += ("0" + date.getUTCDate()).slice(-2) + " ";
-    datestring += MONTHS[date.getUTCMonth()] + " ";
-    datestring += date.getUTCFullYear() + " ";
-    datestring += ("0" + date.getUTCHours()).slice(-2) + ":";
-    datestring += ("0" + date.getUTCMinutes()).slice(-2) + ":";
-    datestring += ("0" + date.getUTCSeconds()).slice(-2);
-    return datestring;
-}
 
 var vmhistory = $('#vm-history').DataTable( {
     "columns": [
         { data: 'name'},
+        { data: 'user'},
+        { data: 'group'},
         { data: 'hostname'},
         { data: 'state'},
-        { data: 'type'},
         { data: 'stime'},
         { data: 'etime'},
+        { data: 'type'},
         { data: 'cpu'},
         { data: 'memory'},
-    ]
+    ],
+    "columnDefs": [
+        {
+            "width": "1px",
+            "targets": [8, 9]
+        },
+        {
+            "visible": false,
+            //"targets": [1, 2] // Hide 'Project' column by default
+        }
+    ],
+    "dom": '<"top"f>t<"bottom"lpi><"clear">'
 });
+
 $.fn.dataTable.ext.errMode = 'throw';
+
+function filterTableDialog(id) {
+    $('#filtertabledialog').modal('show');
+}
+
+$('.show-hide').change( 'click', function (e) {
+    e.preventDefault();
+
+    // Get the column API object
+    var column = vmhistory.column( $(this).attr('data-column') );
+
+    // Toggle the visibility
+    column.visible( ! column.visible() );
+});
+
+var fedid = Cookies.get('fedid');
+$('#all-vms-history').hide();
+
 function drawHistory()
 {
     $.ajax({
@@ -71,15 +89,35 @@ function drawHistory()
 
             row['state'] = '<span class="status-label status-label-'+state_val+'">'+state+'</span><progress max="4" value="'+state_val+'"></progress>';
 
-            row['stime'] = formatDate(row['stime']);
+            row['stime'] = moment.unix(row['stime']).format("YYYY/MM/DD - h:mm:ss a");
 
-            row['etime'] = formatDate(row['etime']);
+            if (row['etime'] == 0) {
+
+                row['etime'] = "";
+            } else {
+                row['etime'] = moment.unix(row['etime']).format("YYYY/MM/DD - h:mm:ss a");
+            }
 
             delete row['id'];
 
             delete row['token'];
 
-            vmhistory.row.add(row);
+            // Check to see what view user is on
+            if ($("#my-vms-history").hasClass('active')) {
+                if (row['user'] === fedid) {
+                    vmhistory.row.add(row);
+                } else {
+                    // Do not return row
+                    $('#all-vms-history').show(); // Show 'All VMs' tab
+                    vmhistory.column( 1 ).visible( false );
+                }
+            } else {
+                if ($("#all-vms-history").hasClass('active')) {
+                    $('#all-vms-history').show();
+                    vmhistory.column( 1 ).visible( true );
+                }
+                vmhistory.row.add(row);
+            }
         }
         vmhistory.draw(false); // 'false' saves the paging position
     });
