@@ -16,6 +16,12 @@ class Home(object):
         EMAIL = cherrypy.request.config.get("email")
         return {"email" : EMAIL}
 
+    @cherrypy.tools.jinja(template="home/sla.html")
+    @cherrypy.expose
+    def sla(self):
+        EMAIL = cherrypy.request.config.get("email")
+        return {"email" : EMAIL}
+
     @cherrypy.tools.jinja(template="home/login.html")
     @cherrypy.expose
     def login(self):

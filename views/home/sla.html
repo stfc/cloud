@@ -1,0 +1,19 @@
+{% set title = "Service-level Agreement" %}
+
+{% extends "layout.html" %}
+
+{% block javascript %}
+<script type="text/javascript">
+    $('#sla').load('assets/dynamic/sla.html');
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <h1 class="page-header">Service-level Agreement</h1>
+        <p><span id="sla"></span></p>
+    </div>
+</div>
+
+{% endblock %}
