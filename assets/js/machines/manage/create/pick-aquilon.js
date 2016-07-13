@@ -37,7 +37,7 @@ function pick_aquilon() {
     });
 
     // Archetype
-    $.get('/aquilon/archetype.csv', function(data) {
+    $.get('/aquilon/archetype', function(data) {
         data =  data.match(/Host Archetype: .* /g);
         archetype_options = [];
         for (a of data) {
@@ -55,7 +55,7 @@ function pick_aquilon() {
         $('#personality_options').html('<option value="">None Selected</option>');
         $('#archetype_options').change(function () {
             selected_archetype = $('#archetype_options').val();
-            $.get('/aquilon/personality.csv?archetype='+selected_archetype, function(data) {
+            $.get('/aquilon/personality?archetype='+selected_archetype, function(data) {
                 data = data.match(/Host Personality: .* Archetype/g);
                 personality_options = [];
                 for (p of data) {
