@@ -1,7 +1,8 @@
-function deleteVMdialog(id)
+function deleteVMdialog(id, name)
 {
-    $('#confirmdelete').data('vmid', id)
+    $('#confirmdelete').data('vmid', id);
     $('#deletevmdialog').modal('show');
+    $('#name-to-del').html(name);
 }
 
 function deleteVM()
