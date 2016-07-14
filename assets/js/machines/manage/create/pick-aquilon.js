@@ -37,11 +37,12 @@ function pick_aquilon() {
     });
 
     // Archetype
-    $.get('/aquilon/archetype.csv', function(data) {
-        data = data.split('\n');
+    $.get('/aquilon/archetype', function(data) {
+        data =  data.match(/Host Archetype: .* /g);
         archetype_options = [];
         for (a of data) {
-            archetype_options.push(a.split('@', 1)[0]);
+            b = a.replace('Host Archetype: ','');
+            archetype_options.push(b.split('@', 1)[0]);
         }
         $('#archetype_options').html('<option value="">None Selected</option>');
         for (a of archetype_options) {
@@ -54,11 +55,12 @@ function pick_aquilon() {
         $('#personality_options').html('<option value="">None Selected</option>');
         $('#archetype_options').change(function () {
             selected_archetype = $('#archetype_options').val();
-            $.get('/aquilon/personality.csv?archetype='+selected_archetype, function(data) {
-                data = data.split('\n');
+            $.get('/aquilon/personality?archetype='+selected_archetype, function(data) {
+                data = data.match(/Host Personality: .* Archetype/g);
                 personality_options = [];
                 for (p of data) {
-                    personality_options.push(p.split('@', 1)[0]);
+                    q = p.replace('Host Personality: ','').replace(' Archetype','')
+                    personality_options.push(q.split('@', 1)[0]);
                 }
                 $('#personality_options').html('<option value="">None Selected</option>');
                 for (p of personality_options) {
