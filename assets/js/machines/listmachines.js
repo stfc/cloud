@@ -65,8 +65,8 @@ function drawTable() {
     }).done(function(data) {
         $('#all-vms').hide();
         vmlist.clear();
-
         for (row of data["data"]) {
+            // State
             state = row['state'];
             disabled = (state != "RUNNING" ? "disabled" : "");
 
@@ -85,23 +85,28 @@ function drawTable() {
             else if (state ===  "RUNNING") {
                 state_val = 4;
             }
-            if (state === "POWERED OFF") {
-                row['id'] = '<button type="button" class="btn btn-success btn-xs" title="Boot Machine" onclick="bootVM(' + row['id'] + ')"><span class="glyphicon glyphicon-arrow-up" style="vertical-align:middle;margin-top:-2px"></span></button>';
-            } else {
-                if (row['user'] === fedid || row['candelete'] === true) {
-                    row['id'] = '<button type="button" class="btn btn-danger btn-xs" title="Delete Machine" onclick="deleteVMdialog(' + row['id'] + ')"><span class="glyphicon glyphicon-remove" style="vertical-align:middle;margin-top:-2px"></span></button>';
-                } else {
-                    row['id'] = '<button type="button" class="btn btn-default btn-xs" title="You do not own this machine" onclick=""><span class="glyphicon glyphicon-remove" style="vertical-align:middle;margin-top:-2px"></span></button>';
-                }
-            }
-
-            row['token'] = '<button type="button" class="btn btn-blue btn-xs" title="Launch Desktop GUI" onclick="vncdialog(\'' + row['token'] + '\', \'' + row['name'] + '\')" ' + disabled + '><img src="/assets/images/icon-display.png" style="width:14px;margin-top:-2px" /></button>';
-
-            row['memory'] = row['memory']/1024 + "GB";
 
             row['state'] = '<span class="status-label status-label-'+state_val+'">'+state+'</span><progress max="4" value="'+state_val+'"></progress>';
 
+            // Time
             row['stime'] = "<span title='" + moment.unix(row['stime']).format("YYYY/MM/DD - h:mm:ss a") + "'>" + moment.unix(row['stime']).fromNow() + "</span>";
+
+            // RAM
+            row['memory'] = row['memory']/1024 + "GB";
+
+            // noVNC / Boot
+            if (state === "POWERED OFF") {
+                row['token'] = '<button type="button" class="btn btn-success btn-xs" title="Boot Machine" onclick="bootVM(' + row['id'] + ')"><span class="glyphicon glyphicon-arrow-up" style="vertical-align:middle;margin-top:-2px"></span></button>';
+            } else {
+                row['token'] = '<button type="button" class="btn btn-blue btn-xs" title="Launch Desktop GUI" onclick="vncdialog(\'' + row['token'] + '\', \'' + row['name'] + '\')" ' + disabled + '><img src="/assets/images/icon-display.png" style="width:14px;margin-top:-2px" /></button>';
+            }
+
+            // Delete
+            if (row['user'] === fedid || row['candelete'] === true) {
+                row['id'] = '<button type="button" class="btn btn-danger btn-xs" title="Delete Machine" onclick="deleteVMdialog(\'' + row['id'] + '\', \'' + row['name'] + '\')"><span class="glyphicon glyphicon-remove" style="vertical-align:middle;margin-top:-2px"></span></button>';
+            } else {
+                row['id'] = '<button type="button" class="btn btn-default btn-xs" title="You do not own this machine" onclick=""><span class="glyphicon glyphicon-remove" style="vertical-align:middle;margin-top:-2px"></span></button>';
+            }
 
             // Check to see what view user is on
             if ($("#my-vms").hasClass('active')) {
