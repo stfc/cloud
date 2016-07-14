@@ -21,6 +21,10 @@ $.ajax({
     image_list = data;
 });
 
+function hide_resources() {
+    $('#pick-resources').hide();
+}
+
 function draw_buttons() {
     buttons = '';
     controls = '';
@@ -106,7 +110,7 @@ function draw_buttons() {
                 helptext = '';
                 buttons = 'Complete!<br> You chose ' + image_name + '. ' + image_description;
                 draw_buttons();
-                controls = '<a class="btn btn-danger" id="buttonback" onclick="selected_template=\'\';selected_type=\'\'; draw_buttons();">Back</a>';
+                controls = '<a class="btn btn-danger" id="buttonback" onclick="selected_template=\'\';selected_type=\'\'; draw_buttons(); hide_resources();">Back</a>';
             }
             else {
                 helptext = 'Select a template for ' + selected_flavour + ' ' + selected_release + ' ' + selected_type;
@@ -117,8 +121,9 @@ function draw_buttons() {
     }
 
     else {
+        $('#pick-resources').show();
         buttons = 'Complete!<br> You chose ' + image_name + '. ' + image_description;
-        controls = '<a class="btn btn-danger" id="buttonback" onclick="selected_template=\'\'; draw_buttons();">Back</a>';
+        controls = '<a class="btn btn-danger" id="buttonback" onclick="selected_template=\'\'; draw_buttons(); hide_resources();">Back</a>';
     }
     $('#buttonbox').html(buttons);
     $('#helpbox').html(helptext);
