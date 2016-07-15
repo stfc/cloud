@@ -19,6 +19,7 @@ function createVMdialog() {
     draw_buttons();
 
     // templatelist
+    $('#pick-resources').hide();
     $('#cpu-input').val('1');
     $('#cpu-output').val('1');
     $('#memory-input').val('0.5');
