@@ -3,6 +3,8 @@ var selected_flavour = '';
 var selected_release = '';
 var selected_type = '';
 var selected_template = '';
+var selected_template_name = '';
+var selected_template_description = '';
 
 $.ajax({
     type: 'GET',
@@ -88,6 +90,7 @@ function draw_buttons() {
     }
 
     else if (selected_type === 'AQ Managed' && selected_template !== '') {
+        $('#pick-resources').show();
         pick_aquilon();
     }
 
@@ -107,10 +110,12 @@ function draw_buttons() {
 
             if (image_list[selected_flavour][selected_release][selected_type].length == 1) {
                 selected_template = image_id;
+                selected_template_name = image_name;
+                selected_template_description = image_description;
                 helptext = '';
                 buttons = 'Complete!<br> You chose ' + image_name + '. ' + image_description;
                 draw_buttons();
-                controls = '<a class="btn btn-danger" id="buttonback" onclick="selected_template=\'\';selected_type=\'\'; draw_buttons(); hide_resources();">Back</a>';
+                controls = '<a class="btn btn-danger" id="buttonback" onclick="selected_template=\'\';selected_type=\'\';selected_template_name=\''+image_name+'\'; selected_template_description=\''+image_description+'\'; draw_buttons();hide_resources();">Back</a>';
             }
             else {
                 helptext = 'Select a template for ' + selected_flavour + ' ' + selected_release + ' ' + selected_type;
@@ -122,8 +127,8 @@ function draw_buttons() {
 
     else {
         $('#pick-resources').show();
-        buttons = 'Complete!<br> You chose ' + image_name + '. ' + image_description;
-        controls = '<a class="btn btn-danger" id="buttonback" onclick="selected_template=\'\'; draw_buttons(); hide_resources();">Back</a>';
+        buttons = 'Complete!<br> You chose ' + selected_template_name + '. ' + image_description;
+        controls = '<a class="btn btn-danger" id="buttonback" onclick="selected_template=\'\'; selected_template_name=\'\'; selected_template_description=\'\'; draw_buttons(); hide_resources();">Back</a>';
     }
     $('#buttonbox').html(buttons);
     $('#helpbox').html(helptext);
