@@ -161,6 +161,8 @@ class VM(object):
 
             if vm.find('STATE').text == "1":
                 state = "PENDING"
+            if vm.find('STATE').text == "7":
+                state = "FAILED"
             elif vm.find('STATE').text == "3":
                 if vm.find('LCM_STATE').text == "1":
                     state = "TRANSFER"
@@ -170,12 +172,15 @@ class VM(object):
                     state = "DELETING"
                 elif vm.find('LCM_STATE').text == "12":
                     state = "EPILOG"
+                elif int(vm.find('LCM_STATE').text) in [ 14 , 19 , 37 , 38 , 39 , 40 , 41 , 42 , 44 , 46 , 47 , 48 , 49 , 50 ]:
+                    state = "FAILED"
                 else:
                     state = "RUNNING"
             elif vm.find('STATE').text in ["4","5","8"]:
                 state = "POWERED OFF"
             else:
                 state = "DONE"
+
             if vm.find('TEMPLATE').find('VCPU') != None:
                 cpu = vm.find('TEMPLATE').find('VCPU').text
             else:

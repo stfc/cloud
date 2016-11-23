@@ -72,6 +72,9 @@ function drawHistory()
             if (state === "POWERED OFF" || state === "DONE") {
                 state_val = 0;
             }
+            else if (state === "FAILED") {
+                state_val = 5;
+            }
             else if (state ===  "PENDING" || state === "DELETING") {
                 state_val = 1;
             }
