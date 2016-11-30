@@ -6,7 +6,10 @@ var vmlist = $('#vm-list').DataTable( {
         { data: 'group'},
         { data: 'hostname'},
         { data: 'state'},
-        { data: 'stime'},
+        { data: {
+            _: 'stime.display',
+            sort: 'stime.timestamp'
+        }},
         { data: 'type'},
         { data: 'cpu'},
         { data: 'memory'},
@@ -92,7 +95,10 @@ function drawTable() {
             row['state'] = '<span class="status-label status-label-'+state_val+'">'+state+'</span><progress max="4" value="'+state_val+'"></progress>';
 
             // Time
-            row['stime'] = "<span title='" + moment.unix(row['stime']).format("YYYY/MM/DD - h:mm:ss a") + "'>" + moment.unix(row['stime']).fromNow() + "</span>";
+            row['stime'] = {
+                "timestamp" : row['stime'],
+                "display" : "<span title='" + moment.unix(row['stime']).format("YYYY/MM/DD - h:mm:ss a") + "'>" + moment.unix(row['stime']).fromNow() + "</span>"
+            }
 
             // RAM
             row['memory'] = row['memory']/1024 + "GB";
