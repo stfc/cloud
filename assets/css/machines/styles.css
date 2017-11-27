@@ -155,7 +155,7 @@ progress[value="4"]::-moz-progress-bar {
   padding: 0;
 }
 .col-md-4 {
-//  width: 33% !important;
+  width: 33% !important;
   float: left;
 }
 
