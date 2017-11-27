@@ -132,13 +132,13 @@ function draw_buttons() {
                 selected_template_name = image_name;
                 selected_template_description = image_description;
                 helptext = '';
-                buttons = 'Complete!<br> You chose ' + image_name + '. ' + image_description;
+                buttons = 'Complete!<br> You chose ' + image_name + '. ' + image_description + '.'; // When occurs? Why no min. amounts?
                 draw_buttons();
                 controls = '<a class="btn btn-danger" id="buttonback" onclick="selected_template=\'\';selected_type=\'\';selected_template_name=\''+image_name+'\'; selected_template_description=\''+image_description+'\'; draw_buttons();hide_resources();">Back</a>';
             }
             else {
                 helptext = 'Select a template for ' + selected_flavour + ' ' + selected_release + ' ' + selected_type;
-                buttons += '<a class="btn btn-lev4" id="'+image_name+'" onclick="selected_template=\''+image_id+'\'; draw_buttons();">'+image_name+'</a>';
+                buttons += '<a class="btn btn-lev4" id="'+image_name+'" onclick="selected_template=\''+image_id+'\'; selected_template_name=\''+image_name+'\';draw_buttons();">'+image_name+'</a>';
                 controls = '<a class="btn btn-danger" id="buttonback" onclick="selected_type=\'\'; draw_buttons();">Back</a>';
             }
         }
@@ -146,7 +146,7 @@ function draw_buttons() {
 
     else {
         $('#pick-resources').show();
-        buttons = 'Complete!<br> You chose ' + selected_template_name + '. ' + image_description;
+        buttons = 'Complete!<br> You chose ' + selected_template_name + '. ' + image_description + '. This has a minimum disk requirement of ' + image_min_disk + 'GB' + ' and a minimum RAM requirement of ' + image_min_ram + 'GB';
         controls = '<a class="btn btn-danger" id="buttonback" onclick="selected_template=\'\'; selected_template_name=\'\'; selected_template_description=\'\'; draw_buttons(); hide_resources();">Back</a>';
         pick_resources(flavorList);
     }
