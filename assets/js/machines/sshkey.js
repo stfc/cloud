@@ -4,11 +4,20 @@ $(function() {
         if (key === "") {
             key = "\n";
         }
+       var keyname = $('#keynameLabel').attr('value');
         $.ajax({
             type: "POST",
             url: "/api/user",
-            data: { 'action' : 'sshkey', 'key' : key },
+            data: { 'action' : 'sshkey', 'key' : key, 'keyname' : keyname },
             statusCode: {
+                400: function() {
+                    $("#errormessage").html("You cannot submit a blank public key. Please insert a valid public key into the text area.");
+                    $("#error").show();
+                },
+                409: function() {
+                    $("#errormessage").html("You have tried to submit an invalid public key, try again.");
+                    $("#error").show();
+                },
                 500: function(data) {
                     alert(JSON.stringify(data))
 
