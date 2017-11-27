@@ -16,6 +16,7 @@ from controllers.api.vm import VM
 from controllers.api.quota import Quota
 from controllers.api.user import User
 from controllers.api.templatelist import TemplateList
+from controllers.api.flavors import Flavors
 
 cherrypy.config.update("config/default.conf")
 try:
@@ -48,6 +49,7 @@ api.vm = VM()
 api.quota = Quota()
 api.user = User()
 api.templatelist = TemplateList()
+api.flavors = Flavors()
 
 cherrypy.tree.mount(api, "/api", "config/api.conf")
 
