@@ -2,15 +2,15 @@
 var vmlist = $('#vm-list').DataTable( {
     "columns": [
         { data: 'name'},
-        { data: 'user'},
-        { data: 'group'},
         { data: 'hostname'},
+        { data: 'keypair'},
         { data: 'state'},
         { data: {
             _: 'stime.display',
             sort: 'stime.timestamp'
         }},
         { data: 'type'},
+	{ data: 'flavor'},
         { data: 'cpu'},
         { data: 'memory'},
         { data: 'token'},
@@ -19,16 +19,12 @@ var vmlist = $('#vm-list').DataTable( {
     "columnDefs": [
         {
             "width": "1px",
-            "targets": [7, 8, 9, 10]
+            "targets": [5, 6, 7, 8, 9]
         },
         {
             "orderable": false,
             "targets": [9, 10] // Stop 'VNC' and 'Delete' form being orderable
         },
-        {
-            "visible": false,
-            "targets": [1, 2] // Hide 'Project' column by default
-        }
     ],
     "dom": '<"top"f>t<"bottom"lpi><"clear">'
 });
