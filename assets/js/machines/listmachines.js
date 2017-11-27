@@ -46,12 +46,13 @@ $('.show-hide').change( 'click', function (e) {
 });
 
 var fedid = Cookies.get('fedid');
-$('#all-vms').hide();
+//$('#all-vms').hide();
 
-function drawTable() {
+function drawTable(action) {
     $.ajax({
         type: "GET",
         url: "/api/vm",
+        data: {'action' : action},
         statusCode: {
             403: function() {
                 exceptions("403");
@@ -130,7 +131,7 @@ function drawTable() {
                 vmlist.row.add(row);
             }
         }
-        vmlist.draw(false); // 'false' saves the paging position
+        vmlist.draw(true); // 'false' saves the paging position
     });
 }
 
