@@ -22,7 +22,6 @@ function deleteVM()
             }
         }
     }).done(function(json) {
-        drawTable();
         drawTable(0);
         quota.update();
     }).always(function(json) {
