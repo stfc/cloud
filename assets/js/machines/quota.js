@@ -16,55 +16,59 @@ var quota = {
                 }
             }
         }).done(function(json_out) {
-
             $('#resources').show();
 
-            for (var key in json_out) {
-                if (json_out[key] < 0) {
-                    json_out[key] = 0;
-                }
-            }
-
             // Structure
-            userquotavm = json_out["userquotavm"];
-            userquotacpu = json_out["userquotacpu"];
-            userquotamem = json_out["userquotamem"];
-            userquotasys = json_out["userquotasys"];
-
-            userusedvm = json_out["userusedvm"];
-            userusedcpu = Math.ceil(json_out["userusedcpu"]);
-            userusedmem = json_out["userusedmem"];
-            userusedsys = json_out["userusedsys"];
-
             groupquotavm = json_out["groupquotavm"];
             groupquotacpu = json_out["groupquotacpu"];
             groupquotamem = json_out["groupquotamem"];
-            groupquotasys = json_out["groupquotasys"];
 
             groupusedvm = json_out["groupusedvm"];
             groupusedcpu = Math.ceil(json_out["groupusedcpu"]);
             groupusedmem = json_out["groupusedmem"];
-            groupusedsys = json_out["groupusedsys"];
-
-            vmavailable = json_out["availablevm"];
-            cpuavailable = json_out["availablecpu"]|0;
-            memavailable = json_out["availablemem"];
-            sysavailable = json_out["availablesys"];
 
             availablequotavm = json_out["availablequotavm"];
             availablequotacpu = json_out["availablequotacpu"];
             availablequotamem = json_out["availablequotamem"];
-            availablequotasys = json_out["availablequotasys"];
 
-            // Sliders
-            $('#cpu-input').attr('max', cpuavailable);
-            $('#memory-input').attr('max', memavailable);
+            // Used for slider amounts if no limits on these quotas
+            biggestDiskAmount = json_out["biggestDiskAmount"];
+            biggestCPUAmount = json_out["biggestCPUAmount"];
+            biggestRAMAmount = json_out["biggestRAMAmount"];
 
+            // Setting sliders and dial data depending if quotas have limits
             $("#cpu-min").html("1");
-            $("#cpu-max").html(cpuavailable);
+            if (groupquotacpu === -1) {
+                $("#cpu-max").html(biggestCPUAmount);
+                $('#cpu-input').attr('max', biggestCPUAmount);
+                maxCPUDial = 'No Limit'
+            } else {
+                $("#cpu-max").html(availablequotacpu);
+                $('#cpu-input').attr('max', availablequotacpu);
+                maxCPUDial = groupquotacpu
+            }
 
-            $("#mem-min").html("0.5 GB");
-            $("#mem-max").html(memavailable + " GB");
+            $("#mem-min").html("1GB");
+            if (groupquotamem === -1) {
+                $("#mem-max").html(biggestRAMAmount + "GB");
+                $('#memory-input').attr('max', biggestRAMAmount);
+                maxRAMDial = 'No Limit'
+            } else {
+                $("#mem-max").html(availablequotamem + "GB");
+                $('#memory-input').attr('max', availablequotamem);
+                maxRAMDial = groupquotamem
+            }
+ 
+            if (groupquotavm === -1) {
+                maxVMDial = 'No Limit'
+            } else {
+                maxVMDial = groupquotavm
+            }
+
+            $("#disk-min").html("1GB");
+            $("#disk-max").html(biggestDiskAmount + "GB");
+            $('#disk-input').attr('max', biggestDiskAmount);
+
 
             dial = {
                 'inputColor'  : '#666',
@@ -90,80 +94,22 @@ var quota = {
                 'inputColor'  : '#0053b4',
                 'fgColor'     : '#0053b4'
             };
-            colour_sys = {
-                'inputColor'  : '#b40053',
-                'fgColor'     : '#b40053'
-            };
 
 
-            // Available
-            $('.available-vm').val(vmavailable).trigger('change');
-            $(".available-vm").knob($.extend({
-                'max': availablequotavm,
-                'rotation': 'anticlockwise'
-            }, dial, colour_vm));
-
-            $('.available-cpu').val(cpuavailable).trigger('change');
-            $(".available-cpu").knob($.extend({
-                'max': availablequotacpu,
-                'rotation': 'anticlockwise'
-            }, dial, colour_cpu));
-
-            $('.available-mem').val(memavailable).trigger('change');
-            $(".available-mem").knob($.extend({
-                'max': availablequotamem,
-                'rotation': 'anticlockwise'
-            }, dial, colour_mem));
-
-            $('.available-sys').val(sysavailable).trigger('change');
-            $(".available-sys").knob($.extend({
-                'max': availablequotasys,
-                'rotation': 'anticlockwise'
-            }, dial, colour_sys));
-
-
-            // User
-            $('.user-vm').val(userusedvm).trigger('change');
-            $(".user-vm").knob($.extend({
-                'max': userquotavm
-            }, dial, colour_vm));
-
-            $('.user-cpu').val(userusedcpu).trigger('change');
-            $(".user-cpu").knob($.extend({
-                'max': userquotacpu
-            }, dial, colour_cpu));
-
-            $('.user-mem').val(userusedmem).trigger('change');
-            $(".user-mem").knob($.extend({
-                'max': userquotamem
-            }, dial, colour_mem));
-
-            $('.user-sys').val(userusedsys).trigger('change');
-            $(".user-sys").knob($.extend({
-                'max': userquotasys
-            }, dial, colour_sys));
-
-
-            // Group
-            $('.group-vm').val(groupusedvm).trigger('change');
+            $('.group-vm').val(groupusedvm);
             $(".group-vm").knob($.extend({
-                'max': groupquotavm
+                'max': maxVMDial
             }, dial, colour_vm));
 
-            $('.group-cpu').val(groupusedcpu).trigger('change');
+            $('.group-cpu').val(groupusedcpu);
             $(".group-cpu").knob($.extend({
-                'max': groupquotacpu
+                'max': maxCPUDial
             }, dial, colour_cpu));
 
-            $('.group-mem').val(groupusedmem).trigger('change');
+            $('.group-mem').val(groupusedmem);
             $(".group-mem").knob($.extend({
-                'max': groupquotamem
+                'max': maxRAMDial
             }, dial, colour_mem));
-
-            $('.group-sys').val(groupusedsys).trigger('change');
-            $(".group-sys").knob($.extend({
-                'max': groupquotasys
-            }, dial, colour_sys));
         });
     }
 };
