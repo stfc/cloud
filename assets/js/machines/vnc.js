@@ -1,10 +1,12 @@
 "use strict";
 
-function vncdialog(token, name)
+function vncdialog(token, name, vncURL)
 {
     vncconnect(token);
     $("#vnc-title").html(name);
     $('#vncdialog').modal('show');
+    var buttonText = "<h4 class=\"modal-title\"><button type=\"button\" class=\"btn btn-blue btn-xs\" title=\"Open in a new tab\" onclick=\"window.open(\'" + vncURL + "\',\'_blank\')\">Open noVNC in a new tab</button></h4>";
+    $('#vncURL').html(buttonText);
 }
 
 $('#vncdialog').on('hide.bs.modal', function (e) {
