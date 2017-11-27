@@ -23,6 +23,23 @@ $.ajax({
     image_list = data;
 });
 
+$.ajax({
+    type: 'GET',
+    url: '/api/flavors',
+    dataType: 'json',
+    statusCode: {
+        403: function() {
+            exceptions("403");
+        },
+        500: function() {
+            $('#errormessage').html('The cloud may be experiencing problems. Please try again later.');
+            $('#error').show();
+        }
+    }
+}).done(function(data) {
+    flavorList = data;
+});
+
 function hide_resources() {
     $('#pick-resources').hide();
 }
@@ -101,6 +118,8 @@ function draw_buttons() {
             image_name = image.name;
             image_description = image.description;
             image_cpu = image.cpu;
+            image_min_disk = image.minDisk;
+            image_min_ram = image.minRAM/1024;
             image_memory = image.memory/1024;
 
             $('#cpu-input').val(image_cpu);
@@ -129,6 +148,7 @@ function draw_buttons() {
         $('#pick-resources').show();
         buttons = 'Complete!<br> You chose ' + selected_template_name + '. ' + image_description;
         controls = '<a class="btn btn-danger" id="buttonback" onclick="selected_template=\'\'; selected_template_name=\'\'; selected_template_description=\'\'; draw_buttons(); hide_resources();">Back</a>';
+        pick_resources(flavorList);
     }
     $('#buttonbox').html(buttons);
     $('#helpbox').html(helptext);
