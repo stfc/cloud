@@ -9,6 +9,10 @@ from helpers.auth import *
 from helpers.jinja import *
 from helpers.oneerror import *
 
+from keystoneauth1 import session
+from keystoneauth1.identity import v3
+import novaclient.client as nClient
+
 
 class Machines(object):
 
@@ -38,22 +42,32 @@ class Machines(object):
         FEDID = cherrypy.request.cookie.get('fedid').value
         SESSION = cherrypy.request.cookie.get('session').value
 
-        server = xmlrpclib.ServerProxy(HEADNODE)
+	NOVA_VERSION = cherrypy.request.config.get("novaVersion")
+        KEYSTONE_URL = cherrypy.request.config.get("keystone")
+        OPENSTACK_DEFAULT_DOMAIN = cherrypy.request.config.get("openstack_default_domain")
 
-        request = [
-            "%s:%s"%(FEDID,SESSION), # auth token
-            -1                       # return details for current user
-        ]
-        response = server.one.user.info(*request)
-        validateresponse(response)
-        user_info = ET.fromstring(response[1])
+        # Creating instance of Nova
+        projectName = "admin"
+        projectAuth = v3.Password(
+            auth_url = KEYSTONE_URL,
+            username = cherrypy.session['username'],
+            password = cherrypy.session['password'],
+            user_domain_name = OPENSTACK_DEFAULT_DOMAIN,
+            project_id = "c9aee696c4b54f12a645af2c951327dc",
+            project_domain_name = OPENSTACK_DEFAULT_DOMAIN
+        )
+        sess = session.Session(auth=projectAuth, verify='/etc/ssl/certs/ca-bundle.crt')
+        novaClient = nClient.Client(NOVA_VERSION, session = sess)
 
-        try:
-            key = user_info.find('TEMPLATE').find('SSH_PUBLIC_KEY').text
-        except:
-            key = ""
-
-        return { 'key' : key }
+	# Checking if user has a keypair and dealing if this isn't the case
+	try:
+	    key = novaClient.keypairs.list()[0].public_key
+	    keyname = novaClient.keypairs.list()[0].name
+	except IndexError:
+	    key = ""
+	    keyname = ""
+	
+        return { 'key' : key , 'keyname' : keyname }
 
     @cherrypy.expose
     def random(self):
