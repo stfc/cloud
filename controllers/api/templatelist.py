@@ -1,19 +1,10 @@
 #!/usr/bin/python
 import cherrypy
-from ConfigParser import SafeConfigParser
-import xmlrpclib
-import urllib2
-from xml.etree import ElementTree
-import xml.etree.ElementTree as ET
-import logging
-import subprocess
-import sys
-import time
-import os
 from collections import defaultdict
+from keystoneauth1 import session
+from keystoneauth1.identity import v3
+import novaclient.client as nClient
 
-from helpers.auth import *
-from helpers.oneerror import *
 
 class TemplateList(object):
 
@@ -27,51 +18,49 @@ class TemplateList(object):
         username = cherrypy.request.cookie.get('fedid').value
         auth_string = cherrypy.request.cookie.get('session').value
 
-        # Start xmlrpc client to opennebula server
-        server = xmlrpclib.ServerProxy(hostname)
+	NOVA_VERSION = cherrypy.request.config.get("novaVersion")
+        KEYSTONE_URL = cherrypy.request.config.get("keystone")
+        OPENSTACK_DEFAULT_DOMAIN = cherrypy.request.config.get("openstack_default_domain")
 
-        # sessionid = response[1]
-        one_auth = username + ":" + auth_string
+	# Nova Instance	
+        projectAuth = v3.Password(
+            auth_url = KEYSTONE_URL,
+            username = cherrypy.session['username'],
+            password = cherrypy.session['password'],
+            user_domain_name = OPENSTACK_DEFAULT_DOMAIN,
+            project_id = "c9aee696c4b54f12a645af2c951327dc",
+            project_domain_name = OPENSTACK_DEFAULT_DOMAIN
+        )
+        sess = session.Session(auth=projectAuth, verify='/etc/ssl/certs/ca-bundle.crt')
+        novaClient = nClient.Client(NOVA_VERSION, session = sess)
 
-        # get a list of templates in OpenNebula and put into json
-        xml = server.one.templatepool.info(one_auth,-2,-1,-1)
-
-        menuchoices = defaultdict(lambda: defaultdict(dict))
-
-        template_pool = ET.fromstring(xml[1])
-        for template in template_pool.findall('VMTEMPLATE'):
-            if template.find('TEMPLATE/OSNAME') != None:
-                os_flavour = template.find('TEMPLATE/OSNAME').text
-            else:
-                cherrypy.log("has an uninstantiated image flavour", username)
-                continue
-            if template.find('TEMPLATE/OSVERSION') != None:
-                osversion = template.find('TEMPLATE/OSVERSION').text
+	# Gets data for each image
+	# os_distro - name of flavor
+	menuchoices = defaultdict(lambda: defaultdict(dict))	# Check to see if this works
+	for image in novaClient.images.list():
+	    if image.metadata[u'os_distro'] != None:
+		osDistro = image.metadata[u'os_distro']
+	    else:
+		cherrypy.log("has an uninstantiated image flavour", username)
+		continue
+	    if image.metadata[u'os_version'] != None:
+                osVersion = image.metadata[u'os_version']
             else:
                 cherrypy.log("has an uninstantiated image version", username)
                 continue
-            if template.find('TEMPLATE/OSVARIANT') != None:
-                osvariant = template.find('TEMPLATE/OSVARIANT').text
+	    if image.metadata[u'os_variant'] != None:
+                osVariant = image.metadata[u'os_variant']
             else:
                 cherrypy.log("has an uninstantiated image variant", username)
                 continue
-            if template.find('TEMPLATE').find('DESCRIPTION') != None:
-                description = template.find('TEMPLATE').find('DESCRIPTION').text
-            else:
-                description = "There is no description for this type of machine"
-            if template.find('TEMPLATE').find('VCPU') != None:
-                cpu = template.find('TEMPLATE').find('VCPU').text
-            else:
-                cpu = template.find('TEMPLATE').find('CPU').text
 
-            if osvariant not in menuchoices[os_flavour][osversion]:
-                menuchoices[os_flavour][osversion][osvariant] = list()
-            menuchoices[os_flavour][osversion][osvariant].append({
-                'name': template.find('NAME').text,
-                'id': template.find('ID').text,
-                'description':description,
-                'cpu':  cpu,
-                'memory'      : template.find('TEMPLATE').find('MEMORY').text
-            })
-
+	    if osVariant not in menuchoices[osDistro][osVersion]:
+	        menuchoices[osDistro][osVersion][osVariant] = list()
+	    menuchoices[osDistro][osVersion][osVariant].append({
+		'name' : image.name,
+		'id' : image.id,
+		'minDisk' : image.minDisk,
+		'minRAM' : image.minRam,
+		'description' : image.metadata[u'description']
+	    })
         return menuchoices
