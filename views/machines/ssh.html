@@ -29,6 +29,9 @@
         <form class="form-horizontal" role="form" id="sshform" method="post">
             <fieldset>
                 <div class="form-group" style="margin-left:0px;margin-right:0px">
+                    <label for="keyname" value="{{ keyname }}" id=keynameLabel>Key Name: {{ keyname }}</label>
+                </div>
+                <div class="form-group" style="margin-left:0px;margin-right:0px">
                     <label for="sshkey">SSH Key</label>
                     <textarea id="sshkey" class="form-control" style="height:100px">{{ key }}</textarea>
                 </div>
