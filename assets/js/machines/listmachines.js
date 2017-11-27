@@ -68,24 +68,24 @@ function drawTable(action) {
         for (row of data["data"]) {
             // State
             state = row['state'];
-            disabled = (state != "RUNNING" ? "disabled" : "");
+            disabled = (state != "ACTIVE" ? "disabled" : "");
 
-            if (state === "POWERED OFF") {
+            if (state === "SHUTOFF" || state === "UNKNOWN" || state === "DELETED" || state === "PAUSED" || state === "SHELVED" || state === "SHEKVED_OFFLOADED" || state === "SOFT_DELETED" || state === "SUSPENDED") {
                 state_val = 0;
             }
-            else if (state === "FAILED") {
+            else if (state === "ERROR") {
                 state_val = 5;
             }
-            else if (state ===  "PENDING" || state === "DELETING") {
+            else if (state === "PASSWORD" || state === "RESCUE" || state === "RESIZE" || state === "REVERT_RESIZE" || state === "VERIFY_RESIZE") {
                 state_val = 1;
             }
-            else if (state ===  "TRANSFER") {
+            else if (state ===  "HARD_REBOOT" || state === "REBOOT" || state === "MIGRATING") {
                 state_val = 2;
             }
-            else if (state ===  "BUILDING" || state === "EPILOG") {
+            else if (state ===  "BUILD" || state === "REBUILD") {
                 state_val = 3;
             }
-            else if (state ===  "RUNNING") {
+            else if (state ===  "ACTIVE") {
                 state_val = 4;
             }
 
@@ -101,7 +101,7 @@ function drawTable(action) {
             row['memory'] = row['memory']/1024 + "GB";
 
             // noVNC / Boot
-            if (state === "POWERED OFF") {
+            if (state === "SHUTOFF" || state === "UNKNOWN") {
                 row['token'] = '<button type="button" class="btn btn-success btn-xs" title="Boot Machine" onclick="bootVM(' + row['id'] + ')"><span class="glyphicon glyphicon-arrow-up" style="vertical-align:middle;margin-top:-2px"></span></button>';
             } else {
                 row['token'] = '<button type="button" class="btn btn-blue btn-xs" title="Launch Desktop GUI" onclick="vncdialog(\'' + row['token'] + '\', \'' + row['name'] + '\')" ' + disabled + '><img src="/assets/images/icon-display.png" style="width:14px;margin-top:-2px" /></button>';
