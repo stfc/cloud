@@ -12,7 +12,7 @@ $(function() {
             data: JSON.stringify(data),
             statusCode: {
                 400: function() {
-                    $("#errormessage").html("Please enter your Federal ID and password");
+                    $("#errormessage").html("Please enter your Federal ID and password.");
                     $("#error").show();
                 },
                 403: function() {
