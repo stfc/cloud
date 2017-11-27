@@ -1,11 +1,19 @@
 import cherrypy
 import xmlrpclib
 import xml.etree.ElementTree as ET
-
+from keystoneauth1 import loading
+from keystoneauth1 import session
+from keystoneauth1.identity import v3
+import novaclient.client as nClient
+from keystoneclient.v3 import client as client
 from socket import gethostbyaddr
+from datetime import datetime
+from time import mktime
+import time
+
 from helpers.vnctokens import *
-from helpers.auth import *
-from helpers.oneerror import *
+
+from subprocess import call
 
 class VM(object):
 
@@ -17,198 +25,180 @@ class VM(object):
         template_id : the id of template to use with VM
         name        : name for the new VM
     '''
-    @cherrypy.tools.isAuthorised()
     @cherrypy.tools.json_in()
     def PUT(self):
-
-        json = cherrypy.request.json
+	json = cherrypy.request.json
+	
         if not json.get("template_id") or not json.get("name"):
             raise cherrypy.HTTPError(400, "Bad parameters")
+	
+	NOVA_VERSION = cherrypy.request.config.get("novaVersion")
+        KEYSTONE_URL = cherrypy.request.config.get("keystone")
+        OPENSTACK_DEFAULT_DOMAIN = cherrypy.request.config.get("openstack_default_domain")
 
-        HEADNODE = cherrypy.request.config.get("headnode")
-        FEDID = cherrypy.request.cookie.get('fedid').value
-        SESSION = cherrypy.request.cookie.get('session').value
+	# Creating instance of Nova
+        projectName = "admin"
+        projectAuth = v3.Password(
+            auth_url = KEYSTONE_URL,
+            username = cherrypy.session['username'],
+            password = cherrypy.session['password'],
+            user_domain_name = OPENSTACK_DEFAULT_DOMAIN,
+            project_id = "c9aee696c4b54f12a645af2c951327dc",
+            project_domain_name = OPENSTACK_DEFAULT_DOMAIN
+        )
+        sess = session.Session(auth=projectAuth, verify='/etc/ssl/certs/ca-bundle.crt')
+        novaClient = nClient.Client(NOVA_VERSION, session = sess)
 
-        server = xmlrpclib.ServerProxy(HEADNODE)
+	vmNetwork = novaClient.networks.find(label=cherrypy.request.config.get("vmNetworkLabel"))
 
-        # build xml to be used for additional customisation
-        extracontext=""
-        if json.get("cpu"):
-            extracontext=extracontext+'CPU="'+json.get("cpu")+'"\n'
-        if json.get("vcpu"):
-            extracontext=extracontext+'VCPU="'+json.get("vcpu")+'"\n'
-        if json.get("memory"):
-            extracontext=extracontext+'MEMORY="'+json.get("memory")+'"\n'
-        if json.get("sandbox"):
-            extracontext=extracontext+'AQ_SANDBOX="'+json.get("sandbox")+'"\n'
-        if json.get("personality"):
-            extracontext=extracontext+'AQ_PERSONALITY="'+json.get("personality")+'"\n'
-        if json.get("archetype"):
-            extracontext=extracontext+'AQ_ARCHETYPE="'+json.get("archetype")+'"\n'
-
-        request = [
-            "%s:%s"%(FEDID,SESSION),      # auth token
-            int(json.get("template_id")), # template id
-            json.get("name"),             # name of the new vm
-            False,                        # start normally
-            extracontext                  # extra context variables
-        ]
-        response = server.one.template.instantiate(*request)
-        validateresponse(response)
-
+	# Creating VM
+	novaClient.servers.create(
+	    name = json['name'], 
+	    image = json['template_id'], 
+	    flavor = json['flavorID'],
+	    key_name = novaClient.keypairs.list()[0].name,
+	    nics = [{"net-id": vmNetwork.id}],
+	    security_groups = [cherrypy.request.config.get("securityGroupName")],
+	    availability_zone = cherrypy.request.config.get("availabilityZoneName"),
+            min_count = json['count']
+	)
 
     '''
         Delete a VM
 
         id : the id of the VM to be deleted
     '''
-    @cherrypy.tools.isAuthorised()
+   # @cherrypy.tools.isAuthorised()
     def DELETE(self, id=None):
 
         if id == None:
             raise cherrypy.HTTPError(400, "Bad parameters")
 
-        HEADNODE = cherrypy.request.config.get("headnode")
-        FEDID = cherrypy.request.cookie.get('fedid').value
-        SESSION = cherrypy.request.cookie.get('session').value
+	NOVA_VERSION = cherrypy.request.config.get("novaVersion")
+        KEYSTONE_URL = cherrypy.request.config.get("keystone")
+        OPENSTACK_DEFAULT_DOMAIN = cherrypy.request.config.get("openstack_default_domain")
 
-        server = xmlrpclib.ServerProxy(HEADNODE)
+        # Creating instance of Nova
+        projectName = "admin"
+        projectAuth = v3.Password(
+            auth_url = KEYSTONE_URL,
+            username = cherrypy.session['username'],
+            password = cherrypy.session['password'],
+            user_domain_name = OPENSTACK_DEFAULT_DOMAIN,
+            project_id = "c9aee696c4b54f12a645af2c951327dc",
+            project_domain_name = OPENSTACK_DEFAULT_DOMAIN
+	)
+        sess = session.Session(auth=projectAuth, verify='/etc/ssl/certs/ca-bundle.crt')
+        novaClient = nClient.Client(NOVA_VERSION, session = sess)
 
-        request = [
-            "%s:%s"%(FEDID,SESSION), # auth token
-            int(id)                  # vmid
-        ]
-        response = server.one.vm.info(*request)
-        vm_info = ET.fromstring(response[1])
-        state = vm_info.find('STATE').text
-
-        if state == 14:
-            action = "delete"
-        else:
-            action = "shutdown-hard"
-
-        request = [
-            "%s:%s"%(FEDID,SESSION), # auth token
-            action,                  # required for quarantining vms
-            int(id),                 # id of vm to delete
-        ]
-        response = server.one.vm.action(*request)
-        validateresponse(response)
-
-        deleteToken(FEDID, id)
+	novaClient.servers.delete(id)
 
 
     '''
         Return JSON list of VM information for the user
 
-        history : 0 = show current running VMs for user,
-                  1 = show all VMs, old and current
-        offset  : index to start listing vms, used for pagination
-        size    : number of results to return, used for pagination
+        action : 0 = VM just been deleted
+                 1 = VM just been created
+		 2 = Misc. action
     '''
-    @cherrypy.tools.isAuthorised()
+   # @cherrypy.tools.isAuthorised()
     @cherrypy.tools.json_out()
-    def GET(self, history=0, offset=0, size=1):
+    def GET(self, action):
+	NOVA_VERSION = cherrypy.request.config.get("novaVersion")
+        KEYSTONE_URL = cherrypy.request.config.get("keystone")
+        OPENSTACK_DEFAULT_DOMAIN = cherrypy.request.config.get("openstack_default_domain")
 
-        HEADNODE = cherrypy.request.config.get("headnode")
-        FEDID = cherrypy.request.cookie.get('fedid').value
-        SESSION = cherrypy.request.cookie.get('session').value
+	# Creating instance of Nova
+	projectName = "admin"
+        projectAuth = v3.Password(
+            auth_url = KEYSTONE_URL,
+            username = cherrypy.session['username'],
+            password = cherrypy.session['password'],
+            user_domain_name = OPENSTACK_DEFAULT_DOMAIN,
+            project_id = "c9aee696c4b54f12a645af2c951327dc",
+            project_domain_name = OPENSTACK_DEFAULT_DOMAIN
+        )
+        sess = session.Session(auth=projectAuth, verify='/etc/ssl/certs/ca-bundle.crt')
+	novaClient = nClient.Client(NOVA_VERSION, session = sess)
 
-        server = xmlrpclib.ServerProxy(HEADNODE)
+	json = []	
+	flavorInfo = {}
+	
+	for flavor in novaClient.flavors.list(detailed = True):
+	    flavorInfo[flavor.name] = [flavor.vcpus, flavor.ram]
 
-        request = [
-            "%s:%s"%(FEDID,SESSION),    # auth token
-            -2,                         # show only user's VMs or group VMs
-            0,                          # offest for pagination
-            -1,                         # number of entries to return
-            -1 if history == 0 else -2  # show either active or all VMs
-        ]
-        response = server.one.vmpool.info(*request)
-        validateresponse(response)
-        vm_pool = ET.fromstring(response[1])
+	for server in novaClient.servers.list(detailed = True):
+	    # Print to command line - Testing what does what
+	    print server.name + " - " + server.status
 
-        request = [
-            "%s:%s"%(FEDID,SESSION),   # auth token
-            -2,                        # show all visible templates
-            -1,                        # list entries from the start
-            -1,                        # return all entries
-        ]
-        response = server.one.templatepool.info(*request)
-        validateresponse(response)
-        template_pool = ET.fromstring(response[1])
+	    serverStatus = server.status
 
-        json = []
+	    # Converts date/time into format for .js file
+	    stime = datetime.strptime(server.created, '%Y-%m-%dT%H:%M:%SZ')
+	    stime = mktime(stime.timetuple())
 
-        for vm in vm_pool.findall('VM'):
-            # find template name from id
-            template_type = "unknown"
-            template_id = vm.find('TEMPLATE').find('TEMPLATE_ID').text
-            for template in template_pool.findall('VMTEMPLATE'):
-                if template.find('ID').text == template_id:
-                    template_type = template.find('NAME').text
+	    # Gets flavor ID --> flavor name
+	    flavorName = str(novaClient.flavors.find(id = server.flavor[u'id']))
+ 	    flavorName = self.cutString(flavorName, 9, -1)
 
-            # vms may not have an ip set
-            try:
-                ip = vm.find('TEMPLATE').find('NIC').find('IP').text
-                hostname = gethostbyaddr(ip)[0]
+	    # Gets image ID --> image name
+	    imageName = str(novaClient.images.find(id = server.image[u'id']))
+	    imageName = self.cutString(imageName, 8, -1)
+
+	    hostname = ""
+	    try:
+                serverIP = str(novaClient.servers.ips(server))
+                if serverIP != "{}":
+                    serverNetwork = self.getServerNetworkLabel(serverIP)
+                    hostname = novaClient.servers.ips(server)[serverNetwork][0][u'addr']
             except:
-                hostname = "-"
+		hostname = ""
 
-            # get/generate vnc token
-            token = getToken(FEDID, vm.find('ID').text)
-            if token == None:
-                token = createToken(FEDID, SESSION, vm.find('ID').text)
+            # Gets URL with VNC token embedded
+	    if serverStatus == "ACTIVE" and action != "0" and server.name != "gputest-kernel-4.13":
+		vncURL = server.get_vnc_console(console_type = "novnc")[u'console'][u'url']
+		vncToken = self.cutString(vncURL, 62, len(vncURL))
+	    else:
+		vncURL = ""
+		vncToken = ""
+	
+	    # Put VM data into json format for .js file
+	    json.append({
+		'id'       : server.id,
+                'name'     : server.name,
+		'hostname' : hostname,
+                'user'     : "",
+                'group'    : "",
+                'state'    : serverStatus,
+                'stime'    : stime,
+                'etime'    : "",
+		'flavor'   : flavorName,
+                'cpu'      : flavorInfo[flavorName][0],
+                'memory'   : flavorInfo[flavorName][1],
+                'type'     : imageName,
+                'token'    : vncToken,
+		'vncURL'   : vncURL,		
+                'candelete': True,
+		'keypair'  : server.key_name
+	    })
+	return {"data":json}
 
-            if vm.find('STATE').text == "1":
-                state = "PENDING"
-            if vm.find('STATE').text == "7":
-                state = "FAILED"
-            elif vm.find('STATE').text == "3":
-                if vm.find('LCM_STATE').text == "1":
-                    state = "TRANSFER"
-                elif vm.find('LCM_STATE').text == "2":
-                    state = "BUILDING"
-                elif vm.find('LCM_STATE').text == "11":
-                    state = "DELETING"
-                elif vm.find('LCM_STATE').text == "12":
-                    state = "EPILOG"
-                elif int(vm.find('LCM_STATE').text) in [ 14 , 19 , 37 , 38 , 39 , 40 , 41 , 42 , 44 , 46 , 47 , 48 , 49 , 50 ]:
-                    state = "FAILED"
-                else:
-                    state = "RUNNING"
-            elif vm.find('STATE').text in ["4","5","8"]:
-                state = "POWERED OFF"
-            else:
-                state = "DONE"
+    # Starts on the first character of important info (e.g. image ID)
+    # Searches for the end of it and returns the end position
+    # This is then used in cutString() to extract the exact section of the string needed
+    def getInfoID(self, strName, startRange, endRange, search):
+	for i in range(startRange, endRange):
+	    if strName[i] == search:
+		break
+	return i
 
-            if vm.find('TEMPLATE').find('VCPU') != None:
-                cpu = vm.find('TEMPLATE').find('VCPU').text
-            else:
-                cpu = vm.find('TEMPLATE').find('CPU').text
+    def cutString(self, string, start, end):
+	return string[start:end]
 
-            if vm.find('PERMISSIONS/GROUP_M').text == "1" or vm.find('PERMISSIONS/GROUP_A').text == "1" or vm.find('PERMISSIONS/OTHER_M').text == "1" or vm.find('PERMISSIONS/OTHER_A').text == "1" :
-                candelete = True
-            else:
-                candelete = False
-
-            json.append({
-                'id'       : vm.find('ID').text,
-                'name'     : vm.find('NAME').text,
-                'hostname' : hostname,
-                'user'     : vm.find('UNAME').text,
-                'group'    : vm.find('GNAME').text,
-                'state'    : state,
-                'stime'    : vm.find('STIME').text,
-                'etime'    : vm.find('ETIME').text,
-                'cpu'      : cpu,
-                'memory'   : vm.find('TEMPLATE').find('MEMORY').text,
-                'type'     : template_type,
-                'token'    : token,
-                'candelete': candelete
-            })
-
-        return {"data":json}
-
+    def getServerNetworkLabel(self, serverIP):
+	serverNetworkEnd = self.getInfoID(serverIP, 3, len(serverIP), "'")
+        serverNetwork = self.cutString(serverIP, 3, serverNetworkEnd)
+	return serverNetwork
 
     '''
         Upate VM info/state
