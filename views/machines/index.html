@@ -20,11 +20,11 @@ var EMAIL = "{{ email }}";
 
 $(function() {
     quota.update();
-    drawTable();
+    drawTable(2);
     setInterval(function () {
         quota.update();
-        drawTable();
     }, 5000);
+        drawTable(2);
 });
 
 </script>
@@ -66,10 +66,10 @@ $(function() {
 
         <ul class="nav nav-tabs" role="tablist">
             <li id="my-vms" class="active">
-                <a href="" class="filter" data-toggle="tab" onclick="drawTable(); vmlist.draw()">My VMs</a>
+                <a href="" class="filter" data-toggle="tab" onclick="drawTable(2); vmlist.draw()">My VMs</a>
             </li>
             <li id="all-vms">
-                <a href="" class="filter" data-toggle="tab" onclick="drawTable(); vmlist.draw()">All VMs</a>
+                <a href="" class="filter" data-toggle="tab" onclick="drawTable(2); vmlist.draw()">All VMs</a>
             </li>
         </ul>
         <button type="button" class="btn btn-default" id="filter-button" title="Table Filters" onclick="filterTableDialog()"><span class="glyphicon glyphicon-cog"></span></button>

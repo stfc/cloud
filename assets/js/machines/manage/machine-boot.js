@@ -11,6 +11,6 @@ function bootVM(id)
             }
         }
     }).done(function(json) {
-        drawTable();
+        drawTable(2);
     });
 }

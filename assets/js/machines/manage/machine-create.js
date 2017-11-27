@@ -121,7 +121,7 @@ function create_VM(data) {
             }
         }
     }).done(function(json) {
-        drawTable();
+        drawTable(1);
         quota.update();
         $('#createvmdialog').modal('hide');
     });
