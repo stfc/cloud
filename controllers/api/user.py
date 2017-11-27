@@ -17,48 +17,63 @@ class User(object):
     @cherrypy.tools.json_in()
     @cherrypy.tools.json_out()
     def PUT(self):
-
-        json = cherrypy.request.json
-        if not json.get("username") or not json.get("password"):
+        data  = cherrypy.request.json
+        if not data.get("username") or not data.get("password"):
             raise cherrypy.HTTPError(400, "Please supply username and password")
 
+	# Federal ID details
         HEADNODE = cherrypy.request.config.get("headnode")
         EXPIRE = cherrypy.request.config.get("auth.session_expire_secs")
         LDAPADDRESS = cherrypy.request.config.get("auth.ldap_address")
         LDAPBASEDN = cherrypy.request.config.get("auth.ldap_basedn")
 
-        server = xmlrpclib.ServerProxy(HEADNODE)
+	# Grabs OpenStack data from config/global.conf       
+        KEYSTONE_URL = cherrypy.request.config.get("keystone")
+        OPENSTACK_HOST = cherrypy.request.config.get("openstack_host")
+        OPENSTACK_DEFAULT_DOMAIN = cherrypy.request.config.get("openstack_default_domain") 
 
-        # must encode spaces in password otherwise opennebula gets upset
-        request = [
-            "%s:%s"%(json.get("username"),json.get("password").replace(" ", "%20")),
-            json.get("username"),  # username to generate token for user
-            "",                    # must be an empty string to generate a random token
-            EXPIRE                 # valid period in seconds
-        ]
-        response = server.one.user.login(*request)
-        validateresponse(response)
+	# Storing username and password in a cherrypy session
+	cherrypy.session['username'] = data.get("username")
+	cherrypy.session['password'] = data.get("password").replace(" ","%20")
+	
+	# Login Check
+	projectName = "admin"
+	projectAuth = v3.Password(
+            auth_url = KEYSTONE_URL,
+            username = cherrypy.session['username'],
+            password = cherrypy.session['password'],
+            user_domain_name = OPENSTACK_DEFAULT_DOMAIN,
+            project_id = "c9aee696c4b54f12a645af2c951327dc", 
+	    project_domain_name = OPENSTACK_DEFAULT_DOMAIN
+        )
+	sess = session.Session(auth=projectAuth, verify='/etc/ssl/certs/ca-bundle.crt')
+	
+	# Ensuring correct credentials entered
+	try:
+	    sess.get_token()
+        except:
+	    raise cherrypy.HTTPError(404, "Invalid Credentials.")
 
-        try:
+
+	# Sets Name
+	try:
             ld = ldap.initialize(LDAPADDRESS)
             ld.simple_bind_s()
-            result = ld.search_s(LDAPBASEDN, ldap.SCOPE_SUBTREE, "cn=" + json.get("username"))
+            result = ld.search_s(LDAPBASEDN, ldap.SCOPE_SUBTREE, "cn=" + data.get("username"))
             name = result[0][1]["givenName"][0] + " " + result[0][1]["sn"][0]
         except:
             # just display ONE username (FEDID) if unable to contact LDAP
             # or the user is not in LDAP
-            name = json.get("username")
+            name = data.get("username")
 
-        json = {
+	# Puts data into json format
+        data = {
             'name'    : name,
-            'fedid'   : json.get("username"),
-            'session' : response[1],
+            'fedid'   : data.get("username"),
             'expires' : EXPIRE
         }
-
-        return json
-
-
+        return data
+	
     '''
         Update user
     '''
