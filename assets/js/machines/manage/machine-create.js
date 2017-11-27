@@ -39,8 +39,7 @@ function randomname() {
 function fetch_values(selected_template) {
     // Clear and hide on to reset errors
     $('.creation-error').empty().hide();
-
-    cpu = $('#cpu-input').val()/2;
+    cpu = $('#cpu-input').val();
     memory = $('#memory-input').val()*1024;
 
     var data = {
@@ -49,9 +48,10 @@ function fetch_values(selected_template) {
         'archetype': $('#archetype_options').val(),
         'personality': $('#personality_options').val(),
         'sandbox': $('#sandbox_options').val(),
-        'vcpu': $('#cpu-input').val(),
         'cpu': '' + cpu,
         'memory': '' + memory,
+        'flavorID': flavorList['data'][document.getElementById("flavorChoice").value]['id'],
+        'count': $('#vmCount').val(),
     };
     check_errors(data, selected_template);
 }
@@ -59,7 +59,6 @@ function fetch_values(selected_template) {
 // Check the VM name for blocked words and other errors
 function check_errors(data, selected_template) {
     badwords_url = '/assets/badwords';
-    console.log(badwords_url);
 
     print_name = $('#name').val().replace(/[^a-z A-Z 0-9 .@_-]+/g, ' ');
     name = print_name.toLowerCase();
@@ -71,6 +70,7 @@ function check_errors(data, selected_template) {
         badwords = words.replace(/\r?\n|\r/g, '|').slice('|', -1);
         regexp = new RegExp('(' + badwords + ')', 'g');
 
+        var count = true;
         // Check if name has any bad words
         if (name.match(regexp)) {
             creation_error('name-creation-error', 'Please try a different name. "<b>'+ print_name +'</b>" contains blocked words.');
@@ -82,6 +82,18 @@ function check_errors(data, selected_template) {
         if (data['name'] === '') {
             creation_error('name-creation-error','Please enter a name.');
         }
+ 
+        // Show warning if no count
+        if (data['count'] === '') {
+            creation_error('name-creation-error', 'Please enter how many VMs you want to create.');
+            count = false;
+        }
+
+        // Show warning if count is 0
+        if (data['count'] < 1 && data['count'] !== '') {
+            creation_error('name-creation-error', 'You cannot have less than 1 VM, enter the number of VMs you want to create.');
+            count = false;
+        }
 
         // Show warning if no template
         if (selected_template === '') {
@@ -89,14 +101,14 @@ function check_errors(data, selected_template) {
         }
 
         // Show warning if no resources
-        if (vmavailable > 0 && cpuavailable > 0 && memavailable > 0 && sysavailable > 0 ) {
+        if ((availablequotavm > 0 || groupquotavm === -1) && (availablequotacpu > 0 || groupquotacpu === -1) && (availablequotamem > 0 || groupquotamem === -1)) {
             resources = true;
         } else {
             creation_error('resource-creation-error','You do not have the resources to create a new VM. Please delete uneeded VMs or contact us to discuss your quota.');
         }
 
         // If all fields are good send data to /api/vm.py
-        if (data['name'].length > 0 && data['name'] !== 'badname' && selected_template.length > 0 && resources === true) {
+        if (data['name'].length > 0 && data['name'] !== 'badname' && selected_template.length > 0 && resources === true && count === true) {
             create_VM(data);
         }
     });
