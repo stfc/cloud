@@ -77,9 +77,11 @@ class User(object):
     '''
         Update user
     '''
-    @cherrypy.tools.isAuthorised()
+   # @cherrypy.tools.isAuthorised()
     def POST(self, **params):
 
+	key = params.get("key")
+	keyname = params.get("keyname")
         if not params.get("action"):
             raise cherrypy.HTTPError(400, "Bad parameters")
 
@@ -87,26 +89,39 @@ class User(object):
         FEDID = cherrypy.request.cookie.get('fedid').value
         SESSION = cherrypy.request.cookie.get('session').value
 
-        server = xmlrpclib.ServerProxy(HEADNODE)
+	NOVA_VERSION = cherrypy.request.config.get("novaVersion")
+        KEYSTONE_URL = cherrypy.request.config.get("keystone")
+        OPENSTACK_DEFAULT_DOMAIN = cherrypy.request.config.get("openstack_default_domain")
 
-        request = [
-            "%s:%s"%(FEDID,SESSION), # auth token
-            -1                       # return details for current user
-        ]
-        response = server.one.user.info(*request)
-        validateresponse(response)
-        user_info = ET.fromstring(response[1])
-        uid = user_info.find('ID').text
+        # Creating instance of Nova
+        projectName = "admin"
+        projectAuth = v3.Password(
+            auth_url = KEYSTONE_URL,
+            username = cherrypy.session['username'],
+            password = cherrypy.session['password'],
+            user_domain_name = OPENSTACK_DEFAULT_DOMAIN,
+            project_id = "c9aee696c4b54f12a645af2c951327dc",
+            project_domain_name = OPENSTACK_DEFAULT_DOMAIN
+        )
+        sess = session.Session(auth=projectAuth, verify='/etc/ssl/certs/ca-bundle.crt')
+        novaClient = nClient.Client(NOVA_VERSION, session = sess)
 
-        if params.get("action") == 'sshkey':
-            if params.get("key"):
-                request = [
-                    "%s:%s"%(FEDID,SESSION),                 # auth token
-                    int(uid),                                # the user's id
-                    'SSH_PUBLIC_KEY="%s"'%params.get("key"), # attr=value pair
-                    1                                        # merge update with current template
-                ]
-                response = server.one.user.update(*request)
-                validateresponse(response)
-        else:
-            raise cherrypy.HTTPError(400, "Bad action")
+	# Error checking needed before data sent off
+
+	# Cannot submit a blank key	
+        if key == "":
+	    # You must have a key
+	    raise cherrypy.HTTPError(400, "No public key")
+        # User has no keypair, import one
+	try:
+            if keyname == "":
+                keyname = FEDID
+                novaClient.keypairs.create(name = keyname, public_key = key)
+            # Editing existing keypair
+            else:
+                novaClient.keypairs.delete(keyname)
+                novaClient.keypairs.create(name = keyname, public_key = key)
+	except:
+	    raise cherrypy.HTTPError(409, "Invalid public key")
+
+        # Nova creates keypair - if key isn't valid, then raise Cherrypy error, put it in .js and make it appear
