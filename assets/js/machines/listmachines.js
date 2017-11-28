@@ -70,7 +70,7 @@ function drawTable(action) {
             state = row['state'];
             disabled = (state != "ACTIVE" ? "disabled" : "");
 
-            if (state === "SHUTOFF" || state === "UNKNOWN" || state === "DELETED" || state === "PAUSED" || state === "SHELVED" || state === "SHEKVED_OFFLOADED" || state === "SOFT_DELETED" || state === "SUSPENDED") {
+            if (state === "SHUTOFF" || state === "UNKNOWN" || state === "DELETED" || state === "PAUSED" || state === "SHELVED" || state === "SHELVED_OFFLOADED" || state === "SOFT_DELETED" || state === "SUSPENDED") {
                 state_val = 0;
             }
             else if (state === "ERROR") {
