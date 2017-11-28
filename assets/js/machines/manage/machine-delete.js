@@ -8,6 +8,7 @@ function deleteVMdialog(id, name)
 function deleteVM()
 {
     var id = $('#confirmdelete').data('vmid');
+    document.getElementById('confirmdelete').disabled = true;
 
     $.ajax({
         type: 'DELETE',
@@ -15,10 +16,12 @@ function deleteVM()
         statusCode: {
             403: function() {
                 exceptions("403");
+                document.getElementById('confirmdelete').disabled = false;
             },
             500: function(data) {
                 $('#errormessage').html('The cloud may be experiencing problems. Please try again later.');
                 $('#error').show();
+                document.getElementById('confirmdelete').disabled = false;
             }
         }
     }).done(function(json) {

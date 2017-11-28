@@ -1,6 +1,7 @@
 $(function() {
     $('#sshform').submit(function() {
         var key = $("#sshkey").val();
+        document.getElementById('submitkey').disabled = true;
         if (key === "") {
             key = "\n";
         }
@@ -13,21 +14,25 @@ $(function() {
                 400: function() {
                     $("#errormessage").html("You cannot submit a blank public key. Please insert a valid public key into the text area.");
                     $("#error").show();
+                    document.getElementById('submitkey').disabled = false;
                 },
                 409: function() {
                     $("#errormessage").html("You have tried to submit an invalid public key, try again.");
                     $("#error").show();
+                    document.getElementById('submitkey').disabled = false;
                 },
                 500: function(data) {
                     alert(JSON.stringify(data))
 
                     $("#errormessage").html("The cloud may be experiencing problems. Please try again later.");
                     $("#error").show();
+                    document.getElementById('submitkey').disabled = false;
                 }
             }
         }).done(function(json) {
             $("#successmessage").html("Your SSH key has been sucessfully associated to your account");
             $("#success").show();
+            document.getElementById('submitkey').disabled = false;            
         });
 
         return false;

@@ -37,6 +37,9 @@ function randomname() {
 
 // Populate array to send to /api/vm.py - Triggered by 'create' button
 function fetch_values(selected_template) {
+    // Disable 'Create' button
+    document.getElementById('create-btn').disabled = true;
+
     // Clear and hide on to reset errors
     $('.creation-error').empty().hide();
     cpu = $('#cpu-input').val();
@@ -124,17 +127,22 @@ function create_VM(data) {
         statusCode: {
             400: function() {
                 creation_error('main-creation-error', 'We were unable to create your VM. If this problem persists, please contact us.');
+                document.getElementById('create-btn').disabled = false;
             },
             403: function() {
                 exceptions("403");
+                document.getElementById('create-btn').disabled = false;
             },
             500: function() {
                 creation_error('main-creation-error', 'Unable to connect to the cloud. If this problem persists, please contact us.');
+                document.getElementById('create-btn').disabled = false;
             }
         }
     }).done(function(json) {
         drawTable(1);
         quota.update();
+        // Enable create button so multiple VMs can be created in one session
+        document.getElementById('create-btn').disabled = false;
         $('#createvmdialog').modal('hide');
     });
 }
