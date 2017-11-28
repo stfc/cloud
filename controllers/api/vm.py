@@ -227,4 +227,14 @@ class VM(object):
         sess = session.Session(auth=projectAuth, verify='/etc/ssl/certs/ca-bundle.crt')
         novaClient = nClient.Client(NOVA_VERSION, session = sess)
 
+        bootServer = novaClient.servers.find(id = params.get("id"))
+	bootServerState = bootServer.status
 
+        if bootServerState == "SHUTOFF":
+	    bootServer.start()
+	elif bootServerState == "SUSPENDED":
+	    bootServer.resume()
+	elif bootServerState == "PAUSED":
+	    bootServer.unpause()
+	elif bootServerState == "SHELVED" or bootServerState == "SHELVED_OFFLOADED":
+	    bootServer.unshelve()
