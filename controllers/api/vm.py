@@ -50,13 +50,19 @@ class VM(object):
         novaClient = nClient.Client(NOVA_VERSION, session = sess)
 
 	vmNetwork = novaClient.networks.find(label=cherrypy.request.config.get("vmNetworkLabel"))
+	
+	# Making sure user has a keypair
+        try:
+	    keyname = novaClient.keypairs.list()[0].name
+	except:
+	    raise cherrypy.HTTPError(409, "No keypair")
 
 	# Creating VM
 	novaClient.servers.create(
 	    name = json['name'], 
 	    image = json['template_id'], 
 	    flavor = json['flavorID'],
-	    key_name = novaClient.keypairs.list()[0].name,
+	    key_name = keyname,
 	    nics = [{"net-id": vmNetwork.id}],
 	    security_groups = [cherrypy.request.config.get("securityGroupName")],
 	    availability_zone = cherrypy.request.config.get("availabilityZoneName"),

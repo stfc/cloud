@@ -133,6 +133,10 @@ function create_VM(data) {
                 exceptions("403");
                 document.getElementById('create-btn').disabled = false;
             },
+            409: function() {
+                creation_error('main-creation-error', 'You must have a keypair to create a VM.');
+                document.getElementById('create-btn').disabled = false;
+            },
             500: function() {
                 creation_error('main-creation-error', 'Unable to connect to the cloud. If this problem persists, please contact us.');
                 document.getElementById('create-btn').disabled = false;
