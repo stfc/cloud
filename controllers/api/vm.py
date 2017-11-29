@@ -162,8 +162,12 @@ class VM(object):
 
             # Gets URL with VNC token embedded
 	    if serverStatus == "ACTIVE" and action != "0" and server.name != "gputest-kernel-4.13":
-		vncURL = server.get_vnc_console(console_type = "novnc")[u'console'][u'url']
-		vncToken = self.cutString(vncURL, 62, len(vncURL))
+		try:
+		    vncURL = server.get_vnc_console(console_type = "novnc")[u'console'][u'url']
+		    vncToken = self.cutString(vncURL, 62, len(vncURL))
+		except:
+		    vncURL = ""
+		    vncToken = ""
 	    else:
 		vncURL = ""
 		vncToken = ""
