@@ -52,7 +52,7 @@ class User(object):
 	try:
 	    sess.get_token()
         except:
-	    raise cherrypy.HTTPError(404, "Invalid Credentials.")
+	    raise cherrypy.HTTPError(403, "Invalid Credentials.")
 
 
 	# Sets Name
