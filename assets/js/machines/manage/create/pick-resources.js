@@ -2,15 +2,15 @@ function pick_resources(flavorList) {
     var flavorDisplay = '<select id="flavorChoice" class="btn btn-default btn-xs" onchange="setSliderAmounts(flavorList, false);">'
     setSliderAmounts(flavorList, true);
 
-        for (i = 0; i < flavorList['data'].length; i++){
-            flavorDisplay += '<option value=\"' + i + '\">' 
-                + flavorList['data'][i]['name'] + ' - ' 
-                + flavorList['data'][i]['cpu'] + 'CPU(s), '
-                + flavorList['data'][i]['ram'] + 'GB RAM, '
-                + flavorList['data'][i]['disk'] + 'GB Total Disk'
-                + '</option>';
-        }
-        flavorDisplay += '</select>'
+    for (i = 0; i < flavorList['data'].length; i++){
+        flavorDisplay += '<option value=\"' + i + '\">' 
+            + flavorList['data'][i]['name'] + ' - ' 
+            + flavorList['data'][i]['cpu'] + 'CPU(s), '
+            + flavorList['data'][i]['ram'] + 'GB RAM, '
+            + flavorList['data'][i]['disk'] + 'GB Total Disk'
+            + '</option>';
+    }
+    flavorDisplay += '</select>'
     $('#flavorDisplay').html(flavorDisplay);
 }
 
