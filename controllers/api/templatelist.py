@@ -36,7 +36,7 @@ class TemplateList(object):
 
 	# Gets data for each image
 	# os_distro - name of flavor
-	menuchoices = defaultdict(lambda: defaultdict(dict))	# Check to see if this works
+	menuchoices = defaultdict(lambda: defaultdict(dict))
 	for image in novaClient.images.list():
 	    if image.metadata[u'os_distro'] != None:
 		osDistro = image.metadata[u'os_distro']
@@ -53,6 +53,13 @@ class TemplateList(object):
             else:
                 cherrypy.log("has an uninstantiated image variant", username)
                 continue
+            try:
+                if image.metadata[u'aq_managed'] == "false":
+                    aqManaged = "false"
+                else:
+                    aqManaged = "true"
+            except:
+                aqManaged = "false"
 
 	    if osVariant not in menuchoices[osDistro][osVersion]:
 	        menuchoices[osDistro][osVersion][osVariant] = list()
@@ -61,6 +68,7 @@ class TemplateList(object):
 		'id' : image.id,
 		'minDisk' : image.minDisk,
 		'minRAM' : image.minRam,
-		'description' : image.metadata[u'description']
+		'description' : image.metadata[u'description'],
+		'aqManaged' : aqManaged
 	    })
         return menuchoices

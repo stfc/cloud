@@ -5,6 +5,7 @@ var selected_type = '';
 var selected_template = '';
 var selected_template_name = '';
 var selected_template_description = '';
+var aqManaged = "false";
 
 $.ajax({
     type: 'GET',
@@ -91,24 +92,28 @@ function draw_buttons() {
     else if (selected_type === '') {
         image_cpu = '';
         image_memory = '';
+        var i = 0;
         for (type in image_list[selected_flavour][selected_release]) {
             if (image_list[selected_flavour][selected_release].length == 1) {
                 selected_type = type;
                 controls = '<a class="btn btn-danger" id="buttonback" onclick="selected_type=\'\';selected_release=\'\'; draw_buttons();">Back</a>';
             }
             else {
-                buttons += '<a class="btn btn-lev3" id="'+type+'" onclick="selected_type=\''+type+'\'; draw_buttons();">'+type+'</a>';
+                buttons += '<a class="btn btn-lev3" id="'+type+'" onclick="selected_type=\''+type+'\'; aqManaged=\''+image_list[selected_flavour][selected_release][type][i].aqManaged+'\'; draw_buttons();">'+type+'</a>';
+//                buttons += '<a class="btn btn-lev3" id="'+type+'" onclick="selected_type=\''+type+'\'; draw_buttons();">'+type+'</a>';
             }
+            i = i + 1;
         }
         if (image_list[selected_flavour][selected_release].length != 1) {
             helptext = 'Select a starting configuration for ' + selected_flavour + ' ' + selected_release;
             controls = '<a class="btn btn-danger" id="buttonback" onclick="selected_release=\'\'; draw_buttons();">Back</a>';
         }
     }
-
-    else if (selected_type === 'AQ Managed' && selected_template !== '') {
+    else if (aqManaged === "true" && selected_template !== '') {
         $('#pick-resources').show();
         pick_aquilon();
+        controls = '<a class="btn btn-danger" id="buttonback" onclick="selected_template=\'\'; selected_template_name=\'\'; selected_template_description=\'\'; aqManaged=\'false\'; draw_buttons(); hide_resources();">Back</a>';
+        pick_resources(flavorList);
     }
 
     else if (selected_template === '') {
@@ -134,12 +139,12 @@ function draw_buttons() {
                 helptext = '';
                 buttons = 'Complete!<br> You chose ' + image_name + '. ' + image_description + '.'; // When occurs? Why no min. amounts?
                 draw_buttons();
-                controls = '<a class="btn btn-danger" id="buttonback" onclick="selected_template=\'\';selected_type=\'\';selected_template_name=\''+image_name+'\'; selected_template_description=\''+image_description+'\'; draw_buttons();hide_resources();">Back</a>';
+                controls = '<a class="btn btn-danger" id="buttonback" onclick="selected_template=\'\';selected_type=\'\';selected_template_name=\''+image_name+'\'; selected_template_description=\''+image_description+'\'; aqManaged=\'\'; draw_buttons();hide_resources();">Back</a>';
             }
             else {
                 helptext = 'Select a template for ' + selected_flavour + ' ' + selected_release + ' ' + selected_type;
-                buttons += '<a class="btn btn-lev4" id="'+image_name+'" onclick="selected_template=\''+image_id+'\'; selected_template_name=\''+image_name+'\';draw_buttons();">'+image_name+'</a>';
-                controls = '<a class="btn btn-danger" id="buttonback" onclick="selected_type=\'\'; draw_buttons();">Back</a>';
+                buttons += '<a class="btn btn-lev4" id="'+image_name+'" onclick="selected_template=\''+image_id+'\'; selected_template_name=\''+image_name+'\'; aqManaged=\''+image_list[selected_flavour][selected_release][selected_type][id].aqManaged+'\'; draw_buttons();">'+image_name+'</a>';
+                controls = '<a class="btn btn-danger" id="buttonback" onclick="selected_type=\'\'; aqManaged=\'\'; draw_buttons();">Back</a>';
             }
         }
     }
