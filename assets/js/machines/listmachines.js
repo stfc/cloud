@@ -48,15 +48,19 @@ $('.show-hide').change( 'click', function (e) {
 var fedid = Cookies.get('fedid');
 //$('#all-vms').hide();
 
-function drawTable(action) {
+function drawTable(action, projectID) {
     $.ajax({
         type: "GET",
         url: "/api/vm",
-        data: {'action' : action},
+        data: {'action' : action, 'projectID' : projectID},
         statusCode: {
             403: function() {
                 exceptions("403");
             },
+            432: function() {
+                $("#errormessage").html("There's an error with selecting the project to list VMs");
+                $("#error").show();
+            }, 
             500: function() {
                 $("#errormessage").html("The cloud may be experiencing problems. Please try again later.");
                 $("#error").show();

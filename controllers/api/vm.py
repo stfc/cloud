@@ -106,10 +106,14 @@ class VM(object):
         action : 0 = VM just been deleted
                  1 = VM just been created
 		 2 = Misc. action
+        projectID : ID of the project where VM data will be grabbed
     '''
    # @cherrypy.tools.isAuthorised()
     @cherrypy.tools.json_out()
-    def GET(self, action):
+    def GET(self, action, projectID):
+        if not projectID:
+	    raise cherrypy.HHTPError(432, "No project ID")
+
 	NOVA_VERSION = cherrypy.request.config.get("novaVersion")
         KEYSTONE_URL = cherrypy.request.config.get("keystone")
         OPENSTACK_DEFAULT_DOMAIN = cherrypy.request.config.get("openstack_default_domain")
@@ -121,7 +125,7 @@ class VM(object):
             username = cherrypy.session['username'],
             password = cherrypy.session['password'],
             user_domain_name = OPENSTACK_DEFAULT_DOMAIN,
-            project_id = "c9aee696c4b54f12a645af2c951327dc",
+            project_id = projectID,
             project_domain_name = OPENSTACK_DEFAULT_DOMAIN
         )
         sess = session.Session(auth=projectAuth, verify='/etc/ssl/certs/ca-bundle.crt')

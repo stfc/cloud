@@ -100,7 +100,6 @@ function draw_buttons() {
             }
             else {
                 buttons += '<a class="btn btn-lev3" id="'+type+'" onclick="selected_type=\''+type+'\'; aqManaged=\''+image_list[selected_flavour][selected_release][type][i].aqManaged+'\'; draw_buttons();">'+type+'</a>';
-//                buttons += '<a class="btn btn-lev3" id="'+type+'" onclick="selected_type=\''+type+'\'; draw_buttons();">'+type+'</a>';
             }
             i = i + 1;
         }
