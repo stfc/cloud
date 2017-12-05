@@ -20,10 +20,9 @@ var EMAIL = "{{ email }}";
 
 $(function() {
     getProjects();
-    quota.update();
     setInterval(function () {
         quota.update();
-        drawTable(2, document.getElementById('projectChoice').value);
+        drawTable(2);
     }, 60000);
 });
 
@@ -37,9 +36,9 @@ $(function() {
 <script src="/assets/components/bootstrap/js/dataTables.bootstrap-1.10.10.min.js"></script>
 
 <!-- Main -->
+<script src="/assets/js/machines/listprojects.js"></script>
 <script src="/assets/js/machines/quota.js"></script>
 <script src="/assets/js/machines/listmachines.js"></script>
-<script src="/assets/js/machines/listprojects.js"></script>
 <!-- novnc -->
 <script src="/assets/js/machines/novnc/util.js"></script>
 <script src="/assets/js/machines/vnc.js"></script>
@@ -67,7 +66,7 @@ $(function() {
         </div>
        
         <div>
-            <select id="projectChoice" class="btn btn-default btn-xs" onchange="drawTable(2, document.getElementById('projectChoice').value)"></select>
+            <select id="projectChoice" class="btn btn-default btn-xs" onchange="makeAjaxCalls()"></select>
             <span id="projectDisplay"></span>
         </div>
 

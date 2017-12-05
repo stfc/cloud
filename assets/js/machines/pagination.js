@@ -20,7 +20,7 @@ function drawPagination(page)
         page: p,
         onSelect: function (page) {
             offset = this.slice[0];
-            drawTable(2, document.getElementById('projectChoice').value);
+            drawTable(2);
         },
         onFormat: function (type) {
             switch (type) {

@@ -7,39 +7,43 @@ var selected_template_name = '';
 var selected_template_description = '';
 var aqManaged = "false";
 
-$.ajax({
-    type: 'GET',
-    url: '/api/templatelist',
-    dataType: 'json',
-    statusCode: {
-        403: function() {
-            exceptions("403");
-        },
-        500: function() {
-            $('#errormessage').html('The cloud may be experiencing problems. Please try again later.');
-            $('#error').show();
+function getTemplateList(){
+    $.ajax({
+        type: 'GET',
+        url: '/api/templatelist',
+        dataType: 'json',
+        statusCode: {
+            403: function() {
+                exceptions("403");
+            },
+            500: function() {
+                $('#errormessage').html('The cloud may be experiencing problems. Please try again later.');
+                $('#error').show();
+            }
         }
-    }
-}).done(function(data) {
-    image_list = data;
-});
+    }).done(function(data) {
+        image_list = data;
+    });
+}
 
-$.ajax({
-    type: 'GET',
-    url: '/api/flavors',
-    dataType: 'json',
-    statusCode: {
-        403: function() {
-            exceptions("403");
-        },
-        500: function() {
-            $('#errormessage').html('The cloud may be experiencing problems. Please try again later.');
-            $('#error').show();
+function getFlavors(){
+    $.ajax({
+        type: 'GET',
+        url: '/api/flavors',
+        dataType: 'json',
+        statusCode: {
+            403: function() {
+                exceptions("403");
+            },
+            500: function() {
+                $('#errormessage').html('The cloud may be experiencing problems. Please try again later.');
+                $('#error').show();
+            }
         }
-    }
-}).done(function(data) {
-    flavorList = data;
-});
+    }).done(function(data) {
+        flavorList = data;
+    });
+}
 
 function hide_resources() {
     $('#pick-resources').hide();

@@ -48,11 +48,11 @@ $('.show-hide').change( 'click', function (e) {
 var fedid = Cookies.get('fedid');
 //$('#all-vms').hide();
 
-function drawTable(action, projectID) {
+function drawTable(action) {
     $.ajax({
         type: "GET",
         url: "/api/vm",
-        data: {'action' : action, 'projectID' : projectID},
+        data: {'action' : action},
         statusCode: {
             403: function() {
                 exceptions("403");

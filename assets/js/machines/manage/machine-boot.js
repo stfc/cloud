@@ -1,5 +1,4 @@
-function bootVM(id)
-{
+function bootVM(id) {
     $.ajax({
         type: 'POST',
         url: '/api/vm',
@@ -11,6 +10,6 @@ function bootVM(id)
             }
         }
     }).done(function(json) {
-        drawTable(2, document.getElementById('projectChoice').value);
+        drawTable(2);
     });
 }

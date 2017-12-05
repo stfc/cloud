@@ -25,7 +25,7 @@ function deleteVM()
             }
         }
     }).done(function(json) {
-        drawTable(0, document.getElementById('projectChoice').value);
+        drawTable(0);
         quota.update();
     }).always(function(json) {
         $('#deletevmdialog').modal('hide');
