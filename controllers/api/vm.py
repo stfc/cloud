@@ -10,13 +10,14 @@ from socket import gethostbyaddr
 from datetime import datetime
 from time import mktime
 import time
+from getFunctions import *
 
 from helpers.vnctokens import *
 
 from subprocess import call
 
-class VM(object):
 
+class VM(object):
     exposed = True
 
     '''
@@ -31,23 +32,7 @@ class VM(object):
 	
         if not json.get("template_id") or not json.get("name"):
             raise cherrypy.HTTPError(400, "Bad parameters")
-	
-	NOVA_VERSION = cherrypy.request.config.get("novaVersion")
-        KEYSTONE_URL = cherrypy.request.config.get("keystone")
-        OPENSTACK_DEFAULT_DOMAIN = cherrypy.request.config.get("openstack_default_domain")
-
-	# Creating instance of Nova
-        projectName = "admin"
-        projectAuth = v3.Password(
-            auth_url = KEYSTONE_URL,
-            username = cherrypy.session['username'],
-            password = cherrypy.session['password'],
-            user_domain_name = OPENSTACK_DEFAULT_DOMAIN,
-            project_id = "c9aee696c4b54f12a645af2c951327dc",
-            project_domain_name = OPENSTACK_DEFAULT_DOMAIN
-        )
-        sess = session.Session(auth=projectAuth, verify='/etc/ssl/certs/ca-bundle.crt')
-        novaClient = nClient.Client(NOVA_VERSION, session = sess)
+	novaClient = getNovaInstance()
 
 	vmNetwork = novaClient.networks.find(label=cherrypy.request.config.get("vmNetworkLabel"))
 	
@@ -76,27 +61,10 @@ class VM(object):
     '''
    # @cherrypy.tools.isAuthorised()
     def DELETE(self, id=None):
-
         if id == None:
             raise cherrypy.HTTPError(400, "Bad parameters")
 
-	NOVA_VERSION = cherrypy.request.config.get("novaVersion")
-        KEYSTONE_URL = cherrypy.request.config.get("keystone")
-        OPENSTACK_DEFAULT_DOMAIN = cherrypy.request.config.get("openstack_default_domain")
-
-        # Creating instance of Nova
-        projectName = "admin"
-        projectAuth = v3.Password(
-            auth_url = KEYSTONE_URL,
-            username = cherrypy.session['username'],
-            password = cherrypy.session['password'],
-            user_domain_name = OPENSTACK_DEFAULT_DOMAIN,
-            project_id = "c9aee696c4b54f12a645af2c951327dc",
-            project_domain_name = OPENSTACK_DEFAULT_DOMAIN
-	)
-        sess = session.Session(auth=projectAuth, verify='/etc/ssl/certs/ca-bundle.crt')
-        novaClient = nClient.Client(NOVA_VERSION, session = sess)
-
+        novaClient = getNovaInstance()
 	novaClient.servers.delete(id)
 
 
@@ -110,30 +78,12 @@ class VM(object):
     '''
    # @cherrypy.tools.isAuthorised()
     @cherrypy.tools.json_out()
-    def GET(self, action, projectID):
-        if not projectID:
-	    raise cherrypy.HHTPError(432, "No project ID")
-
-	NOVA_VERSION = cherrypy.request.config.get("novaVersion")
-        KEYSTONE_URL = cherrypy.request.config.get("keystone")
-        OPENSTACK_DEFAULT_DOMAIN = cherrypy.request.config.get("openstack_default_domain")
-
-	# Creating instance of Nova
-	projectName = "admin"
-        projectAuth = v3.Password(
-            auth_url = KEYSTONE_URL,
-            username = cherrypy.session['username'],
-            password = cherrypy.session['password'],
-            user_domain_name = OPENSTACK_DEFAULT_DOMAIN,
-            project_id = projectID,
-            project_domain_name = OPENSTACK_DEFAULT_DOMAIN
-        )
-        sess = session.Session(auth=projectAuth, verify='/etc/ssl/certs/ca-bundle.crt')
-	novaClient = nClient.Client(NOVA_VERSION, session = sess)
+    def GET(self, action):
+	novaClient = getNovaInstance()
 
 	json = []	
 	flavorInfo = {}
-	
+
 	for flavor in novaClient.flavors.list(detailed = True):
 	    flavorInfo[flavor.name] = [flavor.vcpus, flavor.ram]
 
@@ -224,22 +174,7 @@ class VM(object):
         if not params.get("id") or not params.get("action"):
             raise cherrypy.HTTPError(400, "Bad parameters")
 
-        NOVA_VERSION = cherrypy.request.config.get("novaVersion")
-        KEYSTONE_URL = cherrypy.request.config.get("keystone")
-        OPENSTACK_DEFAULT_DOMAIN = cherrypy.request.config.get("openstack_default_domain")
-
-        # Creating instance of Nova
-        projectName = "admin"
-        projectAuth = v3.Password(
-            auth_url = KEYSTONE_URL,
-            username = cherrypy.session['username'],
-            password = cherrypy.session['password'],
-            user_domain_name = OPENSTACK_DEFAULT_DOMAIN,
-            project_id = "c9aee696c4b54f12a645af2c951327dc",
-            project_domain_name = OPENSTACK_DEFAULT_DOMAIN
-        )
-        sess = session.Session(auth=projectAuth, verify='/etc/ssl/certs/ca-bundle.crt')
-        novaClient = nClient.Client(NOVA_VERSION, session = sess)
+        novaClient = getNovaInstance()
 
         bootServer = novaClient.servers.find(id = params.get("id"))
 	bootServerState = bootServer.status

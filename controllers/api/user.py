@@ -6,6 +6,7 @@ from keystoneauth1 import session as session
 import novaclient.client as nClient
 from keystoneclient.v3 import client as client
 from keystoneauth1.identity import v3
+from getFunctions import *
 
 class User(object):
 
@@ -73,36 +74,16 @@ class User(object):
         return data
 	
     '''
-        Update user
+        Boot VM
     '''
    # @cherrypy.tools.isAuthorised()
     def POST(self, **params):
-
 	key = params.get("key")
 	keyname = params.get("keyname")
         if not params.get("action"):
             raise cherrypy.HTTPError(400, "Bad parameters")
 
-        HEADNODE = cherrypy.request.config.get("headnode")
-        FEDID = cherrypy.request.cookie.get('fedid').value
-        SESSION = cherrypy.request.cookie.get('session').value
-
-	NOVA_VERSION = cherrypy.request.config.get("novaVersion")
-        KEYSTONE_URL = cherrypy.request.config.get("keystone")
-        OPENSTACK_DEFAULT_DOMAIN = cherrypy.request.config.get("openstack_default_domain")
-
-        # Creating instance of Nova
-        projectName = "admin"
-        projectAuth = v3.Password(
-            auth_url = KEYSTONE_URL,
-            username = cherrypy.session['username'],
-            password = cherrypy.session['password'],
-            user_domain_name = OPENSTACK_DEFAULT_DOMAIN,
-            project_id = "c9aee696c4b54f12a645af2c951327dc",
-            project_domain_name = OPENSTACK_DEFAULT_DOMAIN
-        )
-        sess = session.Session(auth=projectAuth, verify='/etc/ssl/certs/ca-bundle.crt')
-        novaClient = nClient.Client(NOVA_VERSION, session = sess)
+        novaClient = getNovaInstance()
 
 	# Error checking needed before data sent off
 
