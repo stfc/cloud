@@ -1,25 +1,25 @@
 // Set DataTables
 var vmlist = $('#vm-list').DataTable( {
-    "columns": [
-        { data: 'name'},
-        { data: 'hostname'},
-        { data: 'keypair'},
-        { data: 'state'},
+    "columns": [                // Column numbers used for referencing column definitions
+        { data: 'name'},        // Column 0
+        { data: 'hostname'},    // Column 1
+        { data: 'keypair'},     // Column 2
+        { data: 'state'},       // Column 3
         { data: {
-            _: 'stime.display',
+            _: 'stime.display', // Column 4
             sort: 'stime.timestamp'
         }},
-        { data: 'type'},
-	{ data: 'flavor'},
-        { data: 'cpu'},
-        { data: 'memory'},
-        { data: 'token'},
-        { data: 'id'}
+        { data: 'type'},        // Column 5
+        { data: 'flavor'},      // Column 6
+        { data: 'cpu'},         // Column 7
+        { data: 'memory'},      // Column 8
+        { data: 'token'},       // Column 9
+        { data: 'id'}           // Column 10
     ],
     "columnDefs": [
         {
             "width": "1px",
-            "targets": [5, 6, 7, 8, 9]
+            "targets": [5, 6, 7, 8, 9]	// Collapse if they don't exist
         },
         {
             "orderable": false,
@@ -46,7 +46,6 @@ $('.show-hide').change( 'click', function (e) {
 });
 
 var fedid = Cookies.get('fedid');
-//$('#all-vms').hide();
 
 function drawTable(action) {
     $.ajax({
