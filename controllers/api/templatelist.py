@@ -40,16 +40,15 @@ class TemplateList(object):
             except:
                 raise cherrypy.HTTPError(500)
 
+	    aqManaged = "false"
             try:
-                if image.metadata[u'aq_managed'] == "false":
-                    aqManaged = "false"
-                else:
+                if image.metadata[u'aq_managed'] == "true":
                     aqManaged = "true"
             except:
-                aqManaged = "false"
 
 	    if osVariant not in menuchoices[osDistro][osVersion]:
 	        menuchoices[osDistro][osVersion][osVariant] = list()
+
 	    menuchoices[osDistro][osVersion][osVariant].append({
 		'name' : image.name,
 		'id' : image.id,
