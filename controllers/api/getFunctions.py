@@ -20,4 +20,18 @@ def getNovaInstance():
     sess = session.Session(auth=projectAuth, verify='/etc/ssl/certs/ca-bundle.crt')
     return nClient.Client(NOVA_VERSION, session = sess)
 
+def getOpenStackSession():
+    # Getting relevant details from config/global.conf
+    KEYSTONE_URL = cherrypy.request.config.get("keystone")
+    OPENSTACK_HOST = cherrypy.request.config.get("openstack_host")
+    OPENSTACK_DEFAULT_DOMAIN = cherrypy.request.config.get("openstack_default_domain")
+
+    projectAuth = v3.Password(
+        auth_url = KEYSTONE_URL,
+        username = cherrypy.session['username'],
+        password = cherrypy.session['password'],
+        user_domain_name = OPENSTACK_DEFAULT_DOMAIN,
+        project_domain_name = OPENSTACK_DEFAULT_DOMAIN
+    )
+    return session.Session(auth=projectAuth, verify='/etc/ssl/certs/ca-bundle.crt')
 
