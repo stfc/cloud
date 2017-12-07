@@ -1,6 +1,7 @@
 import cherrypy
 import ldap
 from getFunctions import getNovaInstance, getOpenStackSession
+from novaclient.exceptions import *
 
 class User(object):
 
@@ -87,7 +88,7 @@ class User(object):
             else:
                 novaClient.keypairs.delete(keyname)
                 novaClient.keypairs.create(name = keyname, public_key = key)
-	except:
+	except BadRequest:
 	    raise cherrypy.HTTPError(409, "Invalid public key")
 
         # Nova creates keypair - if key isn't valid, then raise Cherrypy error, put it in .js and make it appear
