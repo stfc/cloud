@@ -1,21 +1,7 @@
 import cherrypy
-import xmlrpclib
-import xml.etree.ElementTree as ET
-from keystoneauth1 import loading
-from keystoneauth1 import session
-from keystoneauth1.identity import v3
-import novaclient.client as nClient
-from keystoneclient.v3 import client as client
-from socket import gethostbyaddr
 from datetime import datetime
 from time import mktime
-import time
-from getFunctions import *
-
-from helpers.vnctokens import *
-
-from subprocess import call
-
+from getFunctions import getNovaInstance
 
 class VM(object):
     exposed = True

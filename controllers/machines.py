@@ -9,10 +9,7 @@ from helpers.auth import *
 from helpers.jinja import *
 from helpers.oneerror import *
 
-from keystoneauth1 import session
-from keystoneauth1.identity import v3
-import novaclient.client as nClient
-from controllers.api.getFunctions import *
+from controllers.api.getFunctions import getNovaInstance
 
 
 class Machines(object):

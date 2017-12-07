@@ -4,13 +4,11 @@ from keystoneauth1.identity import v3
 import novaclient.client as nClient
 
 def getNovaInstance():
-
+    # Getting relevant details from config/global.conf
     NOVA_VERSION = cherrypy.request.config.get("novaVersion")
     KEYSTONE_URL = cherrypy.request.config.get("keystone")
     OPENSTACK_DEFAULT_DOMAIN = cherrypy.request.config.get("openstack_default_domain")
 
-    # Creating instance of Nova
-    projectName = "admin"
     projectAuth = v3.Password(
         auth_url = KEYSTONE_URL,
         username = cherrypy.session['username'],

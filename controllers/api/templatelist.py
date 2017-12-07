@@ -1,10 +1,7 @@
 #!/usr/bin/python
 import cherrypy
 from collections import defaultdict
-from keystoneauth1 import session
-from keystoneauth1.identity import v3
-import novaclient.client as nClient
-from getFunctions import *
+from getFunctions import getNovaInstance
 
 class TemplateList(object):
 

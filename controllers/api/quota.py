@@ -1,14 +1,5 @@
 import cherrypy
-import xmlrpclib
-import xml.etree.ElementTree as ET
-
-from helpers.auth import *
-from helpers.oneerror import *
-from keystoneauth1 import session
-from keystoneauth1.identity import v3
-import novaclient.client as nClient
-import cinderclient.client as cClient
-from getFunctions import *
+from getFunctions import getNovaInstance
 
 class Quota(object):
     exposed = True

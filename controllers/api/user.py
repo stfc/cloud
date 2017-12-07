@@ -1,12 +1,6 @@
 import cherrypy
 import ldap
-
-from keystoneauth1 import loading
-from keystoneauth1 import session as session
-import novaclient.client as nClient
-from keystoneclient.v3 import client as client
-from keystoneauth1.identity import v3
-from getFunctions import *
+from getFunctions import getNovaInstance, getOpenStackSession
 
 class User(object):
 
@@ -52,7 +46,6 @@ class User(object):
 	    sess.get_token()
         except:
 	    raise cherrypy.HTTPError(403, "Invalid Credentials.")
-
 
 	# Sets Name
 	try:

@@ -1,10 +1,6 @@
 import cherrypy
-from keystoneauth1 import session
-from keystoneauth1.identity import v3
-import novaclient.client as nClient
-from socket import gethostbyaddr
 import re
-from getFunctions import *
+from getFunctions import getNovaInstance
 
 
 class Flavors(object):
