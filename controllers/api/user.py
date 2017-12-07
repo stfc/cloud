@@ -80,6 +80,7 @@ class User(object):
         # User has no keypair, import one
 	try:
             if keyname == "":
+                FEDID = cherrypy.request.cookie.get('fedid').value
                 keyname = FEDID
                 novaClient.keypairs.create(name = keyname, public_key = key)
             # Editing existing keypair
