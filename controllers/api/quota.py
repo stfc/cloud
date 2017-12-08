@@ -26,23 +26,36 @@ class Quota(object):
 	    'groupusedvm'  : limits['totalInstancesUsed'],
         }
 
+	quotaDataKeys = []
 	# Available quota figures only used when there are limits on quotas
 	if quotaData['groupquotamem'] > -1:
 	    quotaData['availablequotamem'] = quotaData['groupquotamem'] - quotaData['groupusedmem']
+	else:
+	    quotaDataKeys.append('biggestRAMAmount')
 	if quotaData['groupquotacpu'] > -1:
 	    quotaData['availablequotacpu'] = quotaData['groupquotacpu'] - quotaData['groupusedcpu']
+	else:
+	    quotaDataKeys.append('biggestCPUAmount')
 	if quotaData['groupquotavm'] > -1:
 	    quotaData['availablequotavm'] = quotaData['groupquotavm'] - quotaData['groupusedvm']
+	quotaDataKeys.append('biggestDiskAmount')
 
 	# Finding biggest disk size from each flavor to use in disk slider
         biggestAmountList = [[],[],[]]
 	for flavor in novaClient.flavors.list():
-            biggestAmountList[0].append(flavor.disk)
-            biggestAmountList[1].append(flavor.vcpus)
-            biggestAmountList[2].append(flavor.ram)
+            if quotaData['groupquotamem'] == -1:
+                biggestAmountList[0].append(flavor.ram)
+            if quotaData['groupquotacpu'] == -1:
+                biggestAmountList[1].append(flavor.vcpus)
+            biggestAmountList[2].append(flavor.disk)
+            
+	print quotaDataKeys
+	print biggestAmountList
 
-	quotaDataKeys = ['biggestDiskAmount', 'biggestCPUAmount', 'biggestRAMAmount']
-	for i in range (0,3):
+	for i in range (0, len(quotaDataKeys)):
 	    quotaData[quotaDataKeys[i]]= max(biggestAmountList[i])
 
+	print quotaData['biggestRAMAmount']
+	print quotaData['biggestCPUAmount']
+	print quotaData['biggestDiskAmount']
 	return quotaData

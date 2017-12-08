@@ -34,7 +34,7 @@ var quota = {
             // Used for slider amounts if no limits on these quotas
             biggestDiskAmount = json_out["biggestDiskAmount"];
             biggestCPUAmount = json_out["biggestCPUAmount"];
-            biggestRAMAmount = json_out["biggestRAMAmount"];
+            biggestRAMAmount = json_out["biggestRAMAmount"]/1024;
 
             // Setting sliders and dial data depending if quotas have limits
             $("#cpu-min").html("1");
