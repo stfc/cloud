@@ -35,18 +35,14 @@ class Quota(object):
 	    quotaData['availablequotavm'] = quotaData['groupquotavm'] - quotaData['groupusedvm']
 
 	# Finding biggest disk size from each flavor to use in disk slider
-	biggestDiskAmount = 0
-	biggestCPUAmount = 0
-	biggestRAMAmount = 0
+        biggestAmountList = [[],[],[]]
 	for flavor in novaClient.flavors.list():
-	    if flavor.disk > biggestDiskAmount:
-		biggestDiskAmount = flavor.disk
-	    if flavor.vcpus > biggestCPUAmount:
-		biggestCPUAmount = flavor.vcpus
-	    if flavor.ram > biggestRAMAmount:
-		biggestRAMAmount = flavor.ram
-	quotaData['biggestDiskAmount'] = biggestDiskAmount
-	quotaData['biggestCPUAmount'] = biggestCPUAmount
-	quotaData['biggestRAMAmount'] = biggestRAMAmount/1024
+            biggestAmountList[0].append(flavor.disk)
+            biggestAmountList[1].append(flavor.vcpus)
+            biggestAmountList[2].append(flavor.ram)
+
+	quotaDataKeys = ['biggestDiskAmount', 'biggestCPUAmount', 'biggestRAMAmount']
+	for i in range (0,3):
+	    quotaData[quotaDataKeys[i]]= max(biggestAmountList[i])
 
 	return quotaData
