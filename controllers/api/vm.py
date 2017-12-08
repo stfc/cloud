@@ -57,9 +57,8 @@ class VM(object):
     '''
         Return JSON list of VM information for the user
 
-        action : 0 = VM just been deleted
-                 1 = VM just been created
-		 2 = Misc. action
+        action : 1 = VM just been deleted
+                 2 = Misc. action
         projectID : ID of the project where VM data will be grabbed
     '''
    # @cherrypy.tools.isAuthorised()

@@ -22,7 +22,7 @@ function makeAjaxCalls() {
     getTemplateList();
     getFlavors();
     quota.update();
-    drawTable(2);
+    drawTable(miscAction);
     var date = new Date();
     date.setTime(date.getTime() + (86400 * 1000));
     Cookies.set("projectID", document.getElementById("projectChoice").value, {expires : date, path : '/'});

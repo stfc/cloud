@@ -143,7 +143,7 @@ function create_VM(data) {
             }
         }
     }).done(function(json) {
-        drawTable(1);
+        drawTable(miscAction);
         quota.update();
         // Enable create button so multiple VMs can be created in one session
         document.getElementById('create-btn').disabled = false;

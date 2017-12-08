@@ -10,6 +10,6 @@ function bootVM(id) {
             }
         }
     }).done(function(json) {
-        drawTable(2);
+        drawTable(miscAction);
     });
 }

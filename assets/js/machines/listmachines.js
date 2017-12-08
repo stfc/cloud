@@ -1,3 +1,6 @@
+const vmDeleted = 1    // Used when listing VMs
+const miscAction = 2
+
 // Set DataTables
 var vmlist = $('#vm-list').DataTable( {
     "columns": [                // Column numbers used for referencing column definitions
