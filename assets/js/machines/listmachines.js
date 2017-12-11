@@ -1,6 +1,15 @@
 const vmDeleted = 1    // Used when listing VMs
 const miscAction = 2
 
+// Creating a dictionary for VM states that are associated with state values
+var stateDictionary = {};
+keys = ["SHUTOFF", "PAUSED", "SHELVED", "SHELVED_OFFLOADED", "SOFT_DELETED", "SUSPENDED", "PASSWORD", "RESCUE", "RESIZE", "REVERT_RESIZE", "VERIFY_RESIZE", "HARD_REBOOT", "REBOOT", "MIGRATING", "BUILD", "REBUILD", "ACTIVE", "ERROR", "UNKNOWN", "DELETED"];
+values = [0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 2, 2, 2, 3, 3, 4, 5, 5, 5];
+
+for(var i = 0; i < keys.length; i++){
+    stateDictionary[keys[i]] = values[i];
+}
+
 // Set DataTables
 var vmlist = $('#vm-list').DataTable( {
     "columns": [                // Column numbers used for referencing column definitions
@@ -74,28 +83,9 @@ function drawTable(action) {
         for (row of data["data"]) {
             // State
             state = row['state'];
-            disabled = (state != "ACTIVE" ? "disabled" : "");
+            disabled = (stateDictionary[state] != 0 ? "disabled" : "");
 
-            if (state === "SHUTOFF" || state === "UNKNOWN" || state === "DELETED" || state === "PAUSED" || state === "SHELVED" || state === "SHELVED_OFFLOADED" || state === "SOFT_DELETED" || state === "SUSPENDED") {
-                state_val = 0;
-            }
-            else if (state === "ERROR") {
-                state_val = 5;
-            }
-            else if (state === "PASSWORD" || state === "RESCUE" || state === "RESIZE" || state === "REVERT_RESIZE" || state === "VERIFY_RESIZE") {
-                state_val = 1;
-            }
-            else if (state ===  "HARD_REBOOT" || state === "REBOOT" || state === "MIGRATING") {
-                state_val = 2;
-            }
-            else if (state ===  "BUILD" || state === "REBUILD") {
-                state_val = 3;
-            }
-            else if (state ===  "ACTIVE") {
-                state_val = 4;
-            }
-
-            row['state'] = '<span class="status-label status-label-'+state_val+'">'+state+'</span><progress max="4" value="'+state_val+'"></progress>';
+            row['state'] = '<span class="status-label status-label-'+ stateDictionary[state] +'">'+ state +'</span><progress max="4" value="'+ stateDictionary[state] +'"></progress>';
 
             // Time
             row['stime'] = {
@@ -107,7 +97,7 @@ function drawTable(action) {
             row['memory'] = row['memory']/1024 + "GB";
 
             // noVNC / Boot
-            if (state === "SHUTOFF" || state === "SUSPENDED" || state === "PAUSED" || state === "SHELVED" || state === "SHELVED_OFFLOADED") {
+            if (stateDictionary[state] === 0) {
                 row['token'] = '<button type="button" class="btn btn-success btn-xs" title="Boot Machine" onclick="bootVM(\'' + row['id'] + '\')"><span class="glyphicon glyphicon-arrow-up" style="vertical-align:middle;margin-top:-2px"></span></button>';
             } else {
                 row['token'] = '<button type="button" class="btn btn-blue btn-xs" title="Launch Desktop GUI" onclick="vncdialog(\'' + row['token'] + '\', \'' + row['name'] + '\', \'' + row['vncURL'] + '\')" ' + disabled + '><img src="/assets/images/icon-display.png" style="width:14px;margin-top:-2px" /></button>';
