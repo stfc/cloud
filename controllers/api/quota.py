@@ -49,13 +49,7 @@ class Quota(object):
                 biggestAmountList[1].append(flavor.vcpus)
             biggestAmountList[2].append(flavor.disk)
             
-	print quotaDataKeys
-	print biggestAmountList
-
 	for i in range (0, len(quotaDataKeys)):
 	    quotaData[quotaDataKeys[i]]= max(biggestAmountList[i])
 
-	print quotaData['biggestRAMAmount']
-	print quotaData['biggestCPUAmount']
-	print quotaData['biggestDiskAmount']
 	return quotaData
