@@ -24,5 +24,9 @@ class Flavors(object):
                     'ram'  : flavor.ram / 1024,
                     'disk' : flavor.disk
                 })
+	# Sorting flavors in ascending order
+	# Based on CPU, RAM & disk amounts
+	flavorList.sort()
+
 	return {"data":flavorList}
 
