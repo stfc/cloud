@@ -83,7 +83,7 @@ function drawTable(action) {
         for (row of data["data"]) {
             // State
             state = row['state'];
-            disabled = (stateDictionary[state] != 0 ? "disabled" : "");
+            disabled = (state != "ACTIVE" ? "disabled" : "");
 
             row['state'] = '<span class="status-label status-label-'+ stateDictionary[state] +'">'+ state +'</span><progress max="4" value="'+ stateDictionary[state] +'"></progress>';
 
