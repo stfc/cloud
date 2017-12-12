@@ -19,12 +19,12 @@ function getProjects() {
 }
 
 function makeAjaxCalls() {
+    var date = new Date();
+    date.setTime(date.getTime() + (86400 * 1000));
+    Cookies.set("projectID", document.getElementById("projectChoice").value, {expires : date, path : '/'});
     getTemplateList();
     getFlavors();
     quota.update();
     drawTable(miscAction);
-    var date = new Date();
-    date.setTime(date.getTime() + (86400 * 1000));
-    Cookies.set("projectID", document.getElementById("projectChoice").value, {expires : date, path : '/'});
 }
 
