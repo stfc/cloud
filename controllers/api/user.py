@@ -68,7 +68,7 @@ class User(object):
 	key = params.get("key")
 	keyname = params.get("keyname")
         if not params.get("action"):
-            raise cherrypy.HTTPError(400, "Bad parameters")
+            raise cherrypy.HTTPError('400 Bad parameters')
 
         novaClient = getNovaInstance()
 
@@ -77,7 +77,7 @@ class User(object):
 	# Cannot submit a blank key	
         if key == "":
 	    # You must have a key
-	    raise cherrypy.HTTPError(400, "No public key")
+	    raise cherrypy.HTTPError('400 You cannot submit a blank key, try again.')
         # User has no keypair, import one
 	try:
             if keyname == "":
@@ -89,6 +89,6 @@ class User(object):
                 novaClient.keypairs.delete(keyname)
                 novaClient.keypairs.create(name = keyname, public_key = key)
 	except BadRequest:
-	    raise cherrypy.HTTPError(409, "Invalid public key")
+	    raise cherrypy.HTTPError('400 You have tried to submit an invalid key, try again.')
 
         # Nova creates keypair - if key isn't valid, then raise Cherrypy error, put it in .js and make it appear

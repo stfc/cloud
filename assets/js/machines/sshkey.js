@@ -2,29 +2,21 @@ $(function() {
     $('#sshform').submit(function() {
         var key = $("#sshkey").val();
         document.getElementById('submitkey').disabled = true;
-        if (key === "") {
-            key = "\n";
-        }
-       var keyname = $('#keynameLabel').attr('value');
+
+        var keyname = $('#keynameLabel').attr('value');
         $.ajax({
             type: "POST",
             url: "/api/user",
             data: { 'action' : 'sshkey', 'key' : key, 'keyname' : keyname },
             statusCode: {
-                400: function() {
-                    $("#errormessage").html("You cannot submit a blank public key. Please insert a valid public key into the text area.");
-                    $("#error").show();
-                    document.getElementById('submitkey').disabled = false;
-                },
-                409: function() {
-                    $("#errormessage").html("You have tried to submit an invalid public key, try again.");
+                400: function(data) {
+                    // data.statusText - this is the error message passed when Cherrypy raises a HTTP error
+                    $("#errormessage").html(data.statusText);
                     $("#error").show();
                     document.getElementById('submitkey').disabled = false;
                 },
                 500: function(data) {
-                    alert(JSON.stringify(data))
-
-                    $("#errormessage").html("The cloud may be experiencing problems. Please try again later.");
+                    $("#errormessage").html(data.statusText);
                     $("#error").show();
                     document.getElementById('submitkey').disabled = false;
                 }
