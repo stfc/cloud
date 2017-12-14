@@ -15,7 +15,7 @@ class User(object):
     def PUT(self):
         data  = cherrypy.request.json
         if not data.get("username") or not data.get("password"):
-            raise cherrypy.HTTPError(400, "Please supply username and password")
+            raise cherrypy.HTTPError('400 Please supply username and password')
 
 	# Federal ID details
         HEADNODE = cherrypy.request.config.get("headnode")
@@ -39,7 +39,7 @@ class User(object):
 	try:
 	    sess.get_token()
         except:
-	    raise cherrypy.HTTPError(403, "Invalid Credentials.")
+	    raise cherrypy.HTTPError('403 "Invalid Credentials.')
 
 	# Sets Name
 	try:
