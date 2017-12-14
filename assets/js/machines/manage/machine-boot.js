@@ -5,7 +5,7 @@ function bootVM(id) {
         data: { 'action' : 'boot', 'id' : id },
         statusCode: {
             500: function(data) {
-                $('#errormessage').html('The cloud may be experiencing problems. Please try again later.');
+                $('#errormessage').html(data.statusText);
                 $('#error').show();
             }
         }

@@ -65,15 +65,15 @@ function drawTable(action) {
         url: "/api/vm",
         data: {'action' : action},
         statusCode: {
+            400: function(data) {
+                $("#errormessage").html(data.statusText);
+                $("#error").show();
+            }
             403: function() {
                 exceptions("403");
             },
-            432: function() {
-                $("#errormessage").html("There's an error with selecting the project to list VMs");
-                $("#error").show();
-            }, 
-            500: function() {
-                $("#errormessage").html("The cloud may be experiencing problems. Please try again later.");
+            500: function(data) {
+                $("#errormessage").html(data.statusText);
                 $("#error").show();
             }
         }

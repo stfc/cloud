@@ -17,7 +17,8 @@ class VM(object):
 	json = cherrypy.request.json
 	
         if not json.get("template_id") or not json.get("name"):
-            raise cherrypy.HTTPError(400, "Bad parameters")
+            raise cherrypy.HTTPError('400 Bad parameters')
+
 	novaClient = getNovaInstance()
 
 	vmNetwork = novaClient.networks.find(label=cherrypy.request.config.get("vmNetworkLabel"))
@@ -26,19 +27,26 @@ class VM(object):
         try:
 	    keyname = novaClient.keypairs.list()[0].name
 	except:
-	    raise cherrypy.HTTPError(409, "No keypair")
+	    raise cherrypy.HTTPError('400 You haven\'t got a keypair, you must have a keypair to create a VM.')
 
 	# Creating VM
-	novaClient.servers.create(
-	    name = json['name'], 
-	    image = json['template_id'], 
-	    flavor = json['flavorID'],
-	    key_name = keyname,
-	    nics = [{"net-id": vmNetwork.id}],
-	    security_groups = [cherrypy.request.config.get("securityGroupName")],
-	    availability_zone = cherrypy.request.config.get("availabilityZoneName"),
-            min_count = json['count']
-	)
+        try:
+	    novaClient.servers.create(
+	        name = json['name'], 
+ 	        image = json['template_id'], 
+	        flavor = json['flavorID'],
+	        key_name = keyname,
+	        nics = [{"net-id": vmNetwork.id}],
+	        security_groups = [cherrypy.request.config.get("securityGroupName")],
+	        availability_zone = cherrypy.request.config.get("availabilityZoneName"),
+	        metadata = [{"AQ_SANDBOX": sandbox}, 
+                            {"AQ_PERSONALITY": personality}, 
+                            {"AQ_ARCHETYPE": archetype}
+                           ],
+                min_count = json['count']
+	    )
+        except:
+            raise cherrypy.HTTPError('500 There has been a problem with creating the VM, try again later.')
 
     '''
         Delete a VM
@@ -48,10 +56,13 @@ class VM(object):
    # @cherrypy.tools.isAuthorised()
     def DELETE(self, id=None):
         if id == None:
-            raise cherrypy.HTTPError(400, "Bad parameters")
+            raise cherrypy.HTTPError('400 Bad parameters')
 
         novaClient = getNovaInstance()
-	novaClient.servers.delete(id)
+        try:
+            novaClient.servers.delete(id)
+        except:
+            raise cherrypy.HTTPError('500 There has been an unforeseen error in deleting the VM, try again later.')
 
 
     '''
@@ -83,20 +94,26 @@ class VM(object):
 	    stime = mktime(stime.timetuple())
 
 	    # Gets flavor ID --> flavor name
-	    flavorName = str(novaClient.flavors.find(id = server.flavor[u'id']))
- 	    flavorName = self.cutString(flavorName, 9, -1)
+            try:
+ 	        flavorName = str(novaClient.flavors.find(id = server.flavor[u'id']))
+ 	        flavorName = self.cutString(flavorName, 9, -1)
+	    except KeyError:	# KeyError for getting server.flavor[u'id']
+                flavorName = ""
 
 	    # Gets image ID --> image name
-	    imageName = str(novaClient.images.find(id = server.image[u'id']))
-	    imageName = self.cutString(imageName, 8, -1)
+            try:
+	        imageName = str(novaClient.images.find(id = server.image[u'id']))
+	        imageName = self.cutString(imageName, 8, -1)
+            except KeyError:
+		imageName = ""
 
 	    hostname = ""
 	    try:
-                serverIP = str(novaClient.servers.ips(server))
+                serverIP = str(novaClient.servers.ips(server))   # Errors could still occur here
                 if serverIP != "{}":
                     serverNetwork = self.getServerNetworkLabel(serverIP)
                     hostname = novaClient.servers.ips(server)[serverNetwork][0][u'addr']
-            except:
+            except KeyError:
 		hostname = ""
 
             # Gets URL with VNC token embedded
@@ -157,18 +174,26 @@ class VM(object):
     '''
     def POST(self, **params):
         if not params.get("id") or not params.get("action"):
-            raise cherrypy.HTTPError(400, "Bad parameters")
+            raise cherrypy.HTTPError('400 Bad parameters')
 
         novaClient = getNovaInstance()
+       
+        try:
+             bootServer = novaClient.servers.find(id = params.get("id"))
+        except:
+             raise cherrypy.HTTPError('500 OpenStack hasn\'t been able to find the VM you want to boot.')
 
-        bootServer = novaClient.servers.find(id = params.get("id"))
 	bootServerState = bootServer.status
 
-        if bootServerState == "SHUTOFF":
-	    bootServer.start()
-	elif bootServerState == "SUSPENDED":
-	    bootServer.resume()
-	elif bootServerState == "PAUSED":
-	    bootServer.unpause()
-	elif bootServerState == "SHELVED" or bootServerState == "SHELVED_OFFLOADED":
-	    bootServer.unshelve()
+        try:
+            if bootServerState == "SHUTOFF":
+	        bootServer.start()
+            elif bootServerState == "SUSPENDED":
+	        bootServer.resume()
+            elif bootServerState == "PAUSED":
+                bootServer.unpause()
+            elif bootServerState == "SHELVED" or bootServerState == "SHELVED_OFFLOADED":
+                bootServer.unshelve()
+        except:
+            raise cherrypy.HTTPError('500 There was a problem booting the VM, the VM was in the ' + bootServerState + ' state.')
+

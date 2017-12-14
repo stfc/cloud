@@ -19,7 +19,7 @@ function deleteVM()
                 document.getElementById('confirmdelete').disabled = false;
             },
             500: function(data) {
-                $('#errormessage').html('The cloud may be experiencing problems. Please try again later.');
+                $('#errormessage').html(data.statusText);
                 $('#error').show();
                 document.getElementById('confirmdelete').disabled = false;
             }

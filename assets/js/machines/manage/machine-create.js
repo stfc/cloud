@@ -125,20 +125,16 @@ function create_VM(data) {
         contentType: 'application/json',
         data: JSON.stringify(data),
         statusCode: {
-            400: function() {
-                creation_error('main-creation-error', 'We were unable to create your VM. If this problem persists, please contact us.');
+            400: function(data) {
+                creation_error('main-creation-error', data.statusText);
                 document.getElementById('create-btn').disabled = false;
             },
             403: function() {
                 exceptions("403");
                 document.getElementById('create-btn').disabled = false;
             },
-            409: function() {
-                creation_error('main-creation-error', 'You must have a keypair to create a VM.');
-                document.getElementById('create-btn').disabled = false;
-            },
-            500: function() {
-                creation_error('main-creation-error', 'Unable to connect to the cloud. If this problem persists, please contact us.');
+            500: function(data) {
+                creation_error('main-creation-error', data.statusText);
                 document.getElementById('create-btn').disabled = false;
             }
         }
