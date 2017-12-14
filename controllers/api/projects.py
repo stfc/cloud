@@ -27,8 +27,12 @@ class Projects(object):
 	# Get project name and ID available to user
 	projectList = []
         for project in keystoneClient.auth.projects():
-	     projectList.append({
-                    'id'   : project.id,
-                    'name' : project.name
-                })
+             try:
+	         projectList.append({
+                        'id'   : project.id,
+                        'name' : project.name
+                 })
+	     except AttributeError:
+	         pass
+
 	return {"data":projectList}
