@@ -38,7 +38,7 @@ class TemplateList(object):
                     cherrypy.log("has an uninstantiated image variant", username)
                     continue
             except KeyError:
-                pass
+                cherrypy.log("There has been a KeyError when getting image metadata", username)
 
 	    aqManaged = "false"
             try:
