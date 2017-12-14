@@ -44,7 +44,7 @@ class TemplateList(object):
             try:
                 if image.metadata[u'aq_managed'] == "true":
                     aqManaged = "true"
-            except:
+            except KeyError:
                 pass
 
 	    if osVariant not in menuchoices[osDistro][osVersion]:
