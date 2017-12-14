@@ -37,8 +37,8 @@ class TemplateList(object):
                 else:
                     cherrypy.log("has an uninstantiated image variant", username)
                     continue
-            except:
-                raise cherrypy.HTTPError(500)
+            except KeyError:
+                pass
 
 	    aqManaged = "false"
             try:
@@ -50,12 +50,17 @@ class TemplateList(object):
 	    if osVariant not in menuchoices[osDistro][osVersion]:
 	        menuchoices[osDistro][osVersion][osVariant] = list()
 
+	    try:
+	        description = image.metadata[u'description']
+            except KeyError:
+		description = ""
+
 	    menuchoices[osDistro][osVersion][osVariant].append({
 		'name' : image.name,
 		'id' : image.id,
 		'minDisk' : image.minDisk,
 		'minRAM' : image.minRam,
-		'description' : image.metadata[u'description'],
+		'description' : description,
 		'aqManaged' : aqManaged
 	    })
         return menuchoices
