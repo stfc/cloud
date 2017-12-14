@@ -68,7 +68,7 @@ function drawTable(action) {
             400: function(data) {
                 $("#errormessage").html(data.statusText);
                 $("#error").show();
-            }
+            },
             403: function() {
                 exceptions("403");
             },
