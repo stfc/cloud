@@ -51,7 +51,7 @@ class TemplateList(object):
 	        menuchoices[osDistro][osVersion][osVariant] = list()
 
 	    try:
-	        description = image.metadata[u'description']
+	        description = image.metadata[u'description'] + ". "
             except KeyError:
 		description = ""
 
