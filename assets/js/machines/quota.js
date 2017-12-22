@@ -41,28 +41,28 @@ var quota = {
             if (groupquotacpu === -1) {
                 $("#cpu-max").html(biggestCPUAmount);
                 $('#cpu-input').attr('max', biggestCPUAmount);
-                maxCPUDial = 'No Limit'
+                maxCPUDial = 'No Limit';
             } else {
                 $("#cpu-max").html(availablequotacpu);
                 $('#cpu-input').attr('max', availablequotacpu);
-                maxCPUDial = groupquotacpu
+                maxCPUDial = groupquotacpu;
             }
 
             $("#mem-min").html("1GB");
             if (groupquotamem === -1) {
                 $("#mem-max").html(biggestRAMAmount + "GB");
                 $('#memory-input').attr('max', biggestRAMAmount);
-                maxRAMDial = 'No Limit'
+                maxRAMDial = 'No Limit';
             } else {
                 $("#mem-max").html(availablequotamem + "GB");
                 $('#memory-input').attr('max', availablequotamem);
-                maxRAMDial = groupquotamem
+                maxRAMDial = groupquotamem;
             }
  
             if (groupquotavm === -1) {
-                maxVMDial = 'No Limit'
+                maxVMDial = 'No Limit';
             } else {
-                maxVMDial = groupquotavm
+                maxVMDial = groupquotavm;
             }
 
             $("#disk-min").html("1GB");
@@ -75,11 +75,12 @@ var quota = {
                 'fgColor'     : '#6897B3',
                 'bgColor'     : '#EEEEEE',
                 'min'         : '0',
-                'readOnly'    : 'true',
+                'readOnly'    : 'false',
                 'width'       : '90%',
                 'height'      : '70',
                 'thickness'   : '.20',
-                'displayMax'  : 'true'
+                'dynamicDraw' : 'true',
+                'displayMax'  : 'false'
             };
 
             colour_vm = {
@@ -95,21 +96,78 @@ var quota = {
                 'fgColor'     : '#0053b4'
             };
 
+            // Create function to return the elements
+            maxElements = document.getElementsByClassName('max-display');
+            if (maxElements.length == 0){
+                // First time dials created in the session
+                $('.group-vm').val(groupusedvm);
+                $(".group-vm").knob($.extend({
+                    'max': maxVMDial
+                }, dial, colour_vm));
 
+                $('.group-cpu').val(groupusedcpu);
+                $(".group-cpu").knob($.extend({
+                    'max': maxCPUDial
+                }, dial, colour_cpu));
+
+                $('.group-mem').val(groupusedmem);
+                $('.group-mem').knob($.extend({
+                    'max' : maxRAMDial
+                }, dial, colour_mem));
+ 
+                maxElements = document.getElementsByClassName('max-display');
+                maxIDs = ['VM', 'CPU', 'RAM'];
+
+                // What to do if maxValues.length is more than 3?
+                // Shouldn't be possible really
+                for (i = 0; i < maxElements.length; i++){
+                    document.getElementsByClassName('max-display')[i].id = maxIDs[i];
+                }
+            } else {
+                // Quota dials are being updated (due to new project or general refresh)
+                maxElements = document.getElementsByClassName('max-display');
+                for (i = 0; i < maxElements.length; i++){
+                    if (maxElements[i].id == "VM") {
+                        // If the new max. value is different to what's currently displaying
+                        if (maxElements[i].textContent != "of " + maxVMDial) {
+                            // Change text max. value (what user sees)
+                            maxElements[i].textContent = "of " + maxVMDial;
+                            // Change max. value on actual dial i.e. coloured 'pie chart' section
+                            $('.group-vm').trigger('configure', {
+                                'max' : maxVMDial,
+                            });
+                        }    
+                    } else if (maxElements[i].id == "CPU") {
+                        if (maxElements[i].textContent != "of " + maxCPUDial) {
+                            maxElements[i].textContent = "of " + maxCPUDial;
+                            $('.group-cpu').trigger('configure', {
+                                'max' : maxCPUDial,
+                            });
+                        }
+                    } else if (maxElements[i].id == "RAM") {
+                        if (maxElements[i].textContent != "of " + maxRAMDial) {
+                            maxElements[i].textContent = "of " + maxRAMDial;
+                            $('.group-mem').trigger('configure', {
+                                'max' : maxRAMDial,
+                            });
+                        }
+                    }
+
+                    for (j = 0; j < maxElements.length; j++){
+                        // Delete unneeded elements added when configuring dials
+                        if (maxElements[j].hasAttribute('id') == false){
+                            document.getElementsByClassName('max-display')[j].remove();
+                            // When element is deleted, j is decremented to reflect this in maxElements array
+                            j -= 1
+                        }
+                    }
+                }
+            }
+            
+            // Setting quota values
             $('.group-vm').val(groupusedvm);
-            $(".group-vm").knob($.extend({
-                'max': maxVMDial
-            }, dial, colour_vm));
-
             $('.group-cpu').val(groupusedcpu);
-            $(".group-cpu").knob($.extend({
-                'max': maxCPUDial
-            }, dial, colour_cpu));
-
             $('.group-mem').val(groupusedmem);
-            $(".group-mem").knob($.extend({
-                'max': maxRAMDial
-            }, dial, colour_mem));
         });
     }
 };
