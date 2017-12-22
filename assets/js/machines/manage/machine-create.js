@@ -37,9 +37,6 @@ function randomname() {
 
 // Populate array to send to /api/vm.py - Triggered by 'create' button
 function fetch_values(selected_template) {
-    // Disable 'Create' button
-    document.getElementById('create-btn').disabled = true;
-
     // Clear and hide on to reset errors
     $('.creation-error').empty().hide();
     cpu = $('#cpu-input').val();
@@ -112,6 +109,8 @@ function check_errors(data, selected_template) {
 
         // If all fields are good send data to /api/vm.py
         if (data['name'].length > 0 && data['name'] !== 'badname' && selected_template.length > 0 && resources === true && count === true) {
+            // Disable 'Create' button - no errors
+            document.getElementById('create-btn').disabled = true;
             create_VM(data);
         }
     });
