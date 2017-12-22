@@ -10,7 +10,10 @@ class Quota(object):
         novaClient = getNovaInstance()
 
 	# Getting project limits from Nova
-	projectLimits = novaClient.limits.get().absolute
+        try:
+            projectLimits = novaClient.limits.get().absolute
+        except:
+	    raise cherrypy.HTTPError('500 OpenStack cannot get the quota values.')
 
 	# Converting Nova limits to a dictionary
 	l = list(projectLimits)
