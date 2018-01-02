@@ -69,7 +69,7 @@ var quota = {
             $("#disk-max").html(biggestDiskAmount + "GB");
             $('#disk-input').attr('max', biggestDiskAmount);
 
-
+            // Dial CSS data
             dial = {
                 'inputColor'  : '#666',
                 'fgColor'     : '#6897B3',
@@ -127,30 +127,14 @@ var quota = {
                 // Quota dials are being updated (due to new project or general refresh)
                 maxElements = document.getElementsByClassName('max-display');
                 for (i = 0; i < maxElements.length; i++){
-                    if (maxElements[i].id == "VM") {
-                        // If the new max. value is different to what's currently displaying
-                        if (maxElements[i].textContent != "of " + maxVMDial) {
-                            // Change text max. value (what user sees)
-                            maxElements[i].textContent = "of " + maxVMDial;
-                            // Change max. value on actual dial i.e. coloured 'pie chart' section
-                            $('.group-vm').trigger('configure', {
-                                'max' : maxVMDial,
-                            });
-                        }    
-                    } else if (maxElements[i].id == "CPU") {
-                        if (maxElements[i].textContent != "of " + maxCPUDial) {
-                            maxElements[i].textContent = "of " + maxCPUDial;
-                            $('.group-cpu').trigger('configure', {
-                                'max' : maxCPUDial,
-                            });
-                        }
-                    } else if (maxElements[i].id == "RAM") {
-                        if (maxElements[i].textContent != "of " + maxRAMDial) {
-                            maxElements[i].textContent = "of " + maxRAMDial;
-                            $('.group-mem').trigger('configure', {
-                                'max' : maxRAMDial,
-                            });
-                        }
+                    if (maxElements[i].id == maxIDs[0]) {
+                        updateMaxValue(maxVMDial, '.group-vm');
+                    } 
+                    if (maxElements[i].id == maxIDs[1]) {
+                        updateMaxValue(maxCPUDial, '.group-cpu');
+                    } 
+                    if (maxElements[i].id == maxIDs[2]) {
+                        updateMaxValue(maxRAMDial, '.group-mem');
                     }
 
                     for (j = 0; j < maxElements.length; j++){
@@ -164,10 +148,33 @@ var quota = {
                 }
             }
             
-            // Setting quota values
-            $('.group-vm').val(groupusedvm);
-            $('.group-cpu').val(groupusedcpu);
-            $('.group-mem').val(groupusedmem);
+            updateDialValue(maxVMDial, '.group-vm', groupusedvm);
+            updateDialValue(maxCPUDial, '.group-cpu', groupusedcpu);
+            updateDialValue(maxRAMDial, '.group-mem', groupusedmem);
         });
     }
 };
+
+function updateMaxValue(maxDial, dialName){
+    // If the new max. value is different to what's currently displaying
+    if (maxElements[i].textContent != "of " + maxDial) {
+        // Change text max. value (what user sees)
+        maxElements[i].textContent = "of " + maxDial;
+        // Change max. value on actual dial i.e. coloured 'pie chart' section
+        $(dialName).trigger('configure', {
+            'max' : maxDial,
+        });
+    }
+}
+
+function updateDialValue(maxDial, dialName, quotaValue){
+    // Setting quota values - dependent on whether there is a limit on the quota
+    // Using .trigger allows the actual dial to update when there's a change in value
+    // If there is no limit, using .trigger means the actual value won't be displayed
+    // .trigger isn't needed with no limit because the actual dial won't be filled
+    if (maxDial == 'No Limit'){
+        $(dialName).val(quotaValue);
+    } else {
+        $(dialName).val(quotaValue).trigger('change');
+    }
+}
