@@ -26,7 +26,7 @@ var vmlist = $('#vm-list').DataTable( {
         { data: 'cpu'},         // Column 7
         { data: 'memory'},      // Column 8
         { data: 'token'},       // Column 9
-        { data: 'id'}           // Column 10
+        { data:'id'}           // Column 10
     ],
     "columnDefs": [
         {
