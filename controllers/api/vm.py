@@ -117,13 +117,13 @@ class VM(object):
 		hostname = ""
 
             # Gets URL with VNC token embedded
-	    if serverStatus == "ACTIVE" and action != "0" and server.name != "gputest-kernel-4.13":
 		try:
 		    vncURL = server.get_vnc_console(console_type = "novnc")[u'console'][u'url']
 		    vncToken = self.cutString(vncURL, 62, len(vncURL))
 		except:
 		    vncURL = ""
 		    vncToken = ""
+	    if serverStatus == "ACTIVE" and action != "1":
 	    else:
 		vncURL = ""
 		vncToken = ""
