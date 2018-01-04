@@ -25,6 +25,7 @@ function deleteVM()
             }
         }
     }).done(function(json) {
+        document.getElementById('confirmdelete').disabled = false;
         drawTable(vmDeleted);
         quota.update();
     }).always(function(json) {
