@@ -28,6 +28,9 @@ var vmlist = $('#vm-list').DataTable( {
         { data: 'token'},       // Column 9
         { data:'id'}           // Column 10
     ],
+    "order": [
+        [4, "desc"]
+    ],
     "columnDefs": [
         {
             "width": "1px",
