@@ -1,12 +1,16 @@
 import cherrypy
 
 '''
-   Authentication checker
+    Checks if Cherrypy session has expired
+
+    redirect : Whether to redirect to /login page or show a 403 error
 '''
 def isAuthorised(redirect=False):
-    if cherrypy.request.cookie.get('session') == None:
+    try:
+        checkSession = cherrypy.session['username'] # Session timeout length found in config/global.conf
+    except KeyError:
         if redirect == False:
-            raise cherrypy.HTTPError(403, "Forbidden")
+            raise cherrypy.HTTPError('403 Your session has expired, please login again.')
         else:
             raise cherrypy.HTTPRedirect("/login")
 

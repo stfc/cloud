@@ -63,7 +63,7 @@ class User(object):
     '''
         Boot VM
     '''
-   # @cherrypy.tools.isAuthorised()
+    @cherrypy.tools.isAuthorised()
     def POST(self, **params):
 	key = params.get("key")
 	keyname = params.get("keyname")

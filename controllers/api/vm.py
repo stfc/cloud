@@ -12,6 +12,7 @@ class VM(object):
         template_id : the id of template to use with VM
         name        : name for the new VM
     '''
+    @cherrypy.tools.isAuthorised()
     @cherrypy.tools.json_in()
     def PUT(self):
 	json = cherrypy.request.json
@@ -53,7 +54,7 @@ class VM(object):
 
         id : the id of the VM to be deleted
     '''
-   # @cherrypy.tools.isAuthorised()
+    @cherrypy.tools.isAuthorised()
     def DELETE(self, id=None):
         if id == None:
             raise cherrypy.HTTPError('400 Bad parameters')
@@ -72,7 +73,7 @@ class VM(object):
                  2 = Misc. action
         projectID : ID of the project where VM data will be grabbed
     '''
-   # @cherrypy.tools.isAuthorised()
+    @cherrypy.tools.isAuthorised()
     @cherrypy.tools.json_out()
     def GET(self, action):
 	novaClient = getNovaInstance()
@@ -167,11 +168,12 @@ class VM(object):
 	return serverNetwork
 
     '''
-        Upate VM info/state
+        Update VM info/state
 
         id     : the id of VM to update
         action : the action to be performed
     '''
+    @cherrypy.tools.isAuthorised()
     def POST(self, **params):
         if not params.get("id") or not params.get("action"):
             raise cherrypy.HTTPError('400 Bad parameters')
