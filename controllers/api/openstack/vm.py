@@ -2,6 +2,7 @@ import cherrypy
 from datetime import datetime
 from time import mktime
 from getFunctions import getNovaInstance
+from novaclient.exceptions import NotFound
 
 class VM(object):
     exposed = True
@@ -21,7 +22,6 @@ class VM(object):
             raise cherrypy.HTTPError('400 Bad parameters')
 
 	novaClient = getNovaInstance()
-
 	vmNetwork = novaClient.networks.find(label=cherrypy.request.config.get("vmNetworkLabel"))
 	
 	# Making sure user has a keypair
@@ -40,10 +40,6 @@ class VM(object):
 	        nics = [{"net-id": vmNetwork.id}],
 	        security_groups = [cherrypy.request.config.get("securityGroupName")],
 	        availability_zone = cherrypy.request.config.get("availabilityZoneName"),
-	        metadata = [{"AQ_SANDBOX": sandbox}, 
-                            {"AQ_PERSONALITY": personality}, 
-                            {"AQ_ARCHETYPE": archetype}
-                           ],
                 min_count = json['count']
 	    )
         except:
@@ -118,13 +114,13 @@ class VM(object):
 		hostname = ""
 
             # Gets URL with VNC token embedded
+            if serverStatus == "ACTIVE" and action != "1":
 		try:
 		    vncURL = server.get_vnc_console(console_type = "novnc")[u'console'][u'url']
 		    vncToken = self.cutString(vncURL, 62, len(vncURL))
 		except:
 		    vncURL = ""
 		    vncToken = ""
-	    if serverStatus == "ACTIVE" and action != "1":
 	    else:
 		vncURL = ""
 		vncToken = ""

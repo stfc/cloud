@@ -9,7 +9,7 @@ from helpers.auth import *
 from helpers.jinja import *
 from helpers.oneerror import *
 
-from controllers.api.getFunctions import getNovaInstance
+from getFunctions import getNovaInstance
 
 
 class Machines(object):
