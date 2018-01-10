@@ -17,14 +17,26 @@ var INCLUDE_URI = "/assets/js/machines/novnc/";
 var WSHOSTNAME = "{{ wshostname }}";
 var WSPORT = "{{ wsport }}";
 var EMAIL = "{{ email }}";
+var CLOUDPLATFORM = "{{ cloudPlatform }}";
 
-$(function() {
-    getProjects();
-    setInterval(function () {
+if (CLOUDPLATFORM == "opennebula") {
+    $(function() {
+        drawTable();
         quota.update();
-        drawTable(miscAction);
-    }, 60000);
-});
+        setInterval(function () {
+            quota.update();
+            drawTable();
+        }, 60000);
+    });
+} else if (CLOUDPLATFORM == "openstack") {
+    $(function() {
+        getProjects();
+        setInterval(function () {
+            quota.update();
+            drawTable(miscAction);
+        }, 60000);
+    });
+}
 
 </script>
 <!-- Other -->
@@ -36,21 +48,21 @@ $(function() {
 <script src="/assets/components/bootstrap/js/dataTables.bootstrap-1.10.10.min.js"></script>
 
 <!-- Main -->
-<script src="/assets/js/machines/listprojects.js"></script>
-<script src="/assets/js/machines/quota.js"></script>
-<script src="/assets/js/machines/listmachines.js"></script>
+<script src="/assets/js/machines/{{ cloudPlatform }}/listprojects.js"></script>
+<script src="/assets/js/machines/{{ cloudPlatform }}/quota.js"></script>
+<script src="/assets/js/machines/{{ cloudPlatform }}/listmachines.js"></script>
 <!-- novnc -->
 <script src="/assets/js/machines/novnc/util.js"></script>
-<script src="/assets/js/machines/vnc.js"></script>
+<script src="/assets/js/machines/{{ cloudPlatform }}/vnc.js"></script>
 
 <!-- Manage -->
 <script src="/assets/js/machines/manage/machine-boot.js"></script>
-<script src="/assets/js/machines/manage/machine-delete.js"></script>
-<script src="/assets/js/machines/manage/machine-create.js"></script>
+<script src="/assets/js/machines/{{ cloudPlatform }}/manage/machine-delete.js"></script>
+<script src="/assets/js/machines/{{ cloudPlatform }}/manage/machine-create.js"></script>
 <!-- Create VM -->
-<script src="/assets/js/machines/manage/create/pick-aquilon.js"></script>
-<script src="/assets/js/machines/manage/create/pick-template.js"></script>
-<script src="/assets/js/machines/manage/create/pick-resources.js"></script>
+<script src="/assets/js/machines/{{ cloudPlatform }}/manage/create/pick-aquilon.js"></script>
+<script src="/assets/js/machines/{{ cloudPlatform }}/manage/create/pick-template.js"></script>
+<script src="/assets/js/machines/{{ cloudPlatform }}/manage/create/pick-resources.js"></script>
 
 {% endblock %}
 
@@ -94,9 +106,9 @@ $(function() {
             </div>
         </div>
     </div>
-    {% include "machines/resources.html" %}
+    {% include "machines/%s/resources.html" % cloudPlatform %}
 </div>
-{% include "machines/filters.html" %}
+{% include "machines/%s/filters.html" %cloudPlatform %}
 
 {% include "machines/manage/create/index.html" %}
 
