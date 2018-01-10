@@ -21,7 +21,8 @@ class Machines(object):
         WSHOSTNAME = cherrypy.request.config.get("wshostname")
         WSPORT = cherrypy.request.config.get("wsport")
         EMAIL = cherrypy.request.config.get("email")
-        return {"wshostname" : WSHOSTNAME, "wsport" : WSPORT, "email" : EMAIL}
+        CLOUDPLATFORM = cherrypy.request.config.get("cloudPlatform")
+        return {"wshostname" : WSHOSTNAME, "wsport" : WSPORT, "email" : EMAIL, "cloudPlatform" : CLOUDPLATFORM}
 
 
     @cherrypy.expose
