@@ -87,17 +87,7 @@ if (CLOUDPLATFORM == "opennebula") {
                 <table id="vm-list" class="table" cellspacing="0" width="100%">
                     <thead>
                         <tr>
-                            <th>VM Name</th>
-                            <th>Hostname</th>
-                            <th>Key Pair</th>
-                            <th>State</th>
-                            <th>Created</th>
-                            <th>Type</th>
-                            <th>Flavor</th>
-                            <th>CPU</th>
-                            <th>RAM</th>
-                            <th></th>
-                            <th></th>
+                            {% include "machines/%s/columntitles.html" % cloudPlatform %}
                         </tr>
                     </thead>
                 </table>
