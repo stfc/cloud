@@ -12,6 +12,8 @@ class Projects(object):
         KEYSTONE_URL = cherrypy.request.config.get("keystone")
         OPENSTACK_HOST = cherrypy.request.config.get("openstack_host")
         OPENSTACK_DEFAULT_DOMAIN = cherrypy.request.config.get("openstack_default_domain")
+        
+        username = cherrypy.request.cookie.get('session').value
 
 	# Create instance of Keystone
         projectAuth = v3.Password(
@@ -33,6 +35,6 @@ class Projects(object):
                         'name' : project.name
                  })
 	     except AttributeError:
-	         pass
+	         cherrypy.log(username, '- There\'s been an AttributeError when getting the project data for user')
 
 	return {"data":projectList}

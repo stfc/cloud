@@ -8,6 +8,8 @@ class Quota(object):
 
     def GET(self):
         novaClient = getNovaInstance()
+        username = cherrypy.request.cookie.get('fedid').value
+        projectID = cherrypy.request.cookie.get('projectID').value
 
         # Getting project limits from Nova
         try:
@@ -29,8 +31,9 @@ class Quota(object):
                 'groupusedcpu' : limits['totalCoresUsed'],
                 'groupusedvm'  : limits['totalInstancesUsed'],
             }
-        except AttributeError:
-            raise cherrypy.HTTPError('500 There has been an AttributeError putting quota data into a dictionary to be manipulated.')
+        except KeyError:
+            cherrypy.log(username, '- There\'s been an error getting quota values for project ID:', projectID)
+            raise cherrypy.HTTPError('500 There has been an error getting quota data from OpenStack.')
 
         quotaDataKeys = []
         # Available quota figures only used when there are limits on quotas

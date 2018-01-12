@@ -36,7 +36,7 @@ class Machines(object):
     @cherrypy.tools.isAuthorised(redirect=True)
     @cherrypy.tools.jinja(template="machines/ssh.html")
     def ssh(self):
-
+        username = cherrypy.request.cookie.get('fedid').value
         novaClient = getNovaInstance()
 
 	# Checking if user has a keypair and dealing if this isn't the case
@@ -46,6 +46,11 @@ class Machines(object):
 	except IndexError:
 	    key = ""
 	    keyname = ""
+        except AttributeError:
+            key = ""
+            keyname = ""
+            cherrypy.log(username, '- There\'s been an AttributeError when getting user\'s keypair')
+            raise cherrypy.HTTPError('500 There\'s been a problem with getting your keypair data')
 	
         return { 'key' : key , 'keyname' : keyname }
 
