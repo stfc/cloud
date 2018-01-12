@@ -1,5 +1,6 @@
 import cherrypy
 from getFunctions import getNovaInstance
+from novaclient.exceptions import ClientException
 
 class Quota(object):
     exposed = True
@@ -14,7 +15,8 @@ class Quota(object):
         # Getting project limits from Nova
         try:
             projectLimits = novaClient.limits.get().absolute
-        except:
+        except ClientException as e:
+            cherrypy.log('- Error during API call of quota values: ' + str(e), username)
             raise cherrypy.HTTPError('500 OpenStack cannot get the quota values.')
 
         # Converting Nova limits to a dictionary
@@ -32,7 +34,7 @@ class Quota(object):
                 'groupusedvm'  : limits['totalInstancesUsed'],
             }
         except KeyError:
-            cherrypy.log(username, '- There\'s been an error getting quota values for project ID:', projectID)
+            cherrypy.log('- KeyError getting quota values for project ID:', projectID, username)
             raise cherrypy.HTTPError('500 There has been an error getting quota data from OpenStack.')
 
         quotaDataKeys = []
@@ -71,8 +73,11 @@ class Quota(object):
 
         if len(quotaDataKeys) > 0:
             for i in range (0, len(quotaDataKeys)):
-                quotaData[quotaDataKeys[i]]= max(biggestAmountList[i])
-
+                try:
+                    quotaData[quotaDataKeys[i]]= max(biggestAmountList[i])
+                except AttributeError:
+                    cherrypy.log('- Error when finding max. values of a resource.', username)
+                    raise cherrypy.HTTPError('500 There\'s been an error when manipulating quota data.')
         return quotaData
 
     def listLengthCheck(self, resourceList, biggestAmountList):

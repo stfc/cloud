@@ -2,7 +2,7 @@ import cherrypy
 from datetime import datetime
 from time import mktime
 from getFunctions import getNovaInstance
-from novaclient.exceptions import NotFound
+from novaclient.exceptions import ClientException, NotFound
 
 class VM(object):
     exposed = True
@@ -27,7 +27,7 @@ class VM(object):
 	# Making sure user has a keypair
         try:
 	    keyname = novaClient.keypairs.list()[0].name
-	except:
+	except IndexError:
 	    raise cherrypy.HTTPError('400 You haven\'t got a keypair, you must have a keypair to create a VM.')
 
 	# Creating VM
@@ -42,7 +42,8 @@ class VM(object):
 	        availability_zone = cherrypy.request.config.get("availabilityZoneName"),
                 min_count = json['count']
 	    )
-        except:
+        except ClientException as e:
+            cherrypy.log('- ' + str(e), username)
             raise cherrypy.HTTPError('500 There has been a problem with creating the VM, try again later.')
 
     '''
@@ -58,7 +59,8 @@ class VM(object):
         novaClient = getNovaInstance()
         try:
             novaClient.servers.delete(id)
-        except:
+        except ClientException as e:
+            cherrypy.log('- ' + str(e), username)
             raise cherrypy.HTTPError('500 There has been an unforeseen error in deleting the VM, try again later.')
 
 
@@ -95,6 +97,7 @@ class VM(object):
  	        flavorName = str(novaClient.flavors.find(id = server.flavor[u'id']))
  	        flavorName = self.cutString(flavorName, 9, -1)
 	    except KeyError:	# KeyError for getting server.flavor[u'id']
+                cherrypy.log('- KeyError when getting flavorName for VM: ' + str(server.name), username)
                 flavorName = ""
 
 	    # Gets image ID --> image name
@@ -102,15 +105,17 @@ class VM(object):
 	        imageName = str(novaClient.images.find(id = server.image[u'id']))
 	        imageName = self.cutString(imageName, 8, -1)
             except KeyError:
+                cherrypy.log('- KeyError when getting imageName for VM: ' + str(server.name), username)
 		imageName = ""
 
 	    hostname = ""
 	    try:
-                serverIP = str(novaClient.servers.ips(server))   # Errors could still occur here
+                serverIP = str(novaClient.servers.ips(server))
                 if serverIP != "{}":
                     serverNetwork = self.getServerNetworkLabel(serverIP)
                     hostname = novaClient.servers.ips(server)[serverNetwork][0][u'addr']
             except KeyError:
+                cherrypy.log('- KeyError when getting hostname for VM: ' + str(server.name), username)
 		hostname = ""
 
             # Gets URL with VNC token embedded
@@ -119,6 +124,7 @@ class VM(object):
 		    vncURL = server.get_vnc_console(console_type = "novnc")[u'console'][u'url']
 		    vncToken = self.cutString(vncURL, 62, len(vncURL))
 		except:
+                    cherrypy.log('- KeyError when getting VNC data for VM: ' + str(server.name), username)
 		    vncURL = ""
 		    vncToken = ""
 	    else:
@@ -178,7 +184,8 @@ class VM(object):
        
         try:
              bootServer = novaClient.servers.find(id = params.get("id"))
-        except:
+        except NotFound as e:
+             cherrypy.log(username + ' - ' + str(e))
              raise cherrypy.HTTPError('500 OpenStack hasn\'t been able to find the VM you want to boot.')
 
 	bootServerState = bootServer.status
@@ -192,6 +199,7 @@ class VM(object):
                 bootServer.unpause()
             elif bootServerState == "SHELVED" or bootServerState == "SHELVED_OFFLOADED":
                 bootServer.unshelve()
-        except:
+        except ClientException as e:
+            cherrypy.log(username + ' - ' + str(e))
             raise cherrypy.HTTPError('500 There was a problem booting the VM, the VM was in the ' + bootServerState + ' state.')
 

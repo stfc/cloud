@@ -27,7 +27,7 @@ class Flavors(object):
                         'disk' : flavor.disk
                     })
             except AttributeError:
-                cherrypy.log(username, '- AttributeError while appending flavorList')
+                cherrypy.log('- AttributeError while appending flavorList: ' + str(flavor), username)
 	# Sorting flavors in ascending order
 	# Based on CPU, RAM & disk amounts
 	flavorList.sort()

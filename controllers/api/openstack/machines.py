@@ -49,7 +49,7 @@ class Machines(object):
         except AttributeError:
             key = ""
             keyname = ""
-            cherrypy.log(username, '- There\'s been an AttributeError when getting user\'s keypair')
+            cherrypy.log('- AttributeError when getting user\'s keypair:', username)
             raise cherrypy.HTTPError('500 There\'s been a problem with getting your keypair data')
 	
         return { 'key' : key , 'keyname' : keyname }

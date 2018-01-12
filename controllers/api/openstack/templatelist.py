@@ -25,27 +25,27 @@ class TemplateList(object):
                 if image.metadata[u'os_distro'] is not None:
                     osDistro = image.metadata[u'os_distro']
 	        else:
-		    cherrypy.log("has an uninstantiated image flavour", username)
+		    cherrypy.log("has an uninstantiated image flavour: " + str(image), username)
 		    continue
     	        if image.metadata[u'os_version'] is not None:
                     osVersion = image.metadata[u'os_version']
                 else:
-                    cherrypy.log("has an uninstantiated image version", username)
+                    cherrypy.log("has an uninstantiated image version: " + str(image), username)
                     continue
 	        if image.metadata[u'os_variant'] is not None:
                     osVariant = image.metadata[u'os_variant']
                 else:
-                    cherrypy.log("has an uninstantiated image variant", username)
+                    cherrypy.log("has an uninstantiated image variant: " + str(image), username)
                     continue
             except KeyError:
-                cherrypy.log("There has been a KeyError when getting image metadata", username)
+                cherrypy.log("- KeyError when getting image metadata in image:" + str(image), username)
 
 	    aqManaged = "false"
             try:
                 if image.metadata[u'aq_managed'] == "true":
                     aqManaged = "true"
             except KeyError:
-                pass
+                cherrypy.log("- KeyError when seeing if an image is Aquilon managed, Image: " + str(image), username)
 
 	    if osVariant not in menuchoices[osDistro][osVersion]:
 	        menuchoices[osDistro][osVersion][osVariant] = list()
@@ -54,6 +54,7 @@ class TemplateList(object):
 	        description = image.metadata[u'description'] + ". "
             except KeyError:
 		description = ""
+                cherrypy.log("- KeyError in image:" + str(image), username)
 
 	    menuchoices[osDistro][osVersion][osVariant].append({
 		'name' : image.name,

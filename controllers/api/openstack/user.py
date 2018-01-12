@@ -1,7 +1,8 @@
 import cherrypy
 import ldap
 from getFunctions import getNovaInstance, getOpenStackSession
-from novaclient.exceptions import *
+from keystoneauth1.exceptions import Unauthorized
+from novaclient.exceptions import BadRequest
 
 class User(object):
 
@@ -38,8 +39,8 @@ class User(object):
 	# Ensuring correct credentials entered
 	try:
 	    sess.get_token()
-        except:
-	    raise cherrypy.HTTPError('403 "Invalid Credentials.')
+        except Unauthorized:
+	    raise cherrypy.HTTPError('403 Invalid Credentials.')
 
 	# Sets Name
 	try:
@@ -70,9 +71,8 @@ class User(object):
         if not params.get("action"):
             raise cherrypy.HTTPError('400 Bad parameters')
 
+        username = cherrypy.request.cookie.get('fedid').value
         novaClient = getNovaInstance()
-
-	# Error checking needed before data sent off
 
 	# Cannot submit a blank key	
         if key == "":
@@ -80,6 +80,7 @@ class User(object):
 	    raise cherrypy.HTTPError('400 You cannot submit a blank key, try again.')
         # User has no keypair, import one
 	try:
+            # User has no keypair, import one
             if keyname == "":
                 FEDID = cherrypy.request.cookie.get('fedid').value
                 keyname = FEDID
@@ -88,7 +89,6 @@ class User(object):
             else:
                 novaClient.keypairs.delete(keyname)
                 novaClient.keypairs.create(name = keyname, public_key = key)
-	except BadRequest:
+	except BadRequest as e:
+            cherrypy.log('- BadRequest when submitting keypair to OpenStack: ' + str(e), username)
 	    raise cherrypy.HTTPError('400 You have tried to submit an invalid key, try again.')
-
-        # Nova creates keypair - if key isn't valid, then raise Cherrypy error, put it in .js and make it appear
