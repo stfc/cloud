@@ -16,6 +16,7 @@ class VM(object):
     @cherrypy.tools.isAuthorised()
     @cherrypy.tools.json_in()
     def PUT(self):
+        username = cherrypy.request.cookie.get('fedid').value
 	json = cherrypy.request.json
 	
         if not json.get("template_id") or not json.get("name"):
@@ -42,7 +43,7 @@ class VM(object):
 	        availability_zone = cherrypy.request.config.get("availabilityZoneName"),
                 min_count = json['count']
 	    )
-        except ClientException as e:
+        except (ClientException, KeyError) as e:
             cherrypy.log('- ' + str(e), username)
             raise cherrypy.HTTPError('500 There has been a problem with creating the VM, try again later.')
 
@@ -53,6 +54,7 @@ class VM(object):
     '''
     @cherrypy.tools.isAuthorised()
     def DELETE(self, id=None):
+        username = cherrypy.request.cookie.get('fedid').value
         if id == None:
             raise cherrypy.HTTPError('400 Bad parameters')
 
@@ -75,6 +77,7 @@ class VM(object):
     @cherrypy.tools.json_out()
     def GET(self, action):
 	novaClient = getNovaInstance()
+        username = cherrypy.request.cookie.get('fedid').value
 
 	json = []	
 	flavorInfo = {}
@@ -114,8 +117,8 @@ class VM(object):
                 if serverIP != "{}":
                     serverNetwork = self.getServerNetworkLabel(serverIP)
                     hostname = novaClient.servers.ips(server)[serverNetwork][0][u'addr']
-            except KeyError:
-                cherrypy.log('- KeyError when getting hostname for VM: ' + str(server.name), username)
+            except (ClientException, KeyError) as e:
+                cherrypy.log(username + ' - ' + str(e))
 		hostname = ""
 
             # Gets URL with VNC token embedded
@@ -123,8 +126,8 @@ class VM(object):
 		try:
 		    vncURL = server.get_vnc_console(console_type = "novnc")[u'console'][u'url']
 		    vncToken = self.cutString(vncURL, 62, len(vncURL))
-		except:
-                    cherrypy.log('- KeyError when getting VNC data for VM: ' + str(server.name), username)
+		except ClientException as e:
+                    cherrypy.log(username + ' - ' + str(e))
 		    vncURL = ""
 		    vncToken = ""
 	    else:
@@ -177,6 +180,7 @@ class VM(object):
     '''
     @cherrypy.tools.isAuthorised()
     def POST(self, **params):
+        username = cherrypy.request.cookie.get('fedid').value
         if not params.get("id") or not params.get("action"):
             raise cherrypy.HTTPError('400 Bad parameters')
 
