@@ -29,32 +29,22 @@ var quota = {
             userquotavm = json_out["userquotavm"];
             userquotacpu = json_out["userquotacpu"];
             userquotamem = json_out["userquotamem"];
-            userquotasys = json_out["userquotasys"];
 
             userusedvm = json_out["userusedvm"];
             userusedcpu = Math.ceil(json_out["userusedcpu"]);
             userusedmem = json_out["userusedmem"];
-            userusedsys = json_out["userusedsys"];
-
-            groupquotavm = json_out["groupquotavm"];
-            groupquotacpu = json_out["groupquotacpu"];
-            groupquotamem = json_out["groupquotamem"];
-            groupquotasys = json_out["groupquotasys"];
 
             groupusedvm = json_out["groupusedvm"];
             groupusedcpu = Math.ceil(json_out["groupusedcpu"]);
             groupusedmem = json_out["groupusedmem"];
-            groupusedsys = json_out["groupusedsys"];
 
             vmavailable = json_out["availablevm"];
             cpuavailable = json_out["availablecpu"]|0;
             memavailable = json_out["availablemem"];
-            sysavailable = json_out["availablesys"];
 
             availablequotavm = json_out["availablequotavm"];
             availablequotacpu = json_out["availablequotacpu"];
             availablequotamem = json_out["availablequotamem"];
-            availablequotasys = json_out["availablequotasys"];
 
             // Sliders
             $('#cpu-input').attr('max', cpuavailable);
@@ -90,11 +80,6 @@ var quota = {
                 'inputColor'  : '#0053b4',
                 'fgColor'     : '#0053b4'
             };
-            colour_sys = {
-                'inputColor'  : '#b40053',
-                'fgColor'     : '#b40053'
-            };
-
 
             // Available
             $('.available-vm').val(vmavailable).trigger('change');
@@ -115,13 +100,6 @@ var quota = {
                 'rotation': 'anticlockwise'
             }, dial, colour_mem));
 
-            $('.available-sys').val(sysavailable).trigger('change');
-            $(".available-sys").knob($.extend({
-                'max': availablequotasys,
-                'rotation': 'anticlockwise'
-            }, dial, colour_sys));
-
-
             // User
             $('.user-vm').val(userusedvm).trigger('change');
             $(".user-vm").knob($.extend({
@@ -137,33 +115,6 @@ var quota = {
             $(".user-mem").knob($.extend({
                 'max': userquotamem
             }, dial, colour_mem));
-
-            $('.user-sys').val(userusedsys).trigger('change');
-            $(".user-sys").knob($.extend({
-                'max': userquotasys
-            }, dial, colour_sys));
-
-
-            // Group
-            $('.group-vm').val(groupusedvm).trigger('change');
-            $(".group-vm").knob($.extend({
-                'max': groupquotavm
-            }, dial, colour_vm));
-
-            $('.group-cpu').val(groupusedcpu).trigger('change');
-            $(".group-cpu").knob($.extend({
-                'max': groupquotacpu
-            }, dial, colour_cpu));
-
-            $('.group-mem').val(groupusedmem).trigger('change');
-            $(".group-mem").knob($.extend({
-                'max': groupquotamem
-            }, dial, colour_mem));
-
-            $('.group-sys').val(groupusedsys).trigger('change');
-            $(".group-sys").knob($.extend({
-                'max': groupquotasys
-            }, dial, colour_sys));
         });
     }
 };
