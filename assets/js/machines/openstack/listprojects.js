@@ -20,7 +20,7 @@ function getProjects() {
 
 function makeAjaxCalls() {
     var date = new Date();
-    date.setTime(date.getTime() + (86400 * 1000));
+    date.setTime(date.getTime() + (86400 * 1000));    // Cookie will expire 24 hours after creating
     Cookies.set("projectID", document.getElementById("projectChoice").value, {expires : date, path : '/'});
     getTemplateList();
     getFlavors();
