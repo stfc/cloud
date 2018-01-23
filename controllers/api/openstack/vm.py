@@ -119,7 +119,6 @@ class VM(object):
                     hostname = novaClient.servers.ips(server)[serverNetwork][0][u'addr']
             except (ClientException, KeyError) as e:
                 cherrypy.log(username + ' - ' + str(e))
-		hostname = ""
 
             # Gets URL with VNC token embedded
             if serverStatus == "ACTIVE" and action != "1":
