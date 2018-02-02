@@ -16,6 +16,9 @@ var quota = {
                 }
             }
         }).done(function(json_out) {
+            loadingCount++;
+            console.log(loadingCount);
+
             $('#resources').show();
 
             // Structure

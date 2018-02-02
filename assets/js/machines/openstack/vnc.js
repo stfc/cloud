@@ -31,7 +31,7 @@ function vncconnect(token)
                    'view_only': false,
                    'onUpdateState': updateState,
                    'onXvpInit' : xvpInit});
-    rfb.connect(WSHOSTNAME, WSPORT, null, "websockify?token=" + token);
+    rfb.connect(WSHOSTNAME, WSPORT, null, "vnc_auto.html?token=" + token);
 
     // hide local cursor when in VNC canvas
     $('#noVNC_canvas').css('cursor', 'none');

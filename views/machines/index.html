@@ -80,6 +80,7 @@ if (CLOUDPLATFORM == "opennebula") {
         <div>
             Current Project:
             <select id="projectChoice" class="btn btn-default btn-xs" onchange="makeAjaxCalls()"></select>
+            <span id="loadingStatus"></span>
         </div>
 
         <button type="button" class="btn btn-default" id="filter-button" title="Table Filters" onclick="filterTableDialog()"><span class="glyphicon glyphicon-cog"></span></button>

@@ -23,6 +23,8 @@ function getTemplateList(){
         }
     }).done(function(data) {
         image_list = data;
+        loadingCount++;
+        console.log(loadingCount);
     });
 }
 
@@ -42,6 +44,8 @@ function getFlavors(){
         }
     }).done(function(data) {
         flavorList = data;
+        loadingCount++;
+        console.log(loadingCount);
     });
 }
 

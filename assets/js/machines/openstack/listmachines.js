@@ -81,6 +81,9 @@ function drawTable(action) {
             }
         }
     }).done(function(data) {
+        loadingCount++;
+        console.log(loadingCount);
+
         $('#all-vms').hide();
         vmlist.clear();
         for (row of data["data"]) {
