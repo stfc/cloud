@@ -3,11 +3,9 @@
 
 {% extends "layout.html" %}
 
-{% block javascript %}
-<script src="/assets/js/machines/{{ cloudPlatform }}/sshkey.js"></script>
-{% endblock %}
-
 {% block content %}
+<script src="/assets/js/machines/openstack/sshkey.js"></script>
+
 <div class="row">
     <div class="col-md-12">
         <h1 class="page-header">SSH Key</h1>
