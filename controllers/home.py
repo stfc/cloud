@@ -15,7 +15,7 @@ class Home(object):
     @cherrypy.expose
     def tos(self):
         EMAIL = cherrypy.request.config.get("email")
-        return {"email" : HOME}
+        return {"email" : EMAIL}
 
     @cherrypy.tools.jinja(template="home/sla.html")
     @cherrypy.expose
