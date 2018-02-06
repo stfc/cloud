@@ -36,6 +36,9 @@ class Machines(object):
     @cherrypy.tools.isAuthorised(redirect=True)
     @cherrypy.tools.jinja(template="machines/ssh.html")
     def ssh(self):
+        CLOUDPLATFORM = cherrypy.request.config.get("cloudPlatform")
+        return {"cloudPlatform" : CLOUDPLATFORM}
+
         username = cherrypy.request.cookie.get('fedid').value
         novaClient = getNovaInstance()
 
