@@ -30,15 +30,11 @@ function makeAjaxCalls() {
     quota.update();
     drawTable(miscAction);
 
-
-//    while (loadingCount <= 4){
-        console.log(loadingCount);
-        // Nothing
-    //}
-    if (loadingCount === 4){
-        $("#loadingStatus").html("Finished Loading");
-    }
-//    $("#loadingStatus").html("Finished Loading");
-
 }
 
+function incrementLoadingCount() {
+    loadingCount++;
+    if (loadingCount >= 4) {
+        $("#loadingStatus").html("Finished Loading");
+    };
+}
