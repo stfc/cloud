@@ -130,6 +130,19 @@ function draw_buttons() {
         buttons = 'Complete!<br> You chose ' + selected_template_name + '. ' + image_description;
         controls = '<a class="btn btn-danger" id="buttonback" onclick="selected_template=\'\'; selected_template_name=\'\'; selected_template_description=\'\'; draw_buttons(); hide_resources();">Back</a>';
     }
+
+    if ($('<div>' + buttons + '</div>').children().filter('.btn').length >= 4) {
+        $('#buttonbox').removeClass('btn-group')
+         .addClass('btn-group-vertical')
+         .removeClass('btn-group-justified')
+         .attr("style","width:100%");
+    }
+    else {
+        $('#buttonbox').removeClass('btn-group-vertical')
+         .addClass('btn-group')
+         .addClass('btn-group-justified')
+         .removeAttr("style","width:100%");
+    }
     $('#buttonbox').html(buttons);
     $('#helpbox').html(helptext);
     $('#controlbox').html(controls);
