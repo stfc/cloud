@@ -29,7 +29,8 @@ class VM(object):
         try:
 	    keyname = novaClient.keypairs.list()[0].name
 	except IndexError:
-	    raise cherrypy.HTTPError('400 You haven\'t got a keypair, you must have a keypair to create a VM.')
+#	    raise cherrypy.HTTPError('400 You haven\'t got a keypair, you must have a keypair to create a VM.')
+	    keyname = ""
 
 	# Creating VM
         try:
