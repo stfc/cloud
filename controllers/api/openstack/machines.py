@@ -29,7 +29,8 @@ class Machines(object):
     @cherrypy.tools.isAuthorised(redirect=True)
     @cherrypy.tools.jinja(template="machines/history.html")
     def history(self):
-        pass
+        CLOUDPLATFORM = cherrypy.request.config.get("cloudPlatform")
+        return {"cloudPlatform" : CLOUDPLATFORM}
 
 
     @cherrypy.expose
