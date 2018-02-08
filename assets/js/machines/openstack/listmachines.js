@@ -82,7 +82,7 @@ function drawTable(action) {
         }
     }).done(function(data) {
         incrementLoadingCount();
-        console.log("loadingCount: " + loadingCount)
+//        console.log("loadingCount: " + loadingCount)
 
         $('#all-vms').hide();
         vmlist.clear();

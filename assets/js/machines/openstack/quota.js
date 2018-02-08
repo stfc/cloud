@@ -17,7 +17,7 @@ var quota = {
             }
         }).done(function(json_out) {
             incrementLoadingCount();
-            console.log("loadingCount: " + loadingCount)	    
+//            console.log("loadingCount: " + loadingCount)	    
     
             $('#resources').show();
 

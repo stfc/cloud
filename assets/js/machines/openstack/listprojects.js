@@ -29,7 +29,6 @@ function getProjects() {
 function makeAjaxCalls() {
     var selValue = $('#projectChoice').val();
     sessionStorage.setItem("selItem", selValue);
-    console.log(selValue)
 
     $("#loadingStatus").html("Loading Project Data");
     loadingCount = 0;

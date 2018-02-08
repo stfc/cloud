@@ -24,7 +24,7 @@ function getTemplateList(){
     }).done(function(data) {
         image_list = data;
         incrementLoadingCount();
-        console.log("loadingCount: " + loadingCount)
+//        console.log("loadingCount: " + loadingCount)
     });
 }
 
@@ -45,7 +45,7 @@ function getFlavors(){
     }).done(function(data) {
         flavorList = data;
         incrementLoadingCount();
-	console.log("loadingCount: " + loadingCount)
+//	console.log("loadingCount: " + loadingCount)
     });
 }
 
