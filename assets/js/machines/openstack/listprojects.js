@@ -10,16 +10,25 @@ function getProjects() {
         }
     }).done(function(data) {
         var projectList = data;
-        //console.log(data);
+//        console.log(data);
         var select = document.getElementById("projectChoice");
         for (i = 0; i < projectList['data'].length; i++){
               select.options[select.options.length] = new Option(projectList['data'][i]['name'], projectList['data'][i]['id']);
         }
+
+        var selItem = sessionStorage.getItem("selItem");
+        if (selItem != null) {
+          $('#projectChoice').val(selItem);
+        };
+
         makeAjaxCalls();
     });
 }
 
 function makeAjaxCalls() {
+    var selValue = $('#projectChoice').val();
+    sessionStorage.setItem("selItem", selValue);
+
     $("#loadingStatus").html("Loading Project Data");
     loadingCount = 0;
     var date = new Date();
