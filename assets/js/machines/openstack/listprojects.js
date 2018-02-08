@@ -10,16 +10,17 @@ function getProjects() {
         }
     }).done(function(data) {
         var projectList = data;
-//        console.log(data);
         var select = document.getElementById("projectChoice");
         for (i = 0; i < projectList['data'].length; i++){
               select.options[select.options.length] = new Option(projectList['data'][i]['name'], projectList['data'][i]['id']);
         }
-
+        
         var selItem = sessionStorage.getItem("selItem");
-        if (selItem != null) {
-          $('#projectChoice').val(selItem);
-        };
+        for (i = 0; i < Object.values(data.data).length; i++){
+            if (Object.values(data.data[i]).includes(selItem)) {
+	        $('#projectChoice').val(selItem);
+	    }
+        }
 
         makeAjaxCalls();
     });
@@ -28,6 +29,7 @@ function getProjects() {
 function makeAjaxCalls() {
     var selValue = $('#projectChoice').val();
     sessionStorage.setItem("selItem", selValue);
+    console.log(selValue)
 
     $("#loadingStatus").html("Loading Project Data");
     loadingCount = 0;
