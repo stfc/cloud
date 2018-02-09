@@ -42,7 +42,10 @@ class VM(object):
 	        nics = [{"net-id": vmNetwork.id}],
 	        security_groups = [cherrypy.request.config.get("securityGroupName")],
 	        availability_zone = cherrypy.request.config.get("availabilityZoneName"),
-                min_count = json['count']
+                min_count = json['count'],
+                aq_archetype = json['archetype'],
+		aq_personality = json['personality'],
+                aq_sandbox = json['sandbox']
 	    )
         except (ClientException, KeyError) as e:
             cherrypy.log('- ' + str(e), username)
@@ -151,7 +154,7 @@ class VM(object):
                 'token'    : vncToken,
 		'vncURL'   : vncURL,		
                 'candelete': True,
-		'keypair'  : server.key_name
+		'keypair'  : server.key_name,
 	    })
 	return {"data":json}
 
