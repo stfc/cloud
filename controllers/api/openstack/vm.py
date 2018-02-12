@@ -106,6 +106,9 @@ class VM(object):
 	    except KeyError:	# KeyError for getting server.flavor[u'id']
                 cherrypy.log('- KeyError when getting flavorName for VM: ' + str(server.name), username)
                 flavorName = ""
+            except NotFound:
+		cherrypy.log(server.name + ' - NotFound Error for name matching FlavorID: ' + server.flavor[u'id'])
+		flavorName = ""
 
 	    # Gets image ID --> image name
             try:
@@ -114,6 +117,9 @@ class VM(object):
             except KeyError:
                 cherrypy.log('- KeyError when getting imageName for VM: ' + str(server.name), username)
 		imageName = ""
+            except NotFound:
+		cherrypy.log(server.name + ' - NotFound Error for name matching ImageID: ' + server.image[u'id'])
+                imageName = ""
 
 	    hostname = ""
 	    try:
@@ -137,6 +143,13 @@ class VM(object):
 		vncURL = ""
 		vncToken = ""
 	
+            if (flavorName != ""):
+		flavorCPU = flavorInfo[flavorName][0]
+                flavorMemory = flavorInfo[flavorName][1]
+            else:
+		flavorCPU = ""
+		flavorMemory = ""
+
 	    # Put VM data into json format for .js file
 	    json.append({
 		'id'       : server.id,
@@ -148,8 +161,8 @@ class VM(object):
                 'stime'    : stime,
                 'etime'    : "",
 		'flavor'   : flavorName,
-                'cpu'      : flavorInfo[flavorName][0],
-                'memory'   : flavorInfo[flavorName][1],
+                'cpu'      : flavorCPU,
+                'memory'   : flavorMemory,
                 'type'     : imageName,
                 'token'    : vncToken,
 		'vncURL'   : vncURL,		

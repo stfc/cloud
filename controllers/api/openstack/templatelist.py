@@ -55,6 +55,8 @@ class TemplateList(object):
             except KeyError:
 		description = ""
                 cherrypy.log("- KeyError in image:" + str(image), username)
+            except TypeError:
+                cherrypy.log("- TypeError, most likely due to missing or invalid image ID")
 
 	    menuchoices[osDistro][osVersion][osVariant].append({
 		'name' : image.name,
