@@ -15,6 +15,10 @@ class TemplateList(object):
         username = cherrypy.request.cookie.get('fedid').value
         auth_string = cherrypy.request.cookie.get('session').value
 
+	osDistro = ""
+	osVersion = ""
+	osVariant = ""
+
         novaClient = getNovaInstance()
 
 	# Gets data for each image
@@ -56,6 +60,7 @@ class TemplateList(object):
 		description = ""
                 cherrypy.log("- KeyError in image:" + str(image), username)
             except TypeError:
+		description = ""
                 cherrypy.log("- TypeError, most likely due to missing or invalid image ID")
 
 	    menuchoices[osDistro][osVersion][osVariant].append({
