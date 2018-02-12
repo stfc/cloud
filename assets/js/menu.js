@@ -22,7 +22,6 @@ function notes() {
     $('#site-messages').load('/assets/dynamic/messages.html');
 }
 notes();
-window.setInterval(notes, 6000);
 
 function close_alert(id) {
     Cookies.set(id + '-msg', 'hidden', {expires : 1, path : '/'});

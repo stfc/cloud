@@ -3,11 +3,9 @@
 
 {% extends "layout.html" %}
 
-{% block javascript %}
-<script src="/assets/js/machines/sshkey.js"></script>
-{% endblock %}
-
 {% block content %}
+<script src="/assets/js/machines/openstack/sshkey.js"></script>
+
 <div class="row">
     <div class="col-md-12">
         <h1 class="page-header">SSH Key</h1>
@@ -29,11 +27,14 @@
         <form class="form-horizontal" role="form" id="sshform" method="post">
             <fieldset>
                 <div class="form-group" style="margin-left:0px;margin-right:0px">
+                    <label for="keyname" value="{{ keyname }}" id=keynameLabel>Key Name: {{ keyname }}</label>
+                </div>
+                <div class="form-group" style="margin-left:0px;margin-right:0px">
                     <label for="sshkey">SSH Key</label>
                     <textarea id="sshkey" class="form-control" style="height:100px">{{ key }}</textarea>
                 </div>
             </fieldset>
-            <button type="submit" class="btn btn-blue btn-md pull-right">Submit</button>
+            <button type="submit" class="btn btn-blue btn-md pull-right" id="submitkey">Submit</button>
         </form>
     </div>
 </div>

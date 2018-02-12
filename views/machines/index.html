@@ -17,15 +17,26 @@ var INCLUDE_URI = "/assets/js/machines/novnc/";
 var WSHOSTNAME = "{{ wshostname }}";
 var WSPORT = "{{ wsport }}";
 var EMAIL = "{{ email }}";
+var CLOUDPLATFORM = "{{ cloudPlatform }}";
 
-$(function() {
-    quota.update();
-    drawTable();
-    setInterval(function () {
-        quota.update();
+if (CLOUDPLATFORM == "opennebula") {
+    $(function() {
         drawTable();
-    }, 5000);
-});
+        quota.update();
+        setInterval(function () {
+            quota.update();
+            drawTable();
+        }, 60000);
+    });
+} else if (CLOUDPLATFORM == "openstack") {
+    $(function() {
+        getProjects();
+        setInterval(function () {
+            quota.update();
+            drawTable(miscAction);
+        }, 60000);
+    });
+}
 
 </script>
 <!-- Other -->
@@ -37,19 +48,21 @@ $(function() {
 <script src="/assets/components/bootstrap/js/dataTables.bootstrap-1.10.10.min.js"></script>
 
 <!-- Main -->
-<script src="/assets/js/machines/quota.js"></script>
-<script src="/assets/js/machines/listmachines.js"></script>
+<script src="/assets/js/machines/{{ cloudPlatform }}/listprojects.js"></script>
+<script src="/assets/js/machines/{{ cloudPlatform }}/quota.js"></script>
+<script src="/assets/js/machines/{{ cloudPlatform }}/listmachines.js"></script>
 <!-- novnc -->
 <script src="/assets/js/machines/novnc/util.js"></script>
-<script src="/assets/js/machines/vnc.js"></script>
+<script src="/assets/js/machines/{{ cloudPlatform }}/vnc.js"></script>
 
 <!-- Manage -->
 <script src="/assets/js/machines/manage/machine-boot.js"></script>
-<script src="/assets/js/machines/manage/machine-delete.js"></script>
-<script src="/assets/js/machines/manage/machine-create.js"></script>
+<script src="/assets/js/machines/{{ cloudPlatform }}/manage/machine-delete.js"></script>
+<script src="/assets/js/machines/{{ cloudPlatform }}/manage/machine-create.js"></script>
 <!-- Create VM -->
-<script src="/assets/js/machines/manage/create/pick-aquilon.js"></script>
-<script src="/assets/js/machines/manage/create/pick-template.js"></script>
+<script src="/assets/js/machines/{{ cloudPlatform }}/manage/create/pick-aquilon.js"></script>
+<script src="/assets/js/machines/{{ cloudPlatform }}/manage/create/pick-template.js"></script>
+<script src="/assets/js/machines/{{ cloudPlatform }}/manage/create/pick-resources.js"></script>
 
 {% endblock %}
 
@@ -63,32 +76,20 @@ $(function() {
             <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> <span id="errormessage"></span>
             <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         </div>
+       
+        <div>
+            Current Project:
+            <select id="projectChoice" class="btn btn-default btn-xs" onchange="makeAjaxCalls()"></select>
+            <span id="loadingStatus"></span>
+        </div>
 
-        <ul class="nav nav-tabs" role="tablist">
-            <li id="my-vms" class="active">
-                <a href="" class="filter" data-toggle="tab" onclick="drawTable(); vmlist.draw()">My VMs</a>
-            </li>
-            <li id="all-vms">
-                <a href="" class="filter" data-toggle="tab" onclick="drawTable(); vmlist.draw()">All VMs</a>
-            </li>
-        </ul>
         <button type="button" class="btn btn-default" id="filter-button" title="Table Filters" onclick="filterTableDialog()"><span class="glyphicon glyphicon-cog"></span></button>
         <div class="tab-content">
             <div class="tab-pane active">
                 <table id="vm-list" class="table" cellspacing="0" width="100%">
                     <thead>
                         <tr>
-                            <th>VM name</th>
-                            <th>Owner</th>
-                            <th>Project</th>
-                            <th>Hostname</th>
-                            <th>State</th>
-                            <th>Created</th>
-                            <th>Type</th>
-                            <th>CPU</th>
-                            <th>RAM</th>
-                            <th></th>
-                            <th></th>
+                            {% include "machines/%s/columntitles.html" % cloudPlatform %}
                         </tr>
                     </thead>
                 </table>
@@ -96,9 +97,9 @@ $(function() {
             </div>
         </div>
     </div>
-    {% include "machines/resources.html" %}
+    {% include "machines/%s/resources.html" % cloudPlatform %}
 </div>
-{% include "machines/filters.html" %}
+{% include "machines/%s/filters.html" %cloudPlatform %}
 
 {% include "machines/manage/create/index.html" %}
 
