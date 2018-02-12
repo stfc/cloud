@@ -7,6 +7,9 @@ python-cherrypy | 3.2.2
 python-ldap | 2.3.10
 python-jinja2 | 2.2.1
 python-websockify | 0.5.1
+python-keystoneauth |
+python-keystoneclient |
+python-novaclient |
 numpy | 1.4.1
 words |
 
@@ -37,7 +40,7 @@ wsgi_enabled : Set to true if you want to launch this application behind somethi
 Launching
 ===
 
-To launch the webfrontend without Apache, run the following:
+To launch the webfrontend without Apache, create `config/global.conf` and a `badwords` file using the guide above then run the following:
 
 `python server.py`
 
@@ -48,3 +51,5 @@ And then navigate to:
 When running the webfrontend without Apache, you might have to manually launch websockify.
 
 `/usr/bin/websockify -v PORT --cert=CERT --key=KEY --target-config=TOKENDIR`
+
+*NOTE: You may also need to create a `sessions/` directory*
