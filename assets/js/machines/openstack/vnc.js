@@ -2,11 +2,15 @@
 
 function vncdialog(token, name, vncURL)
 {
-    vncconnect(token);
+    vncconnect(token, vncURL);
     $("#vnc-title").html(name);
     $('#vncdialog').modal('show');
     var buttonText = "<h4 class=\"modal-title\"><button type=\"button\" class=\"btn btn-blue btn-xs\" title=\"Open in a new tab\" onclick=\"window.open(\'" + vncURL + "\',\'_blank\')\">Open noVNC in a new tab</button></h4>";
     $('#vncURL').html(buttonText);
+
+// I couldn't get the iframe to work properly but I have left it in here in case someone else want's to have a go
+//    var iframeText = "<iframe id=\"noVNC_iframe\" style=\"width:100%; height:80vh; cursor:none;\" src=\"" + vncURL + "\"></iframe>";
+//    $('#vmConsole').html(iframeText);
 }
 
 $('#vncdialog').on('hide.bs.modal', function (e) {
@@ -20,7 +24,7 @@ Util.load_scripts(["webutil.js", "base64.js", "websock.js", "des.js",
                    "jsunzip.js", "rfb.js", "keysym.js"]);
 
 
-function vncconnect(token)
+function vncconnect(token, vncURL)
 {
     rfb = new RFB({'target': $D('noVNC_canvas'),
                    'encrypt': true,

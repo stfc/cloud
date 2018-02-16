@@ -30,7 +30,8 @@ function makeAjaxCalls() {
     var selValue = $('#projectChoice').val();
     sessionStorage.setItem("selItem", selValue);
 
-    $("#loadingStatus").html("Loading Project Data");
+    var loadingStatusText = ""
+    $("#loadingStatus").html(loadingStatusText + "<div id=\"loadingStatusWheel\" class=\"loader\"></div>");
     loadingCount = 0;
     var date = new Date();
     date.setTime(date.getTime() + (86400 * 1000));    // Cookie will expire 24 hours after creating
@@ -45,6 +46,8 @@ function makeAjaxCalls() {
 function incrementLoadingCount() {
     loadingCount++;
     if (loadingCount >= 4) {
-        $("#loadingStatus").html("Finished Loading");
-    };
+        var loadingStatusFinished = ""
+        $("#loadingStatus").html(loadingStatusFinished);
+        $('#loadingStausWheel').remove()
+    }
 }
