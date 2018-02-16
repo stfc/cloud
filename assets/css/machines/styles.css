@@ -81,6 +81,15 @@
   100% { transform: rotate(360deg); }
 }
 
+.loader-big {
+  border: 1em solid #f3f3f3;
+  border-radius: 100%;
+  border-top: 1em solid #00418d;
+  width: 6em;
+  height: 6em;
+  margin: auto;
+}
+
 
 
 /* VM STATES */

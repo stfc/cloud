@@ -17,7 +17,9 @@ var quota = {
             }
         }).done(function(json_out) {
             incrementLoadingCount();
-//            console.log("loadingCount: " + loadingCount)	    
+	    $('#loadingWheelQuota').remove();
+            $('.quotaBox').removeAttr("style");
+
     
             $('#resources').show();
 
