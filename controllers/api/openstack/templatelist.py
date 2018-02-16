@@ -15,9 +15,9 @@ class TemplateList(object):
         username = cherrypy.request.cookie.get('fedid').value
         auth_string = cherrypy.request.cookie.get('session').value
 
-	osDistro = ""
-	osVersion = ""
-	osVariant = ""
+#	osDistro = ""
+#	osVersion = ""
+#	osVariant = ""
 
         novaClient = getNovaInstance()
 
@@ -29,16 +29,19 @@ class TemplateList(object):
                 if image.metadata[u'os_distro'] is not None:
                     osDistro = image.metadata[u'os_distro']
 	        else:
+		    osDistro = ""
 		    cherrypy.log("has an uninstantiated image flavour: " + str(image), username)
 		    continue
     	        if image.metadata[u'os_version'] is not None:
                     osVersion = image.metadata[u'os_version']
                 else:
+		    osVersion = ""
                     cherrypy.log("has an uninstantiated image version: " + str(image), username)
                     continue
 	        if image.metadata[u'os_variant'] is not None:
                     osVariant = image.metadata[u'os_variant']
                 else:
+                    osVariant = ""
                     cherrypy.log("has an uninstantiated image variant: " + str(image), username)
                     continue
             except KeyError:

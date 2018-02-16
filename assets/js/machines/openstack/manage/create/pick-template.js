@@ -107,7 +107,7 @@ function draw_buttons() {
                 controls = '<a class="btn btn-danger" id="buttonback" onclick="selected_type=\'\';selected_release=\'\'; draw_buttons();">Back</a>';
             }
             else {
-		isAqManaged = Object.values(image_list[selected_flavour][selected_release])[i][0].aqManaged
+                isAqManaged = Object.values(image_list[selected_flavour][selected_release])[i][0].aqManaged
                 buttons += '<a class="btn btn-lev3" id="'+type+'" onclick="selected_type=\''+type+'\'; aqManaged=\''+isAqManaged+'\'; draw_buttons();">'+type+'</a>';
             }
             i = i + 1;
