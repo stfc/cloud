@@ -3,8 +3,11 @@
 
 {% extends "layout.html" %}
 
+{% block javascript %}
+<script src="/assets/js/machines/{{ cloudPlatform }}/sshkey.js"></script>
+{% endblock %}
+
 {% block content %}
-<script type="text/javacript" src="/assets/js/machines/{{ cloudPlatform }}/sshkey.js"></script>
 
 <div class="row">
     <div class="col-md-12">
