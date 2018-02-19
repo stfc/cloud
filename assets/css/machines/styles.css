@@ -92,6 +92,45 @@
 
 
 
+/*Flavor Bar*/
+
+.flavorBarContainer {
+  margin-left: 25px;
+  margin-right: 25px;
+  font-weight: bold;
+  
+  span {
+    display: inline-block;
+    float: left;
+    text-align: left;
+  }
+}
+
+#flavorMaxCPU, #flavorMaxMemory, #flavorMaxDisk {
+  float: right;
+  text-align: right;
+}
+
+.flavorBar {
+  background-color: #f3f3f3;
+  margin: 0px;
+  border-radius: 4px;
+  padding: 4px;
+  width: auto;
+  color: #333;
+}
+
+.flavorBarChild {
+  margin: 0px;
+  width: 0px;
+  background-color: #333;
+  color: #fff;
+  text-align: right;
+  text-shadow: 1px 1px #555;
+}
+  
+
+
 /* VM STATES */
 progress {
   -webkit-appearance: none;

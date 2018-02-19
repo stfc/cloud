@@ -5,6 +5,8 @@
         <span id="flavorDisplay"></span>
     </div>
     <div id="resource-creation-error" class="creation-error alert alert-danger text-center" class="alert alert-danger text-center" role="alert"></div>
+
+<!--
     <div class="form-group">
         <label for="cpu-input" class="col-sm-3 control-label">CPU Amount</label>
         <div class="col-sm-8">
@@ -44,4 +46,41 @@
             for="diskInput" oninput="diskInput.value=diskOutput.value" />
         </div>
     </div>
+</fieldset>
+-->
+
+
+
+
+    <div class="flavorBarContainer">
+      <div>
+        <span>CPU Amount:</span>
+        <span id="flavorMaxCPU">0/0</span>
+      </div>
+      <div class="flavorBar">
+        <div id="flavorBarCPU" class="flavorBar flavorBarChild" style="background-color:#00a056;"></div>
+      </div>
+    </div>
+
+    <div class="flavorBarContainer">
+      <div>
+        <span>Memory Amount:</span>
+        <span id="flavorMaxMemory">0/0</span>
+      </div>
+      <div class="flavorBar">
+        <div id="flavorBarMemory" class="flavorBar flavorBarChild" style="background-color:#0053b4;"></div>
+      </div>
+    </div>
+
+    <div class="flavorBarContainer">
+      <div>
+        <span>Disk Amount:</span>
+        <span id="flavorMaxDisk">/0/0</span>
+      </div>
+      <div class="flavorBar">
+        <div id="flavorBarDisk" class="flavorBar flavorBarChild" style="background-color:#b40053;"></div>
+      </div>
+    </div>
+
+
 </fieldset>
