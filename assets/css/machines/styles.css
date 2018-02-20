@@ -114,14 +114,14 @@
 .flavorBar {
   background-color: #f3f3f3;
   margin: 0px;
-  border-radius: 4px;
-  padding: 4px;
+  border-radius: 6px;
   width: auto;
   color: #333;
 }
 
 .flavorBarChild {
   margin: 0px;
+  padding: 6px;
   width: 0px;
   background-color: #333;
   color: #fff;
