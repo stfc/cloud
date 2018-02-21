@@ -78,12 +78,21 @@ if (CLOUDPLATFORM == "opennebula") {
         </div>
        
         <div>
+        <span id="projectChoiceBlock">
             Current Project:
-            <select id="projectChoice" class="btn btn-default btn-xs" onchange="makeAjaxCalls()"></select>
+            <select style="height:34px" id="projectChoice" class="btn btn-default btn-xs" onchange="makeAjaxCalls()"></select>
             <span id="loadingStatus"></span>
+        </span>
+
+        <span id="SearchBlock" style="float:right; height:auto;">
+<!--
+            Search:
+            Ideally the search box should go here but i can't seem find it anywhere in this repo
+-->
+            <button style="margin-top: auto; height:34px;" type="button" class="btn btn-default" id="filter-button" title="Table Filters" onclick="filterTableDialog()"><span class="glyphicon glyphicon-cog"></span></button>
+        </span>
         </div>
 
-        <button type="button" class="btn btn-default" id="filter-button" title="Table Filters" onclick="filterTableDialog()"><span class="glyphicon glyphicon-cog"></span></button>
         <div class="tab-content">
             <div class="tab-pane active">
                 <table id="vm-list" class="table" cellspacing="0" width="100%">

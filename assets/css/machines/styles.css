@@ -290,3 +290,6 @@ progress[value="4"]::-moz-progress-bar {
 #vm-list_filter input, #vm-history_filter input {
   height: 34px;
 }
+#vm-list_filter {
+  margin-top: -40px;
+}

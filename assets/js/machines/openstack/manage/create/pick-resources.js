@@ -27,17 +27,36 @@ function setSliderAmounts(flavorList, starter){
 //    $('#disk-input').val(flavorList['data'][i]['disk']);
 
 
-    $('#flavorBarCPU').css('width',    ( ((flavorList['data'][i]['cpu'] / availablequotacpu) * 100) + '%'));
-    $('#flavorBarMemory').css('width', ( ((flavorList['data'][i]['ram'] / biggestRAMAmount) * 100) + '%'));
-    $('#flavorBarDisk').css('width',   ( ((flavorList['data'][i]['disk'] / biggestDiskAmount) * 100) + '%'));
+// In theory, this block should use either quota limit or flavor limit, whichever is smallest
+// There is currently no clause I know of for if the quota limit is less than the selected flavor
 
-//    $('#flavorBarCPU').text(flavorList['data'][i]['cpu']);
-//    $('#flavorBarMemory').text(flavorList['data'][i]['ram'] + "GB");
-//    $('#flavorBarDisk').text(flavorList['data'][i]['disk'] + "GB");
+var max_cpu = biggestCPUAmount;
+var max_mem = biggestRAMAmount;
+var max_disk = biggestDiskAmount;
 
-    $('#flavorMaxCPU').text(flavorList['data'][i]['cpu'] + "/" + availablequotacpu);
-    $('#flavorMaxMemory').text(flavorList['data'][i]['ram'] + "GB/" + biggestRAMAmount + "GB");
-    $('#flavorMaxDisk').text(flavorList['data'][i]['disk'] + "GB/" + biggestDiskAmount + "GB");
+if (max_cpu == undefined || max_cpu > availablequotacpu){
+    max_cpu = availablequotacpu;
+};
+
+if (max_mem == undefined || max_mem > availablequotamem){
+    max_mem = availablequotamem;
+};
+
+//if (max_disk == undefined || max_disk > availablequotadisk){
+//    max_disk = availablequotadisk;
+//};
+
+
+
+
+
+    $('#flavorBarCPU').css('width',    ( ((flavorList['data'][i]['cpu'] / max_cpu) * 100) + '%'));
+    $('#flavorBarMemory').css('width', ( ((flavorList['data'][i]['ram'] / max_mem) * 100) + '%'));
+    $('#flavorBarDisk').css('width',   ( ((flavorList['data'][i]['disk'] / max_disk) * 100) + '%'));
+
+    $('#flavorMaxCPU').text(flavorList['data'][i]['cpu'] + "/" + max_cpu);
+    $('#flavorMaxMemory').text(flavorList['data'][i]['ram'] + "GB/" + max_mem + "GB");
+    $('#flavorMaxDisk').text(flavorList['data'][i]['disk'] + "GB/" + max_disk + "GB");
 
 
 }
