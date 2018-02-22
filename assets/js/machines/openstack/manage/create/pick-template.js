@@ -59,6 +59,7 @@ function draw_buttons() {
     helptext = '';
     var os_flavour,release,type,image = null;
     $('#aquilon-select').css('display', 'none');
+    $('.opennebulaResources').css('display', 'none');
 
     if ($.isEmptyObject(image_list)) {
         buttons = '<div class="alert alert-danger" role="alert"><p>You do not appear to have any templates available to you. Please contact <a href="mailto:' + EMAIL + '">' + EMAIL + '</a>.</p></div>';

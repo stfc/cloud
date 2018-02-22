@@ -147,3 +147,5 @@ function draw_buttons() {
     $('#helpbox').html(helptext);
     $('#controlbox').html(controls);
 }
+
+    $('.openstackResources').css('display', 'none');

@@ -142,3 +142,5 @@ function drawTable() {
 $('.noEnterSubmit').keypress(function(e){
     if ( e.which == 13 ) e.preventDefault();
 });
+
+$('#projectChoiceBlock').css('display', 'none');
