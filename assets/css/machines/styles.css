@@ -62,11 +62,11 @@
 .loader {
   display: inline-block;
   vertical-align: middle;
-  border: 0.2em solid #f3f3f3;
+  border: 0.25em solid #f3f3f3;
+  border-top: 0.25em solid #00418d;
   border-radius: 100%;
-  border-top: 0.2em solid #00418d;
-  width: 1.2em;
-  height: 1.2em;
+  width: 1.8em;
+  height: 1.8em;
   -webkit-animation: spin 0.75s linear infinite; /* Safari */
   animation: spin 0.75s linear infinite;
 }
@@ -82,12 +82,11 @@
 }
 
 .loader-big {
-  border: 1em solid #f3f3f3;
-  border-radius: 100%;
-  border-top: 1em solid #00418d;
-  width: 6em;
-  height: 6em;
-  margin: auto;
+  border: 0.6em solid #f3f3f3;
+  border-top: 0.6em solid #00418d;
+  width: 5em;
+  height: 5em;
+//  margin: auto;
 }
 
 

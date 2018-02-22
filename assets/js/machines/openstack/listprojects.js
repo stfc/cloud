@@ -48,6 +48,7 @@ function incrementLoadingCount() {
     if (loadingCount >= 4) {
         var loadingStatusFinished = ""
         $("#loadingStatus").html(loadingStatusFinished);
-        $('#loadingStausWheel').remove()
+        $('#loadingStausWheel').remove();
+        $('#newMachine').removeAttr('disabled');
     }
 }
