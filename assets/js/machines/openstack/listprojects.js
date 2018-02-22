@@ -33,6 +33,7 @@ function makeAjaxCalls() {
     var loadingStatusText = ""
     $("#loadingStatus").html(loadingStatusText + "<div id=\"loadingStatusWheel\" class=\"loader\"></div>");
     loadingCount = 0;
+    $('#newMachine').attr('disabled', '');
     var date = new Date();
     date.setTime(date.getTime() + (86400 * 1000));    // Cookie will expire 24 hours after creating
     Cookies.set("projectID", document.getElementById("projectChoice").value, {expires : date, path : '/'});
