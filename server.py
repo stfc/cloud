@@ -1,4 +1,4 @@
-import os, sys
+import os, sys, errno, pwd, grp
 
 # change the current working directory and python path
 location = os.path.dirname(os.path.abspath(__file__))
@@ -17,6 +17,16 @@ try:
     cherrypy.config.update("config/global.conf")
 except IOError:
     pass
+
+sessionsDir = os.path.join(location, cherrypy.config.get("tools.sessions.storage_path"))
+try:
+    os.makedirs(sessionsDir)
+except OSError as ex:
+    if ex.errno != errno.EEXIST:
+       raise ex
+   
+if not (os.access(sessionsDir, os.W_OK)):
+   raise cherrypy.HTTPError('500 Current user has no write access to ' + sessionsDir)
 
 GOODWORDS = cherrypy.config.get("goodwords")
 BADWORDS = cherrypy.config.get("badwords")
@@ -70,18 +80,18 @@ api.templatelist = TemplateList()
 cherrypy.tree.mount(api, "/api", "config/api.conf")
 
 # Launch websockify for NoVNC
-wsparams = [
-    '/usr/bin/websockify',
-    '-v',
-    str(cherrypy.config.get("wsport")),
-    '--target-config=' + cherrypy.config.get("wstokendir")
-]
+#wsparams = [
+#    '/usr/bin/websockify',
+#    '-v',
+#    str(cherrypy.config.get("wsport")),
+#    '--target-config=' + cherrypy.config.get("wstokendir")
+#]
 
-if cherrypy.config.get("wscert") != None:
-    wsparams.append('--cert=' + cherrypy.config.get("wscert"))
-    wsparams.append('--key=' + cherrypy.config.get("wskey"))
+#if cherrypy.config.get("wscert") != None:
+#    wsparams.append('--cert=' + cherrypy.config.get("wscert"))
+#    wsparams.append('--key=' + cherrypy.config.get("wskey"))
 
-websockify = Popen(wsparams)
+#websockify = Popen(wsparams)
 
 if cherrypy.config.get("wsgi_enabled") == True:
     # make WSGI compliant

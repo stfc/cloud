@@ -51,5 +51,3 @@ And then navigate to:
 When running the webfrontend without Apache, you might have to manually launch websockify.
 
 `/usr/bin/websockify -v PORT --cert=CERT --key=KEY --target-config=TOKENDIR`
-
-*NOTE: You may also need to create a `sessions/` directory*
