@@ -15,10 +15,6 @@ class TemplateList(object):
         username = cherrypy.request.cookie.get('fedid').value
         auth_string = cherrypy.request.cookie.get('session').value
 
-#	osDistro = ""
-#	osVersion = ""
-#	osVariant = ""
-
         novaClient = getNovaInstance()
 
 	# Gets data for each image

@@ -19,35 +19,20 @@ function setSliderAmounts(flavorList, starter){
     if(starter == false){
         i = document.getElementById("flavorChoice").value;
     }
-//    $('#cpu-output').val(flavorList['data'][i]['cpu']);
-//    $('#cpu-input').val(flavorList['data'][i]['cpu']);
-//    $('#memory-output').val(flavorList['data'][i]['ram']);
-//    $('#memory-input').val(flavorList['data'][i]['ram']);
-//    $('#disk-output').val(flavorList['data'][i]['disk']);
-//    $('#disk-input').val(flavorList['data'][i]['disk']);
 
+    // In theory, this block should use either quota limit or flavor limit, whichever is smallest
 
-// In theory, this block should use either quota limit or flavor limit, whichever is smallest
-// There is currently no clause I know of for if the quota limit is less than the selected flavor
+    var max_cpu = biggestCPUAmount;
+    var max_mem = biggestRAMAmount;
+    var max_disk = biggestDiskAmount;
 
-var max_cpu = biggestCPUAmount;
-var max_mem = biggestRAMAmount;
-var max_disk = biggestDiskAmount;
+    if (max_cpu == undefined || max_cpu > availablequotacpu){
+        max_cpu = availablequotacpu;
+    };
 
-if (max_cpu == undefined || max_cpu > availablequotacpu){
-    max_cpu = availablequotacpu;
-};
-
-if (max_mem == undefined || max_mem > availablequotamem){
-    max_mem = availablequotamem;
-};
-
-//if (max_disk == undefined || max_disk > availablequotadisk){
-//    max_disk = availablequotadisk;
-//};
-
-
-
+    if (max_mem == undefined || max_mem > availablequotamem){
+        max_mem = availablequotamem;
+    };
 
 
     $('#flavorBarCPU').css('width',    ( ((flavorList['data'][i]['cpu'] / max_cpu) * 100) + '%'));
