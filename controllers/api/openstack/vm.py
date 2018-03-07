@@ -43,7 +43,7 @@ class VM(object):
 	        availability_zone = cherrypy.request.config.get("availabilityZoneName"),
                 min_count = json['count'],
                 aq_archetype = json['archetype'],
-		aq_personality = json['personality'],
+                aq_personality = json['personality'],
                 aq_sandbox = json['sandbox']
 	    )
         except (ClientException, KeyError) as e:
@@ -106,8 +106,8 @@ class VM(object):
                 cherrypy.log('- KeyError when getting flavorName for VM: ' + str(server.name), username)
                 flavorName = ""
             except NotFound:
-		cherrypy.log(server.name + ' - NotFound Error for name matching FlavorID: ' + server.flavor[u'id'])
-		flavorName = ""
+                cherrypy.log(server.name + ' - NotFound Error for name matching FlavorID: ' + server.flavor[u'id'])
+                flavorName = ""
 
 	    # Gets image ID --> image name
             try:
@@ -117,7 +117,7 @@ class VM(object):
                 cherrypy.log('- KeyError when getting imageName for VM: ' + str(server.name), username)
 		imageName = ""
             except NotFound:
-		cherrypy.log(server.name + ' - NotFound Error for name matching ImageID: ' + server.image[u'id'])
+                cherrypy.log(server.name + ' - NotFound Error for name matching ImageID: ' + server.image[u'id'])
                 imageName = ""
 
 	    hostname = ""
@@ -143,11 +143,11 @@ class VM(object):
 		vncToken = ""
 	
             if (flavorName != ""):
-		flavorCPU = flavorInfo[flavorName][0]
+                flavorCPU = flavorInfo[flavorName][0]
                 flavorMemory = flavorInfo[flavorName][1]
             else:
-		flavorCPU = ""
-		flavorMemory = ""
+                flavorCPU = ""
+                flavorMemory = ""
 
 	    # Put VM data into json format for .js file
 	    json.append({
