@@ -7,11 +7,10 @@ python-cherrypy | 3.2.2
 python-ldap | 2.3.10
 python-jinja2 | 2.2.1
 python-websockify | 0.5.1
-python-keystoneauth |
-python-keystoneclient |
-python-novaclient |
+python-keystoneclient | 2.3.2
+python-novaclient | 3.3.1
 numpy | 1.4.1
-words |
+words | 3.0
 
 
 Configuration
@@ -51,3 +50,6 @@ And then navigate to:
 When running the webfrontend without Apache, you might have to manually launch websockify.
 
 `/usr/bin/websockify -v PORT --cert=CERT --key=KEY --target-config=TOKENDIR`
+
+---
+Use of the OpenStack logo is subject to a [Community Use Agreement](https://www.openstack.org/brand/openstack-logo/).
