@@ -20,20 +20,9 @@ function setSliderAmounts(flavorList, starter){
         i = document.getElementById("flavorChoice").value;
     }
 
-    // In theory, this block should use either quota limit or flavor limit, whichever is smallest
-
-    var max_cpu = biggestCPUAmount;
-    var max_mem = biggestRAMAmount;
+    var max_cpu = smallestValue(biggestCPUAmount, availablequotacpu);
+    var max_mem = smallestValue(biggestRAMAmount, availablequotamem);
     var max_disk = biggestDiskAmount;
-
-    if (max_cpu == undefined || max_cpu > availablequotacpu){
-        max_cpu = availablequotacpu;
-    };
-
-    if (max_mem == undefined || max_mem > availablequotamem){
-        max_mem = availablequotamem;
-    };
-
 
     $('#flavorBarCPU').css('width',    ( ((flavorList['data'][i]['cpu'] / max_cpu) * 100) + '%'));
     $('#flavorBarMemory').css('width', ( ((flavorList['data'][i]['ram'] / max_mem) * 100) + '%'));
@@ -43,6 +32,14 @@ function setSliderAmounts(flavorList, starter){
     $('#flavorMaxMemory').text(flavorList['data'][i]['ram'] + "GB/" + max_mem + "GB");
     $('#flavorMaxDisk').text(flavorList['data'][i]['disk'] + "GB/" + max_disk + "GB");
 
-
 }
 
+function smallestValue(a, b){
+    if (a == undefined && b == undefined){
+      return "\u221E"
+    } else if (a != undefined && b == undefined || a < b){
+      return a;
+    } else if (a == undefined && b != undefined || b < a){
+      return b;
+    }
+}
