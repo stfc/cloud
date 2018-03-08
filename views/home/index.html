@@ -28,23 +28,40 @@
                 For any questions, problems or ideas email us at <a href="mailto:{{ email }}">{{ email }}</a>
             </p>
         </div>
+
+
+        <div>
+          <a href="http://{{ cloudPlatform }}.org" target="_blank">
+            <img src="/assets/images/{{ cloudPlatform }}.png" class="pull-left" style="height:55px;bottom:0px;margin-left:50px">
+          </a>
+          <a href="http://ceph.com" target="_blank">
+            <img src="/assets/images/ceph.png" class="pull-right" style="height:60px;margin-right:50px;">
+          </a>
+        </div>
+
+
+<!--
         <div id="carousel" class="carousel slide" data-ride="carousel">
             <div class="carousel-inner" role="listbox">
                 <div class="item active">
                     <h1 class="page-header">Infrastructure</h1>
                     <img src="/assets/images/rack.png" style="width:170px;float:right;margin-top:-15px" />
                     <p>
-			The cloud is based on <a href="http://{{ cloudPlatform }}.org" target="_blank">{{ cloudPlatform | title }}</a> for the virtualisation and <a href="http://ceph.com" target="_blank">CEPH</a> for the storage. For the hardware, we use
+			The cloud is based on <a href="http://{{ cloudPlatform }}.org" target="_blank">{{ cloudPlatform | title }}</a> for the virtualisation and <a href="http://ceph.com" target="_blank">CEPH</a> for the storage.
+                        For the hardware, we use
                         <ul>
                             <li>28x Dell R420 for the hypervisors</li>
                             <li>30x Dell R520 for the storage nodes</li>
                         </ul>
                         This gives us a total of <b>3.5TB</b> of memory, <b>896</b> processing cores and a storage capacity of approximately <b>750TB</b>.
+                        
                         <br /><br /><br />
                         <img src="/assets/images/ceph.png" class="pull-right" style="height:45px;margin-right:50px;margin-top:-5px" />
-                        <img src="/assets/images/{{ cloudPlatform }}.png" class="pull-left" style="bottom:0px;margin-left:50px" />
+                        <img src="/assets/images/{{ cloudPlatform }}.png" class="pull-left" style="height:40px;bottom:0px;margin-left:50px" />
                     </p>
                 </div>
+-->
+
                 <!-- <div class="item">
                     <h1 class="page-header">Allocated Resources</h1>
                     <div class="row">
