@@ -36,7 +36,6 @@ class Machines(object):
     @cherrypy.tools.jinja(template="machines/ssh.html")
     def ssh(self):
         CLOUDPLATFORM = cherrypy.request.config.get("cloudPlatform")
-        return {"cloudPlatform" : CLOUDPLATFORM}
 
         HEADNODE = cherrypy.request.config.get("headnode")
         FEDID = cherrypy.request.cookie.get('fedid').value
@@ -57,7 +56,7 @@ class Machines(object):
         except:
             key = ""
 
-        return { 'key' : key }
+        return { 'key' : key, "cloudPlatform" : CLOUDPLATFORM }
 
     @cherrypy.expose
     def random(self):

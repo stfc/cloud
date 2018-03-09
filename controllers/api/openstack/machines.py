@@ -38,7 +38,6 @@ class Machines(object):
     @cherrypy.tools.jinja(template="machines/ssh.html")
     def ssh(self):
         CLOUDPLATFORM = cherrypy.request.config.get("cloudPlatform")
-        return {"cloudPlatform" : CLOUDPLATFORM}
 
         username = cherrypy.request.cookie.get('fedid').value
         novaClient = getNovaInstance()
@@ -56,7 +55,7 @@ class Machines(object):
             cherrypy.log('- AttributeError when getting user\'s keypair:', username)
             raise cherrypy.HTTPError('500 There\'s been a problem with getting your keypair data')
 	
-        return { 'key' : key , 'keyname' : keyname }
+        return { 'key' : key , 'keyname' : keyname, "cloudPlatform" : CLOUDPLATFORM }
 
     @cherrypy.expose
     def random(self):
