@@ -40,6 +40,9 @@
 
 
 /* input forms */
+#vmCount {
+ border-radius: 4px;
+}
 .aq-form {
   width: 50%;
   float: left;
@@ -52,11 +55,12 @@
   margin: 0 10%;
   float: left;
 }
-.aq-form label {
-  padding-top: 20px;
+.aq-form .form-control {
+  margin-bottom: 20px;
 }
-
-
+.aq-form select {
+  border-radius: 4px !important;
+}
 
 /* Loading */
 .loader {
