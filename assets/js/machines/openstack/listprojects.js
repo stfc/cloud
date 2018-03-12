@@ -4,25 +4,31 @@ function getProjects() {
         url: "/api/projects",
         statusCode: {
             500: function() {
-                $("#errormessage").html("The cloud may be experiencing problems. Please try again later.");
-                $("#error").show();
+                   $("#errormessage").html("The cloud may be experiencing problems. Please try again later.");
+                   $("#error").show();
             }
         }
     }).done(function(data) {
-        var projectList = data;
-        var select = document.getElementById("projectChoice");
-        for (i = 0; i < projectList['data'].length; i++){
-              select.options[select.options.length] = new Option(projectList['data'][i]['name'], projectList['data'][i]['id']);
-        }
-        
-        var selItem = sessionStorage.getItem("selItem");
-        for (i = 0; i < Object.values(data.data).length; i++){
-            if (Object.values(data.data[i]).includes(selItem)) {
-	        $('#projectChoice').val(selItem);
-	    }
-        }
+        if (!(data['data'].length >= 1)) {
+              $("#errormessage").html("You do not have access to any projects");
+              $("#error").show();
+        } else {
 
-        makeAjaxCalls();
+              var projectList = data;
+              var select = document.getElementById("projectChoice");
+              for (i = 0; i < projectList['data'].length; i++){
+                  select.options[select.options.length] = new Option(projectList['data'][i]['name'], projectList['data'][i]['id']);
+              }
+        
+              var selItem = sessionStorage.getItem("selItem");
+              for (i = 0; i < Object.values(data.data).length; i++){
+                  if (Object.values(data.data[i]).includes(selItem)) {
+	              $('#projectChoice').val(selItem);
+	          }
+              }
+
+              makeAjaxCalls();
+        }
     });
 }
 
