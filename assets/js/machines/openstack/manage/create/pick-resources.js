@@ -35,11 +35,13 @@ function setSliderAmounts(flavorList, starter){
 }
 
 function smallestValue(a, b){
-    if (a == undefined && b == undefined){
+    if (a === undefined && b === undefined){
       return "\u221E"
-    } else if (a != undefined && b == undefined || a < b){
+    } else if (a !== undefined && b === undefined || a < b){
       return a;
-    } else if (a == undefined && b != undefined || b < a){
+    } else if (a === undefined && b !== undefined || b < a){
       return b;
+    } else if (a == b) {
+      return a;
     }
 }
