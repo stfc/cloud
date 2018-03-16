@@ -20,47 +20,25 @@ class TemplateList(object):
 	# Gets data for each image
 	# os_distro - name of flavor
 	menuchoices = defaultdict(lambda: defaultdict(dict))
-	for image in novaClient.images.list():
-            try:
-                if image.metadata[u'os_distro'] is not None:
-                    osDistro = image.metadata[u'os_distro']
-	        else:
-		    osDistro = ""
-		    cherrypy.log("has an uninstantiated image flavour: " + str(image), username)
-		    continue
-    	        if image.metadata[u'os_version'] is not None:
-                    osVersion = image.metadata[u'os_version']
-                else:
-		    osVersion = ""
-                    cherrypy.log("has an uninstantiated image version: " + str(image), username)
-                    continue
-	        if image.metadata[u'os_variant'] is not None:
-                    osVariant = image.metadata[u'os_variant']
-                else:
-                    osVariant = ""
-                    cherrypy.log("has an uninstantiated image variant: " + str(image), username)
-                    continue
-            except KeyError:
-                cherrypy.log("- KeyError when getting image metadata in image:" + str(image), username)
+ 	for image in novaClient.images.list():
+            print("---")
 
-	    aqManaged = "false"
-            try:
-                if image.metadata[u'aq_managed'] == "true":
-                    aqManaged = "true"
-            except KeyError:
-                cherrypy.log("- KeyError when seeing if an image is Aquilon managed, Image: " + str(image), username)
+            osDistro  = os_metadata(image, username, 'os_distro')
+            osVersion = os_metadata(image, username, 'os_version')
+            osVariant = os_metadata(image, username, 'os_variant')
+            aqManaged = os_metadata(image, username, 'aq_managed')
+            description = os_metadata(image, username, 'description')
+
+            print(image.name)
+            print("Distro: " + str(osDistro))
+            print("Version: " + str(osVersion))
+            print("Variant: " + str(osVariant))            
+            print("AQ: " + str(aqManaged))
+            print("Description: " + str(description))
+
 
 	    if osVariant not in menuchoices[osDistro][osVersion]:
 	        menuchoices[osDistro][osVersion][osVariant] = list()
-
-	    try:
-	        description = image.metadata[u'description'] + ". "
-            except KeyError:
-		description = ""
-                cherrypy.log("- KeyError in image:" + str(image), username)
-            except TypeError:
-		description = ""
-                cherrypy.log("- TypeError, most likely due to missing or invalid image ID")
 
 	    menuchoices[osDistro][osVersion][osVariant].append({
 		'name' : image.name,
@@ -71,3 +49,27 @@ class TemplateList(object):
 		'aqManaged' : aqManaged
 	    })
         return menuchoices
+
+
+def os_metadata(image, username, tag):
+   try:
+       if tag not in image.metadata:
+           cherrypy.log(" - Image '" + str(image.name) + "' is missing '" + str(tag) + "' in metadata", username)
+           if tag == "aq_managed":
+               return "false"
+           else:
+               return image.name
+
+       elif image.metadata[u''+tag+''] is not None:
+           return image.metadata[u''+tag+'']
+
+       else:
+           cherrypy.log(" - has an uninstantiated image " + str(tag) + ": " + str(image), username)
+           if tag == "aq_managed":
+               return "false"
+           else:
+               return ""
+
+   except KeyError:
+       cherrypy.log("- KeyError when getting image metadata '" + tag + "'  in image: " + str(image.name), username)
+       return "-Error-"
