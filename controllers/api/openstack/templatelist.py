@@ -21,7 +21,7 @@ class TemplateList(object):
 	# os_distro - name of flavor
 	menuchoices = defaultdict(lambda: defaultdict(dict))
  	for image in novaClient.images.list():
-            print("---")
+            cherrypy.log("- Loading '" + str(image.name) + "'", username)
 
             osDistro  = os_metadata(image, username, 'os_distro')
             osVersion = os_metadata(image, username, 'os_version')
@@ -29,47 +29,42 @@ class TemplateList(object):
             aqManaged = os_metadata(image, username, 'aq_managed')
             description = os_metadata(image, username, 'description')
 
-            print(image.name)
-            print("Distro: " + str(osDistro))
-            print("Version: " + str(osVersion))
-            print("Variant: " + str(osVariant))            
-            print("AQ: " + str(aqManaged))
-            print("Description: " + str(description))
+            if osDistro is None or osVersion is None or osVariant is None:
+                cherrypy.log("- Image '" + str(image.name) + "' will not be visible", username)
+                continue
+            else:
 
+                if osVariant not in menuchoices[osDistro][osVersion]:
+                    menuchoices[osDistro][osVersion][osVariant] = list()
 
-	    if osVariant not in menuchoices[osDistro][osVersion]:
-	        menuchoices[osDistro][osVersion][osVariant] = list()
+                menuchoices[osDistro][osVersion][osVariant].append({
+                    'name' : image.name,
+                    'id' : image.id,
+                    'minDisk' : image.minDisk,
+                    'minRAM' : image.minRam,
+                    'description' : description,
+                    'aqManaged' : aqManaged
+                })
 
-	    menuchoices[osDistro][osVersion][osVariant].append({
-		'name' : image.name,
-		'id' : image.id,
-		'minDisk' : image.minDisk,
-		'minRAM' : image.minRam,
-		'description' : description,
-		'aqManaged' : aqManaged
-	    })
         return menuchoices
 
 
 def os_metadata(image, username, tag):
-   try:
-       if tag not in image.metadata:
-           cherrypy.log(" - Image '" + str(image.name) + "' is missing '" + str(tag) + "' in metadata", username)
+    try:
+        if tag not in image.metadata:
+           cherrypy.log("- Image '" + str(image.name) + "' is missing '" + str(tag) + "' in metadata", username)
            if tag == "aq_managed":
                return "false"
-           else:
-               return image.name
 
-       elif image.metadata[u''+tag+''] is not None:
+        elif image.metadata[u''+tag+''] is not None:
            return image.metadata[u''+tag+'']
 
-       else:
-           cherrypy.log(" - has an uninstantiated image " + str(tag) + ": " + str(image), username)
+        else:
+           cherrypy.log("- Image '" + str(image.name) + "' has uninstantiated '"  + str(tag) + "' in metadata", username)
            if tag == "aq_managed":
                return "false"
            else:
-               return ""
+              return ""
 
-   except KeyError:
-       cherrypy.log("- KeyError when getting image metadata '" + tag + "'  in image: " + str(image.name), username)
-       return "-Error-"
+    except KeyError:
+        cherrypy.log("- KeyError when getting image metadata '" + tag + "'  in image: " + str(image.name), username)
