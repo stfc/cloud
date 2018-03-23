@@ -9,6 +9,8 @@ function vncdialog(token, name, vncURL)
     $('#noVNC-newtab').attr("onclick", "window.open(\'" + vncURL + "\',\'_blank\')");
     $('#noVNC-newtab').show();
 
+    $('#noVNC-notice').show();
+
     var iframeText = "<iframe id=\"noVNC_iframe\" style=\"width:100%; height:80vh; cursor:none; border:none; border-radius:4px;\" src=\"" + vncURL + "\"></iframe>";
     $('#vmConsole').html(iframeText);
 }

@@ -106,11 +106,12 @@ function drawTable(action) {
                 row['token'] = '<button type="button" class="btn btn-success btn-xs" title="Boot Machine" onclick="bootVM(\'' + row['id'] + '\')"><span class="glyphicon glyphicon-arrow-up" style="vertical-align:middle;margin-top:-2px"></span></button>';
             } else {
 
-// Removed until GUI popup can be fixed
-                row['token'] = '<button type="button" class="btn btn-blue btn-xs" title="Launch Desktop GUI" onclick="vncdialog(\'' + row['token'] + '\', \'' + row['name'] + '\', \'' + row['vncURL'] + '\')" ' + disabled + '><img src="/assets/images/icon-display.png" style="width:14px;margin-top:-2px" /></button>';
+// Uncomment to use experimental interface popup
+//                 row['token'] = '<button type="button" class="btn btn-blue btn-xs" title="Launch Desktop GUI" onclick="vncdialog(\'' + row['token'] + '\', \'' + row['name'] + '\', \'' + row['vncURL'] + '\')" ' + disabled + '><img src="/assets/images/icon-display.png" style="width:14px;margin-top:-2px" /></button>';
 
-//                var b = 'window.open("' + row["vncURL"] + '","_blank")';
-//                row['token'] = '<button type="button" class="btn btn-blue btn-xs" title="Launch GUI in new tab" onclick='+b+' '+disabled+'><img src="/assets/images/icon-display.png" style="width:14px;" /></button>';
+// Comment out these lines to use the experimental interface popup
+                var b = 'window.open("' + row["vncURL"] + '","_blank")';
+                row['token'] = '<button type="button" class="btn btn-blue btn-xs" title="Launch GUI in new tab" onclick='+b+' '+disabled+'><img src="/assets/images/icon-display.png" style="width:14px;" /></button>';
             }
 
             // Delete
