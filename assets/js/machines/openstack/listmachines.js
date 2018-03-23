@@ -107,10 +107,10 @@ function drawTable(action) {
             } else {
 
 // Removed until GUI popup can be fixed
-//                row['token'] = '<button type="button" class="btn btn-blue btn-xs" title="Launch Desktop GUI" onclick="vncdialog(\'' + row['token'] + '\', \'' + row['name'] + '\', \'' + row['vncURL'] + '\')" ' + disabled + '><img src="/assets/images/icon-display.png" style="width:14px;margin-top:-2px" /></button>';
+                row['token'] = '<button type="button" class="btn btn-blue btn-xs" title="Launch Desktop GUI" onclick="vncdialog(\'' + row['token'] + '\', \'' + row['name'] + '\', \'' + row['vncURL'] + '\')" ' + disabled + '><img src="/assets/images/icon-display.png" style="width:14px;margin-top:-2px" /></button>';
 
-                var b = 'window.open("' + row["vncURL"] + '","_blank")';
-                row['token'] = '<button type="button" class="btn btn-blue btn-xs" title="Launch GUI in new tab" onclick='+b+' '+disabled+'><img src="/assets/images/icon-display.png" style="width:14px;" /></button>';
+//                var b = 'window.open("' + row["vncURL"] + '","_blank")';
+//                row['token'] = '<button type="button" class="btn btn-blue btn-xs" title="Launch GUI in new tab" onclick='+b+' '+disabled+'><img src="/assets/images/icon-display.png" style="width:14px;" /></button>';
             }
 
             // Delete
