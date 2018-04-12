@@ -93,9 +93,10 @@ function drawTable(action) {
             row['state'] = '<span class="status-label status-label-'+ stateDictionary[state] +'">'+ state +'</span><progress max="4" value="'+ stateDictionary[state] +'"></progress>';
 
             // Time
+
             row['stime'] = {
                 "timestamp" : row['stime'],
-                "display" : "<span title='" + moment.unix(row['stime']).format("YYYY/MM/DD - h:mm:ss a") + "'>" + moment.unix(row['stime']).fromNow() + "</span>"
+                "display" : "<span title='" + moment.unix(row['stime']).format("YYYY/MM/DD - h:mm:ss a") + "'>" + moment.unix(row['stime']).from(moment.utc().format("YYYY/MM/DD - h:mm:ss a")) + "</span>"
             }
 
             // RAM
