@@ -32,6 +32,7 @@ function createVMdialog() {
 function randomname() {
     $.get('/machines/random', function(data) {
         $('#name').val(data);
+        $('#rename').val(data);
     });
 }
 

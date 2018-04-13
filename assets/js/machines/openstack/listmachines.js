@@ -90,13 +90,16 @@ function drawTable(action) {
             state = row['state'];
             disabled = (state != "ACTIVE" ? "disabled" : "");
 
+            //Rename
+            name = row['name']
+            row['name'] = '<button style="margin-left:5px;float:right;" type="button" class="btn btn-default btn-xs" title="Rename Machine" onclick="renameDialog(\'' + row['id'] + '\',\'' + name + '\')"><span class="glyphicon glyphicon-pencil" style="vertical-align:middle;margin-top:-2px"></span></button>' + name;
+
             row['state'] = '<span class="status-label status-label-'+ stateDictionary[state] +'">'+ state +'</span><progress max="4" value="'+ stateDictionary[state] +'"></progress>';
 
             // Time
-
             row['stime'] = {
                 "timestamp" : row['stime'],
-                "display" : "<span title='" + moment.unix(row['stime']).format("YYYY/MM/DD - h:mm:ss a") + "'>" + moment.unix(row['stime']).from(moment.utc().format("YYYY/MM/DD - h:mm:ss a")) + "</span>"
+                "display" : "<span title='" + moment.unix(row['stime']).format("YYYY/MM/DD - h:mm:ss a") + "'>" + moment.unix(row['stime']).fromNow() + "</span>"
             }
 
             // RAM
@@ -108,7 +111,7 @@ function drawTable(action) {
             } else {
 
 // Uncomment to use experimental interface popup
-//                 row['token'] = '<button type="button" class="btn btn-blue btn-xs" title="Launch Desktop GUI" onclick="vncdialog(\'' + row['token'] + '\', \'' + row['name'] + '\', \'' + row['vncURL'] + '\')" ' + disabled + '><img src="/assets/images/icon-display.png" style="width:14px;margin-top:-2px" /></button>';
+//                 row['token'] = '<button type="button" class="btn btn-blue btn-xs" title="Launch Desktop GUI" onclick="vncdialog(\'' + row['token'] + '\', \'' + name + '\', \'' + row['vncURL'] + '\')" ' + disabled + '><img src="/assets/images/icon-display.png" style="width:14px;margin-top:-2px" /></button>';
 
 // Comment out these lines to use the experimental interface popup
                 var b = 'window.open("' + row["vncURL"] + '","_blank")';
@@ -117,7 +120,7 @@ function drawTable(action) {
 
             // Delete
             if (row['user'] === fedid || row['candelete'] === true) {
-                row['id'] = '<button type="button" class="btn btn-danger btn-xs" title="Delete Machine" onclick="deleteVMdialog(\'' + row['id'] + '\', \'' + row['name'] + '\')"><span class="glyphicon glyphicon-remove" style="vertical-align:middle;margin-top:-2px"></span></button>';
+                row['id'] = '<button type="button" class="btn btn-danger btn-xs" title="Delete Machine" onclick="deleteVMdialog(\'' + row['id'] + '\', \'' + name + '\')"><span class="glyphicon glyphicon-remove" style="vertical-align:middle;margin-top:-2px"></span></button>';
             } else {
                 row['id'] = '<button type="button" class="btn btn-default btn-xs" title="You do not own this machine" onclick=""><span class="glyphicon glyphicon-remove" style="vertical-align:middle;margin-top:-2px"></span></button>';
             }

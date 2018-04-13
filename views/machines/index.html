@@ -63,6 +63,10 @@ if (CLOUDPLATFORM == "opennebula") {
 <script src="/assets/js/machines/{{ cloudPlatform }}/manage/create/pick-aquilon.js"></script>
 <script src="/assets/js/machines/{{ cloudPlatform }}/manage/create/pick-template.js"></script>
 <script src="/assets/js/machines/{{ cloudPlatform }}/manage/create/pick-resources.js"></script>
+<!---Rename--->
+{% if cloudPlatform == "openstack" %}
+    <script src="/assets/js/machines/openstack/rename.js"></script>
+{% endif %}
 
 {% endblock %}
 
@@ -117,5 +121,7 @@ if (CLOUDPLATFORM == "opennebula") {
 {% include "machines/manage/machine-delete.html" %}
 
 {% include "machines/novnc/novnc.html" %}
+
+{% include "machines/manage/rename.html" %}
 
 {% endblock %}
