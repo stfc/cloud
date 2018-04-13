@@ -278,8 +278,8 @@ progress[value="4"]::-moz-progress-bar {
   float: right;
   height: 34px;
   width: 34px;
-  margin-top: -42px;
 }
+
 #filter-button span {
   font-size: 20px;
   margin-left: -5px;
@@ -287,12 +287,10 @@ progress[value="4"]::-moz-progress-bar {
 
 #vm-list_filter, #vm-history_filter {
   float: right;
-  margin-top: -48px;
+  margin-top: -40px;
   margin-right: 40px;
 }
+
 #vm-list_filter input, #vm-history_filter input {
   height: 34px;
-}
-#vm-list_filter {
-  margin-top: -40px;
 }
