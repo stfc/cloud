@@ -5,6 +5,7 @@ function renameDialog(id, name)
     $('#renamedialog').modal('show');
     $('#rename').val(name);
     $('#rename-btn').attr('onclick','renameVm_check("' + id + '")');
+    $('#rename-btn').removeAttr('disabled')
     $('.count-field').hide();
     $('#rename-creation-error').hide();
 }
@@ -23,7 +24,7 @@ function renameVm_check(id) {
         } else if (name.match(regexp)) {
             creation_error('rename-creation-error', 'Please try a different name. "<b>'+ name +'</b>" contains blocked words.');
         } else {
-            console.log("Rename to " + name);
+            $('#rename-btn').attr('disabled','disabled')
             var rename = {id: id, name: name};
             renameVm(rename);
         }
