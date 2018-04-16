@@ -94,6 +94,14 @@
 }
 
 
+/*Rename Buttons*/
+td .hide-until-hover {
+    display: none;
+}
+td:hover .hide-until-hover {
+    display: block;
+}
+
 
 /*Flavor Bar*/
 

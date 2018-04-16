@@ -86,14 +86,13 @@ function drawTable(action) {
         $('#all-vms').hide();
         vmlist.clear();
         for (row of data["data"]) {
+            //Rename
+            name = row['name']
+            row['name'] = '<button style="margin-left:5px;float:right;" type="button" class="btn btn-default btn-xs hide-until-hover" title="Rename Machine" onclick="renameDialog(\'' + row['id'] + '\',\'' + name + '\')"><span class="glyphicon glyphicon-pencil" style="vertical-align:middle;margin-top:-2px"></span></button>' + name;
+
             // State
             state = row['state'];
             disabled = (state != "ACTIVE" ? "disabled" : "");
-
-            //Rename
-            name = row['name']
-            row['name'] = '<button style="margin-left:5px;float:right;" type="button" class="btn btn-default btn-xs" title="Rename Machine" onclick="renameDialog(\'' + row['id'] + '\',\'' + name + '\')"><span class="glyphicon glyphicon-pencil" style="vertical-align:middle;margin-top:-2px"></span></button>' + name;
-
             row['state'] = '<span class="status-label status-label-'+ stateDictionary[state] +'">'+ state +'</span><progress max="4" value="'+ stateDictionary[state] +'"></progress>';
 
             // Time
