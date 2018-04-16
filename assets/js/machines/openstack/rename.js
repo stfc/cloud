@@ -6,7 +6,7 @@ function renameDialog(id, prevname)
     $('#rename').val(prevname);
     $('#rename-btn').attr('onclick','renameVm_check("' + id + '", "' + prevname + '")');
     $('#rename-btn').removeAttr('disabled')
-    $('.count-field').hide();
+    $('.count-field').remove();
     $('#rename-creation-error').hide();
 }
 
