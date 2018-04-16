@@ -23,7 +23,7 @@ class Rename(object):
             print("id = " + str(json['id']))
             x = novaClient.servers.find(id=json['id']);
             x.update(json['name']);
-            cherrypy.log("- Renamed VM(" + json['id'] + ") to '" + json['name'], username)
+            cherrypy.log("- Renamed VM (" + json['id'] + ") '" + json['prevname'] + "' to '" + json['name'] + "'", username)
         except (ClientException, KeyError) as e:
             cherrypy.log('- ' + str(e), username)
             raise cherrypy.HTTPError('500 There has been a problem with renaming the VM, try again later.')
