@@ -3,14 +3,13 @@ from getFunctions import getNovaInstance
 from novaclient.exceptions import ClientException, NotFound
 
 class Rename(object):
-    exposed = True
-
     '''
         Rename VM
         id          : id of VM
         name        : name for the new VM
         prevname    : previous name of the VM
     '''
+    exposed = True
     @cherrypy.tools.isAuthorised()
     @cherrypy.tools.json_in()
     def PUT(self):

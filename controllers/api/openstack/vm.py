@@ -5,14 +5,13 @@ from getFunctions import getNovaInstance
 from novaclient.exceptions import ClientException, NotFound
 
 class VM(object):
-    exposed = True
-
     '''
         Create a new VM
 
         template_id : the id of template to use with VM
         name        : name for the new VM
     '''
+    exposed = True
     @cherrypy.tools.isAuthorised()
     @cherrypy.tools.json_in()
     def PUT(self):

@@ -5,12 +5,10 @@ from keystoneauth1.exceptions import Unauthorized
 from novaclient.exceptions import BadRequest
 
 class User(object):
-
-    exposed = True
-
     '''
         Log the user in
     '''
+    exposed = True
     @cherrypy.tools.json_in()
     @cherrypy.tools.json_out()
     def PUT(self):
