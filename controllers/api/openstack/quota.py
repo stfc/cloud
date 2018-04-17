@@ -1,6 +1,8 @@
 import cherrypy
-from getFunctions import getNovaInstance
+
 from novaclient.exceptions import ClientException
+
+from getFunctions import getNovaInstance
 
 class Quota(object):
     exposed = True

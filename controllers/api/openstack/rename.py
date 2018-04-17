@@ -1,6 +1,8 @@
 import cherrypy
-from getFunctions import getNovaInstance
+
 from novaclient.exceptions import ClientException, NotFound
+
+from getFunctions import getNovaInstance
 
 class Rename(object):
     '''

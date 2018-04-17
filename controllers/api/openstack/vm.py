@@ -1,8 +1,10 @@
 import cherrypy
 from datetime import datetime
 from time import mktime
-from getFunctions import getNovaInstance
+
 from novaclient.exceptions import ClientException, NotFound
+
+from getFunctions import getNovaInstance
 
 class VM(object):
     '''

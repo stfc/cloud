@@ -1,8 +1,10 @@
 import cherrypy
 import ldap
-from getFunctions import getNovaInstance, getOpenStackSession
+
 from keystoneauth1.exceptions import Unauthorized
 from novaclient.exceptions import BadRequest
+
+from getFunctions import getNovaInstance, getOpenStackSession
 
 class User(object):
     '''

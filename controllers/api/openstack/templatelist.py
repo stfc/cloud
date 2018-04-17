@@ -1,6 +1,8 @@
 #!/usr/bin/python
 import cherrypy
+
 from collections import defaultdict
+
 from getFunctions import getNovaInstance
 
 class TemplateList(object):

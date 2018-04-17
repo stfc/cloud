@@ -2,7 +2,6 @@ import cherrypy
 import os
 import xmlrpclib
 import xml.etree.ElementTree as ET
-
 from random import randint
 
 from helpers.auth import *
