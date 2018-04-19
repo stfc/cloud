@@ -21,7 +21,8 @@ class Machines(object):
         WSPORT = cherrypy.request.config.get("wsport")
         EMAIL = cherrypy.request.config.get("email")
         CLOUDPLATFORM = cherrypy.request.config.get("cloudPlatform")
-        return {"wshostname" : WSHOSTNAME, "wsport" : WSPORT, "email" : EMAIL, "cloudPlatform" : CLOUDPLATFORM}
+        COUNTLIMIT = cherrypy.request.config.get("countLimit")
+        return {"wshostname" : WSHOSTNAME, "wsport" : WSPORT, "email" : EMAIL, "cloudPlatform" : CLOUDPLATFORM, "countLimit" : COUNTLIMIT}
 
 
     @cherrypy.expose

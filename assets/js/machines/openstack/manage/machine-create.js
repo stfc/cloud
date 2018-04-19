@@ -96,6 +96,18 @@ function check_errors(data, selected_template) {
             count = false;
         }
 
+        // Show Warning if count is > quota
+        if (data['count'] > availablequotavm && groupquotavm !== -1) {
+            creation_error('name-creation-error','You do not have the quota to create ' + data['count'] + ' VMs');
+            count = false;
+        } 
+
+        // Limit numbers of VMs created at once in unlimited quotas
+        if (data['count'] > count_limit && groupquotavm === -1) {
+            creation_error('name-creation-error','You cannot create more than ' + count_limit + ' VMs at one time');
+            count=false;
+        }
+
         // Show warning if no template
         if (selected_template === '') {
             creation_error('template-creation-error','Please enter a Template.');
