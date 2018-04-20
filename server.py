@@ -73,12 +73,12 @@ if cloudPlatform == "openstack":
 
     api.flavors = Flavors()
     api.projects = Projects()
+    api.rename = Rename()
 
 api.vm = VM()
 api.quota = Quota()
 api.user = User()
 api.templatelist = TemplateList()
-api.rename = Rename()
 cherrypy.tree.mount(api, "/api", "config/api.conf")
 
 # Launch websockify for NoVNC

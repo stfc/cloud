@@ -22,6 +22,7 @@ You can find the main configuration file at: `config/global.conf`. If you wish t
 email    : The helpdesk/support email address that appears throughout the website
 headnode : The URL of the OpenNebula XMLRPC API (recommended to use HTTPS)
 badwords : Location of bad words file to strip out of the random VM name generator
+countLimit : Maximum number of VMs that can be created at once in the OpenStack interface (optional, defaults to 10 if missing or invalid)
 
 auth.ldap_address : The URL of an LDAP server to convert FedID into real name (optional)
 auth.ldap_basedn  : The basedn to lookup in LDAP (optional)
@@ -33,6 +34,7 @@ wskey      : The location of the SSL key
 wstokendir : A directory to store NoVNC tokens in
 
 wsgi_enabled : Set to true if you want to launch this application behind something like Apache
+cloudPlatform : OpenStack or OpenNebula
 ```
 
 

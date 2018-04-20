@@ -3,6 +3,10 @@
 
 {% extends "layout.html" %}
 
+{% if (countLimit is none) or (countLimit is not number) %}
+    {% set countLimit = 10 %}
+{% endif %}
+
 {% block css %}
 <link rel="stylesheet" href="/assets/components/bootstrap/css/bootstrap-select-1.9.4.min.css" type="text/css" />
 <link rel="stylesheet" href="/assets/components/bootstrap/css/dataTables.bootstrap-1.10.10.min.css" type="text/css" />
