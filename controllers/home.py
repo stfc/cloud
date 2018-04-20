@@ -32,4 +32,5 @@ class Home(object):
     @cherrypy.tools.jinja(template="home/faq.html")
     def faq(self):
         EMAIL = cherrypy.request.config.get("email")
-        return {"email" : EMAIL}
+        CLOUDPLATFORM = cherrypy.request.config.get("cloudPlatform")
+        return {"email" : EMAIL, "cloudPlatform" : CLOUDPLATFORM}
