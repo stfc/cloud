@@ -181,6 +181,12 @@ progress[value="4"]::-moz-progress-bar {
   background: #24990b;
 }
 
+progress[value="5"]::-moz-progress-bar {
+  background: #FF0000;
+}
+
+
+
 .status-label {
   color: #444444;
   font-size: 11px;
