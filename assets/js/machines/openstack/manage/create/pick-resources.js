@@ -20,8 +20,14 @@ function setSliderAmounts(flavorList, starter){
         i = document.getElementById("flavorChoice").value;
     }
 
-    var max_cpu = smallestValue(biggestCPUAmount, availablequotacpu);
-    var max_mem = smallestValue(biggestRAMAmount, availablequotamem);
+    var cpu_values = [biggestCPUAmount, availablequotacpu]
+    var mem_values = [biggestRAMAmount, availablequotamem]
+ 
+    cpu_values = cpu_values.filter(function(n){ return n != undefined && n >= 0});
+    mem_values = mem_values.filter(function(n){ return n != undefined && n >= 0});
+
+    var max_cpu = Math.min.apply(Math, cpu_values);
+    var max_mem = Math.min.apply(Math, mem_values);
     var max_disk = biggestDiskAmount;
 
     $('#flavorBarCPU').css('width',    ( ((flavorList['data'][i]['cpu'] / max_cpu) * 100) + '%'));
@@ -32,16 +38,4 @@ function setSliderAmounts(flavorList, starter){
     $('#flavorMaxMemory').text(flavorList['data'][i]['ram'] + "GB/" + max_mem + "GB");
     $('#flavorMaxDisk').text(flavorList['data'][i]['disk'] + "GB/" + max_disk + "GB");
 
-}
-
-function smallestValue(a, b){
-    if (a === undefined && b === undefined){
-      return "\u221E"
-    } else if (a !== undefined && b === undefined || a < b){
-      return a;
-    } else if (a === undefined && b !== undefined || b < a){
-      return b;
-    } else if (a == b) {
-      return a;
-    }
 }
