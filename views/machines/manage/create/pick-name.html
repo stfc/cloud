@@ -14,6 +14,7 @@
             </div>
         </div>
     </div>
+{% if cloudPlatform == "openstack" %}
     <div class="form-group count-field">
         <label for="vmCount" class="col-sm-3 control-label">Count</label>
         <div class="col-sm-8">
@@ -22,4 +23,5 @@
            </div>
         </div>    
     </div>
+{% endif %}
 </fieldset>
