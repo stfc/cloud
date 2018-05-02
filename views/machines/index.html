@@ -38,6 +38,7 @@ if (CLOUDPLATFORM == "opennebula") {
         setInterval(function () {
             quota.update();
             drawTable(miscAction);
+            addVNC();
         }, 60000);
     });
     var count_limit = {{ countLimit }};
@@ -83,6 +84,7 @@ if (CLOUDPLATFORM == "opennebula") {
         <span id="projectChoiceBlock" class="pull-right">
             Current Project:
             <select style="height:34px" id="projectChoice" class="btn btn-default btn-xs" onchange="makeAjaxCalls()"></select>
+           <!-- <div id="loading-project" class="loader"></div> -->
         </span>
 
         </h1>
@@ -96,7 +98,27 @@ if (CLOUDPLATFORM == "opennebula") {
         {% if cloudPlatform == "openstack" %}disabled=""{% endif %}>
         <span class="glyphicon glyphicon-plus" style="font-size:15px"></span>&nbsp;&nbsp;New Machine</button>
 
-        <span id="loadingStatus"></span>
+        {% if cloudPlatform == "openstack" %}
+            <span>
+
+            <span id="loading-templates" style="display:none;">
+            &nbsp; Loading Templates: <div class="loader"></div>
+            </span>
+
+            <span id="loading-flavors" style="display:none;">
+            &nbsp; Loading Flavors: <div class="loader"></div>
+            </span>
+    
+            <span id="loading-vms" style="display:none;">
+            &nbsp; Loading VMs: <div class="loader"></div>
+            </span>
+
+            <span id="loading-vnc" style="display:none;">
+            &nbsp; Loading VNC consoles: <div class="loader"></div>
+            </span>
+
+            </span>
+        {% endif %}
 
         <button type="button" class="btn btn-default" id="filter-button" title="Table Filters" onclick="filterTableDialog()"><span class="glyphicon glyphicon-cog"></span></button>
         </span>

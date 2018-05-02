@@ -64,6 +64,7 @@ if cloudPlatform == "opennebula":
 
 if cloudPlatform == "openstack":
     from controllers.api.openstack.vm import VM
+    from controllers.api.openstack.vnc import VNC
     from controllers.api.openstack.quota import Quota
     from controllers.api.openstack.user import User
     from controllers.api.openstack.templatelist import TemplateList
@@ -74,6 +75,7 @@ if cloudPlatform == "openstack":
     api.flavors = Flavors()
     api.projects = Projects()
     api.rename = Rename()
+    api.vnc = VNC()
 
 api.vm = VM()
 api.quota = Quota()

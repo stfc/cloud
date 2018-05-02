@@ -23,6 +23,7 @@ function getTemplateList(){
         }
     }).done(function(data) {
         image_list = data;
+        $('#loading-templates').hide();        
         incrementLoadingCount();
     });
 }
@@ -43,6 +44,7 @@ function getFlavors(){
         }
     }).done(function(data) {
         flavorList = data;
+        $('#loading-flavors').hide();
         incrementLoadingCount();
     });
 }

@@ -13,7 +13,7 @@ function getProjects() {
               $("#errormessage").html("You do not have access to any projects");
               $("#error").show();
         } else {
-
+              $('#loading-project').hide();
               var projectList = data;
               var select = document.getElementById("projectChoice");
               for (i = 0; i < projectList['data'].length; i++){
@@ -33,29 +33,31 @@ function getProjects() {
 }
 
 function makeAjaxCalls() {
+    $('#newMachine').attr('disabled', '');
+    $('#loading-templates').show();
+    $('#loading-flavors').show();
+    $('#loading-vms').show();
+    $('#loading-vnc').show();
+    loadingCount = 0;   
+
     var selValue = $('#projectChoice').val();
     sessionStorage.setItem("selItem", selValue);
 
-    var loadingStatusText = ""
-    $("#loadingStatus").html(loadingStatusText + "<div id=\"loadingStatusWheel\" class=\"loader\"></div>");
-    loadingCount = 0;
-    $('#newMachine').attr('disabled', '');
     var date = new Date();
     date.setTime(date.getTime() + (86400 * 1000));    // Cookie will expire 24 hours after creating
     Cookies.set("projectID", document.getElementById("projectChoice").value, {expires : date, path : '/'});
+ 
     getTemplateList();
     getFlavors();
     quota.update();
     drawTable(miscAction);
-
+    addVNC();
 }
 
 function incrementLoadingCount() {
     loadingCount++;
-    if (loadingCount >= 4) {
-        var loadingStatusFinished = ""
-        $("#loadingStatus").html(loadingStatusFinished);
-        $('#loadingStatusWheel').hide();
+    if (loadingCount >= 2) {
         $('#newMachine').removeAttr('disabled');
+        
     }
 }

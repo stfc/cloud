@@ -84,13 +84,18 @@ class VM(object):
         username = cherrypy.request.cookie.get('fedid').value
 
 	json = []	
-	flavorInfo = {}
+	flavorList = {}
+        imageList = {}
 
 	for flavor in novaClient.flavors.list(detailed = True):
-	    flavorInfo[flavor.name] = [flavor.vcpus, flavor.ram]
+	    flavorList[flavor.id] = {'name':str(flavor.name), 'vcpus':flavor.vcpus, 'ram':flavor.ram}
+        print flavorList
+
+        for image in novaClient.images.list(detailed = True):
+            imageList[image.id] = {'name':str(image.name)}
+        print imageList
 
 	for server in novaClient.servers.list(detailed = True):
-	    # Print to command line - Testing what does what
 	    print server.name + " - " + server.status
 
 	    serverStatus = server.status
@@ -101,25 +106,23 @@ class VM(object):
 
 	    # Gets flavor ID --> flavor name
             try:
- 	        flavorName = str(novaClient.flavors.find(id = server.flavor[u'id']))
- 	        flavorName = self.cutString(flavorName, 9, -1)
-	    except KeyError:	# KeyError for getting server.flavor[u'id']
-                cherrypy.log('- KeyError when getting flavorName for VM: ' + str(server.name), username)
+                flavorName = flavorList[server.flavor['id']]['name']
+	    except Exception as ex:	
+                cherrypy.log('- ' + str(type(ex)) + ' when getting flavorName for VM: ' + str(server.name), username)
+                cherrypy.log(str(ex))
                 flavorName = ""
-            except NotFound:
-                cherrypy.log(server.name + ' - NotFound Error for name matching FlavorID: ' + server.flavor[u'id'])
-                flavorName = ""
+
+	    print server.name + " - " + flavorName
 
 	    # Gets image ID --> image name
             try:
-	        imageName = str(novaClient.images.find(id = server.image[u'id']))
-	        imageName = self.cutString(imageName, 8, -1)
-            except KeyError:
-                cherrypy.log('- KeyError when getting imageName for VM: ' + str(server.name), username)
-		imageName = ""
-            except NotFound:
-                cherrypy.log(server.name + ' - NotFound Error for name matching ImageID: ' + server.image[u'id'])
+                imageName = imageList[server.image['id']]['name']
+	    except Exception as ex:	
+                cherrypy.log('- ' + str(type(ex)) + ' when getting imageName for VM: ' + str(server.name), username)
+                cherrypy.log(str(ex))
                 imageName = ""
+
+	    print server.name + " - " + imageName
 
 	    hostname = ""
 	    try:
@@ -128,24 +131,13 @@ class VM(object):
                     serverNetwork = self.getServerNetworkLabel(serverIP)
                     hostname = novaClient.servers.ips(server)[serverNetwork][0][u'addr']
             except (ClientException, KeyError) as e:
-                cherrypy.log(username + ' - ' + str(e))
+                cherrypy.log(username + ' - ' + str(type(e)) + ' when assiging Hostname - ' + str(e))
 
-            # Gets URL with VNC token embedded
-            if serverStatus == "ACTIVE" and action != "1":
-		try:
-		    vncURL = server.get_vnc_console(console_type = "novnc")[u'console'][u'url']
-		    vncToken = self.cutString(vncURL, 62, len(vncURL))
-		except ClientException as e:
-                    cherrypy.log(username + ' - ' + str(e))
-		    vncURL = ""
-		    vncToken = ""
-	    else:
-		vncURL = ""
-		vncToken = ""
-	
+            print server.name + " - " + hostname
+
             if (flavorName != ""):
-                flavorCPU = flavorInfo[flavorName][0]
-                flavorMemory = flavorInfo[flavorName][1]
+                flavorCPU = flavorList[server.flavor['id']]['vcpus']
+                flavorMemory = flavorList[server.flavor['id']]['ram']
             else:
                 flavorCPU = ""
                 flavorMemory = ""
@@ -164,8 +156,6 @@ class VM(object):
                 'cpu'      : flavorCPU,
                 'memory'   : flavorMemory,
                 'type'     : imageName,
-                'token'    : vncToken,
-		'vncURL'   : vncURL,		
                 'candelete': True,
 		'keypair'  : server.key_name,
 	    })
@@ -187,6 +177,7 @@ class VM(object):
 	serverNetworkEnd = self.getInfoID(serverIP, 3, len(serverIP), "'")
         serverNetwork = self.cutString(serverIP, 3, serverNetworkEnd)
 	return serverNetwork
+     
 
     '''
         Update VM info/state

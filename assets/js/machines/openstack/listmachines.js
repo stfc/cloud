@@ -60,6 +60,39 @@ $('.show-hide').change( 'click', function (e) {
     column.visible( ! column.visible() );
 });
 
+function addVNC() {
+    $.ajax({
+       type: 'GET',
+       url: '/api/vnc',
+       statusCode: {
+           400: function(data) {
+               $("#errormessage").html(data.statusText);
+               $("#error").show();
+           },
+           403: function() {
+               exceptions("403");
+           },
+           500: function(data) {
+               $("#errormessage").html(data.statusText);
+               $("#error").show();
+           }
+       }
+    }).done(function(data) {
+          for (vm of data["data"]) {
+              if (vm['vncURL'] != "") {
+                  x = "#vnc-" + vm['id'];
+                  y = 'window.open("' + vm["vncURL"] + '","_blank")'
+//                  Uncomment to use GUI popup 
+//                  y = 'vncdialog(\'' + row['token'] + '\', \'' + name + '\', \'' + row['vncURL'] + '\')'
+                  $(x).attr("onclick", y);
+                  $(x).removeAttr("disabled");
+
+              }
+          }
+          $('#loading-vnc').hide();
+    })
+};
+
 var fedid = Cookies.get('fedid');
 
 function drawTable(action) {
@@ -81,7 +114,6 @@ function drawTable(action) {
             }
         }
     }).done(function(data) {
-        incrementLoadingCount();
 
         $('#all-vms').hide();
         vmlist.clear();
@@ -108,13 +140,16 @@ function drawTable(action) {
             if (stateDictionary[state] === 0) {
                 row['token'] = '<button type="button" class="btn btn-success btn-xs" title="Boot Machine" onclick="bootVM(\'' + row['id'] + '\')"><span class="glyphicon glyphicon-arrow-up" style="vertical-align:middle;margin-top:-2px"></span></button>';
             } else {
+                // noVNC                
+                x = "vnc-" + row['id']
+                if ($('#'+x).attr("onclick") == undefined) {
+		   y = 'disabled=""'
+                } else {
+                   y = 'onclick="' + $('#'+x).attr("onclick") + '"'
+                }
 
-// Uncomment to use experimental interface popup
-//                 row['token'] = '<button type="button" class="btn btn-blue btn-xs" title="Launch Desktop GUI" onclick="vncdialog(\'' + row['token'] + '\', \'' + name + '\', \'' + row['vncURL'] + '\')" ' + disabled + '><img src="/assets/images/icon-display.png" style="width:14px;margin-top:-2px" /></button>';
-
-// Comment out these lines to use the experimental interface popup
-                var b = 'window.open("' + row["vncURL"] + '","_blank")';
-                row['token'] = '<button type="button" class="btn btn-blue btn-xs" title="Launch GUI in new tab" onclick='+b+' '+disabled+'><img src="/assets/images/icon-display.png" style="width:14px;" /></button>';
+		row['token'] = '<button id="' + x + '" type="button" class="btn btn-blue btn-xs" title="Launch GUI in new tab" ' + y + '><img src="/assets/images/icon-display.png" style="width:14px;"/></button>';
+                
             }
 
             // Delete
@@ -141,6 +176,7 @@ function drawTable(action) {
                 vmlist.row.add(row);
             }
         }
+        $('#loading-vms').hide();
         vmlist.draw(true); // 'false' saves the paging position
     });
 }
@@ -149,3 +185,4 @@ function drawTable(action) {
 $('.noEnterSubmit').keypress(function(e){
     if ( e.which == 13 ) e.preventDefault();
 });
+
