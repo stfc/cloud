@@ -89,7 +89,9 @@ function addVNC() {
 
               }
           }
-          $('#loading-vnc').hide();
+          if ($('#loading-vms').css('display') == 'none'){
+              $('#loading-vnc').hide();
+          }
     })
 };
 
@@ -117,6 +119,7 @@ function drawTable(action) {
 
         $('#all-vms').hide();
         vmlist.clear();
+
         for (row of data["data"]) {
             //Rename
             name = row['name']
