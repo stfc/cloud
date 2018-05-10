@@ -8,7 +8,8 @@ function creation_error(id, text) {
 // Set defaults when modal opened
 function createVMdialog() {
     $('.creation-error').hide(); // Hide all errors
-    $('#create-btn').attr('onclick', 'fetch_values(selected_template)').css('cursor', 'pointer');
+    $('#create-btn').attr('disabled', '');
+    $('#create-btn').attr('onclick', 'fetch_values(selected_template)');
 
     // Set name and all template options to empty
     $('#name').val('');
