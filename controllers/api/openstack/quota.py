@@ -41,18 +41,19 @@ class Quota(object):
 
         quotaDataKeys = []
         # Available quota figures only used when there are limits on quotas
+
         if quotaData['groupquotamem'] > -1:
             quotaData['availablequotamem'] = quotaData['groupquotamem'] - quotaData['groupusedmem']
-        else:
-            quotaDataKeys.append('biggestRAMAmount')
+
         if quotaData['groupquotacpu'] > -1:
             quotaData['availablequotacpu'] = quotaData['groupquotacpu'] - quotaData['groupusedcpu']
-        else:
-            quotaDataKeys.append('biggestCPUAmount')
+
         if quotaData['groupquotavm'] > -1:
             quotaData['availablequotavm'] = quotaData['groupquotavm'] - quotaData['groupusedvm']
 
         # Always appended as there's no disk quota - biggest disk size will always be required
+        quotaDataKeys.append('biggestRAMAmount')
+        quotaDataKeys.append('biggestCPUAmount')
         quotaDataKeys.append('biggestDiskAmount')
 
         ramList = []
@@ -60,11 +61,10 @@ class Quota(object):
         diskList = []
         # Searching each flavor to put each attribute into an indivdual list
         # Biggest value found a few lines below - this is used for sliders when creating a VM
+
         for flavor in novaClient.flavors.list():
-            if quotaData['groupquotamem'] == -1:
-                ramList.append(flavor.ram)
-            if quotaData['groupquotacpu'] == -1:
-                cpuList.append(flavor.vcpus)
+            ramList.append(flavor.ram)
+            cpuList.append(flavor.vcpus)
             diskList.append(flavor.disk)
 
         biggestAmountList = []

@@ -20,22 +20,48 @@ function setSliderAmounts(flavorList, starter){
         i = document.getElementById("flavorChoice").value;
     }
 
-    var cpu_values = [biggestCPUAmount, availablequotacpu]
-    var mem_values = [biggestRAMAmount, availablequotamem]
+    if ($('#vmCount').val() >= 1 ) {
+        var r_vms = $('#vmCount').val();
+    } else {
+        var r_vms = 1;
+    }
+    
+    var r_cpu =  flavorList['data'][i]['cpu'] * r_vms;
+    var r_mem =  flavorList['data'][i]['ram'] * r_vms;
+    var r_disk = flavorList['data'][i]['disk'] * r_vms;
+
+    var vms_values = [availablequotavm]
+    var cpu_values = [biggestCPUAmount * r_vms, availablequotacpu]
+    var mem_values = [biggestRAMAmount * r_vms, availablequotamem]
+    var disk_values = [biggestDiskAmount * r_vms]
  
+    vms_values = vms_values.filter(function(n){ return n != undefined && n >= 0});
     cpu_values = cpu_values.filter(function(n){ return n != undefined && n >= 0});
     mem_values = mem_values.filter(function(n){ return n != undefined && n >= 0});
+    disk_values = disk_values.filter(function(n){ return n != undefined && n >= 0});
 
+    var max_vms = Math.min.apply(Math, vms_values);
     var max_cpu = Math.min.apply(Math, cpu_values);
     var max_mem = Math.min.apply(Math, mem_values);
-    var max_disk = biggestDiskAmount;
+    var max_disk = Math.min.apply(Math, disk_values);
 
-    $('#flavorBarCPU').css('width',    ( ((flavorList['data'][i]['cpu'] / max_cpu) * 100) + '%'));
-    $('#flavorBarMemory').css('width', ( ((flavorList['data'][i]['ram'] / max_mem) * 100) + '%'));
-    $('#flavorBarDisk').css('width',   ( ((flavorList['data'][i]['disk'] / max_disk) * 100) + '%'));
-
-    $('#flavorMaxCPU').text(flavorList['data'][i]['cpu'] + "/" + max_cpu);
-    $('#flavorMaxMemory').text(flavorList['data'][i]['ram'] + "GB/" + max_mem + "GB");
-    $('#flavorMaxDisk').text(flavorList['data'][i]['disk'] + "GB/" + max_disk + "GB");
-
+    fillBar('vms',  r_vms,  max_vms);
+    fillBar('cpu',  r_cpu,  max_cpu);
+    fillBar('mem',  r_mem,  max_mem);
+    fillBar('disk', r_disk, max_disk);
 }
+
+function fillBar(resource, request, max) {
+
+    if (request <= max) {
+        x = (request / max) * 100;
+        $('#flavorMax-' + resource).css('color', '');
+    } else {
+        x = 100;
+        $('#flavorMax-' + resource).css('color', 'red');
+    }      
+
+    $('#flavorBar-' + resource).css('width',(x + '%'));
+    $('#flavorMax-' + resource).text(request + "/" + max);
+}
+

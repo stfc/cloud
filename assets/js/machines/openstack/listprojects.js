@@ -33,7 +33,8 @@ function getProjects() {
 }
 
 function makeAjaxCalls() {
-    $('#newMachine').attr('disabled', '');
+    $('#newMachine').attr('disabled', '');  
+    $('#loading-quota').show();
     $('#loading-templates').show();
     $('#loading-flavors').show();
     $('#loading-vms').show();
@@ -56,7 +57,7 @@ function makeAjaxCalls() {
 
 function incrementLoadingCount() {
     loadingCount++;
-    if (loadingCount >= 2) {
+    if (loadingCount >= 3) {
         $('#newMachine').removeAttr('disabled');
         
     }

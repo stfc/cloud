@@ -17,6 +17,8 @@ var quota = {
             }
         }).done(function(json_out) {
 	    $('#loading-quota').hide();
+	    $('#loading-quota-big').hide();
+            incrementLoadingCount();
             $('.quotaBox').removeAttr("style");
     
             $('#resources').show();
