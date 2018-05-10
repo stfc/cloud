@@ -62,7 +62,6 @@ function fillBar(resource, request, max) {
         x = 100;
         $('#flavorMax-' + resource).css('color', 'red');
         $('#create-btn').prop('disabled', true);
-        console.log("max");
     }      
 
     $('#flavorBar-' + resource).css('width',(x + '%'));
