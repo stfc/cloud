@@ -23,8 +23,8 @@ function getTemplateList(){
         }
     }).done(function(data) {
         image_list = data;
-        $('#loading-templates').hide();        
-        incrementLoadingCount();
+        loadedProject['templates'] = true;
+        loadingWheels();
     });
 }
 
@@ -44,8 +44,9 @@ function getFlavors(){
         }
     }).done(function(data) {
         flavorList = data;
-        $('#loading-flavors').hide();
-        incrementLoadingCount();
+        loadedProject['flavors'] = true;
+        loadingWheels();
+
     });
 }
 

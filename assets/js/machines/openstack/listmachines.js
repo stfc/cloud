@@ -89,8 +89,9 @@ function addVNC() {
 
               }
           }
-          if ($('#loading-vms').css('display') == 'none'){
-              $('#loading-vnc').hide();
+          if (loadedProject['vms'] = true){
+              loadedProject['vnc'] = true;
+              loadingWheels();
           }
     })
 };
@@ -179,8 +180,10 @@ function drawTable(action) {
                 vmlist.row.add(row);
             }
         }
-        $('#loading-vms').hide();
-        vmlist.draw(true); // 'false' saves the paging position
+        // 'false' saves the paging position
+        vmlist.draw(true);
+        loadedProject['vms'] = true;
+        loadingWheels();
     });
 }
 

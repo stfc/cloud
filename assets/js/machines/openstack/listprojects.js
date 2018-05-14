@@ -32,14 +32,20 @@ function getProjects() {
     });
 }
 
+var loadedProject = {};
+
 function makeAjaxCalls() {
-    $('#newMachine').attr('disabled', '');  
-    $('#loading-quota').show();
-    $('#loading-templates').show();
-    $('#loading-flavors').show();
-    $('#loading-vms').show();
-    $('#loading-vnc').show();
-    loadingCount = 0;   
+
+    loadedProject = {
+        'quota'     : false,
+        'templates' : false,
+        'flavors'   : false,
+        'vms'       : false,
+        'vnc'       : false
+    };
+
+    $('.quotaBox').hide();
+    loadingWheels();
 
     var date = new Date();
     date.setTime(date.getTime() + (86400 * 1000));    // Cookie will expire 24 hours after creating
@@ -52,10 +58,29 @@ function makeAjaxCalls() {
     addVNC();
 }
 
-function incrementLoadingCount() {
-    loadingCount++;
-    if (loadingCount >= 3) {
+function loadingWheels() {
+
+    if (loadedProject['quota'] == true && loadedProject['templates'] == true && loadedProject['flavors'] == true) {
         $('#newMachine').removeAttr('disabled');
-        
+    } else {
+        $('#newMachine').attr('disabled', '');
     }
+
+    for (wheel in loadedProject) {
+        if (loadedProject[wheel] == true ) {
+            console.log("hide " + wheel);
+            $('#loading-' + wheel).hide();
+            $('#loading-' + wheel + '-big').hide();
+        } else {
+            $('#loading-' + wheel).show();
+            $('#loading-' + wheel + '-big').show();
+        }
+    }
+
+    if (Object.values(loadedProject).includes(false) === false) {
+        $('#loading-all').hide();
+    } else {
+        $('#loading-all').show();
+    }
+
 }
