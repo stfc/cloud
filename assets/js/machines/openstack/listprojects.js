@@ -20,7 +20,7 @@ function getProjects() {
                   select.options[select.options.length] = new Option(projectList['data'][i]['name'], projectList['data'][i]['id']);
               }
         
-              var selItem = sessionStorage.getItem("selItem");
+              var selItem = Cookies.get("projectID");
               for (i = 0; i < Object.values(data.data).length; i++){
                   if (Object.values(data.data[i]).includes(selItem)) {
 	              $('#projectChoice').val(selItem);
@@ -40,9 +40,6 @@ function makeAjaxCalls() {
     $('#loading-vms').show();
     $('#loading-vnc').show();
     loadingCount = 0;   
-
-    var selValue = $('#projectChoice').val();
-    sessionStorage.setItem("selItem", selValue);
 
     var date = new Date();
     date.setTime(date.getTime() + (86400 * 1000));    // Cookie will expire 24 hours after creating
