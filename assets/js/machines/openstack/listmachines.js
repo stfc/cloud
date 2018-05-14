@@ -89,7 +89,7 @@ function addVNC() {
 
               }
           }
-          if (loadedProject['vms'] = true){
+          if (loadedProject['vms'] == true){
               loadedProject['vnc'] = true;
               loadingWheels();
           }
@@ -181,7 +181,7 @@ function drawTable(action) {
             }
         }
         // 'false' saves the paging position
-        vmlist.draw(true);
+        vmlist.draw(false);
         loadedProject['vms'] = true;
         loadingWheels();
     });

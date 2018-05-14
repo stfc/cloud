@@ -54,7 +54,11 @@ function makeAjaxCalls() {
     getTemplateList();
     getFlavors();
     quota.update();
+
+    vmlist.clear();
+    vmlist.draw();
     drawTable(miscAction);
+
     addVNC();
 }
 
@@ -68,7 +72,6 @@ function loadingWheels() {
 
     for (wheel in loadedProject) {
         if (loadedProject[wheel] == true ) {
-            console.log("hide " + wheel);
             $('#loading-' + wheel).hide();
             $('#loading-' + wheel + '-big').hide();
         } else {
