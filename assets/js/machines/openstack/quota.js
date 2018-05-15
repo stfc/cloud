@@ -10,8 +10,7 @@ var quota = {
                     exceptions("403");
                 },
                 500: function() {
-                    $("#errormessage").html("The cloud may be experiencing problems. Please try again later.");
-                    $("#error").show();
+                    exceptions("500", "getting project quota.");
                     $('#resources').hide();
                 }
             }

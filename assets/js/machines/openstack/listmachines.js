@@ -111,9 +111,8 @@ function drawTable(action) {
             403: function() {
                 exceptions("403");
             },
-            500: function(data) {
-                $("#errormessage").html(data.statusText);
-                $("#error").show();
+            500: function() {
+                exceptions("500", "getting VMs list.");
             }
         }
     }).done(function(data) {

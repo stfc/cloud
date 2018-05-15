@@ -44,7 +44,7 @@
     'id': 'newprojects',
     'q':  'Can I create/join another project?',
     'a':  'Yes, if you would like to create/join another project email us at
-           <a href="mailto:cloud-support@gridpp.rl.ac.uk">cloud-support@gridpp.rl.ac.uk</a>.',
+           <a href="mailto:' + email + '">' + email + '</a>.',
     'p':  'openstack'
     },{
     'id': 'rename',
@@ -64,12 +64,12 @@
     'q':  'Can I increase the CPUs, RAM or Disk size?',
     'a':  'Currently we only provide a standard set of resources for each machine.
            If you would like to discuss increasing these values email us at
-           <a href="mailto:cloud-support@gridpp.rl.ac.uk">cloud-support@gridpp.rl.ac.uk</a>.'
+           <a href="mailto:' + email + '">' + email + '</a>.',
     },{
     'id': 'quota',
     'q':  'Can I increase my quota?',
     'a':  'Yes, if you would like your quota increased email us at
-           <a href="mailto:cloud-support@gridpp.rl.ac.uk">cloud-support@gridpp.rl.ac.uk</a>.'
+           <a href="mailto:' + email + '">' + email + '</a>.'
     },{
     'id': 'stopping',
     'q':  'What is the <span class="label label-warning">STOPPING</span> state?',
@@ -79,7 +79,7 @@
     'id': 'os',
     'q':  'Do you support other Linux variants/version?',
     'a':  'Yes, if you would like to discuss adding different images or versions to the cloud, email us at 
-           <a href="mailto:cloud-support@gridpp.rl.ac.uk">cloud-support@gridpp.rl.ac.uk</a>.'
+           <a href="mailto:' + email + '">' + email + '</a>.',
     },{
     'id': 'pakiti',
     'q':  'Why are Pakiti and rsyslog running on my VM?',

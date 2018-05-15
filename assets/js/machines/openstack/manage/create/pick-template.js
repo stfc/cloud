@@ -17,8 +17,10 @@ function getTemplateList(){
                 exceptions("403");
             },
             500: function() {
-                $('#errormessage').html('The cloud may be experiencing problems. Please try again later.');
-                $('#error').show();
+                exceptions("500", "getting template list.");
+            },
+            504: function() {
+                exceptions("504", "getting template list.");
             }
         }
     }).done(function(data) {
@@ -38,8 +40,10 @@ function getFlavors(){
                 exceptions("403");
             },
             500: function() {
-                $('#errormessage').html('The cloud may be experiencing problems. Please try again later.');
-                $('#error').show();
+                exceptions("500", "getting flavor list.");
+            },
+            504: function() {
+                exceptions("504", "getting flavor list.");
             }
         }
     }).done(function(data) {

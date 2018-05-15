@@ -4,8 +4,10 @@ function getProjects() {
         url: "/api/projects",
         statusCode: {
             500: function() {
-                   $("#errormessage").html("The cloud may be experiencing problems. Please try again later.");
-                   $("#error").show();
+                exceptions("500", "getting project list.");
+            },
+            504: function() {
+                exceptions("504", "getting project list.");
             }
         }
     }).done(function(data) {
