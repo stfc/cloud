@@ -91,18 +91,21 @@ function getVNC() {
 
 // Add VNC URLs to buttons
 function addVNC() {
-    if (typeof vncList !== undefined && isEmpty(vncList) === false) {
+    if (typeof vncList !== undefined) {
         for (vm of vncList["data"]) {
              x = "#vnc-" + vm['id'];
-             if (typeof vm['vncURL'] !== undefined || vm['vncURL'] !== "") {
-                  y = 'window.open("' + vm["vncURL"] + '","_blank")'
+             if (vm['vncURL'] == undefined || vm['vncURL'] == "" || vm['vncURL'] == null) {
+                 $(x).attr("disabled", "");
+             } else {
+                 y = 'window.open("' + vm["vncURL"] + '","_blank")'
+
 //                  Uncomment to use GUI popup
 //                  y = 'vncdialog(\'' + row['token'] + '\', \'' + name + '\', \'' + row['vncURL'] + '\')'
-                  $(x).attr("onclick", y);
-                  $(x).removeAttr("disabled");
-            } else {
-                  $(x).attr("disabled", "");
-            }
+
+                 $(x).removeAttr("onclick");
+                 $(x).attr("onclick", y);
+                 $(x).removeAttr("disabled");
+             }
         }
     }
 }
@@ -156,10 +159,11 @@ function drawTable(action) {
             } else {
                 // noVNC                
                 x = "vnc-" + row['id']
+                y = ""
                 if ($('#'+x).attr("onclick") == undefined) {
 		   y = 'disabled=""'
                 } else {
-                   y = 'onclick="' + $('#'+x).attr("onclick") + '"'
+                   y = 'onclick="' + toString($('#'+x).attr("onclick")) + '"'
                 }
 
 		row['token'] = '<button id="' + x + '" type="button" class="btn btn-blue btn-xs" title="Launch GUI in new tab" ' + y + '><img src="/assets/images/icon-display.png" style="width:14px;"/></button>';
