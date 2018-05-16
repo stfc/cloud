@@ -60,7 +60,10 @@ $('.show-hide').change( 'click', function (e) {
     column.visible( ! column.visible() );
 });
 
-function addVNC() {
+var vncList = {};
+
+// Get VNC URLs
+function getVNC() {
     $.ajax({
        type: 'GET',
        url: '/api/vnc',
@@ -78,23 +81,31 @@ function addVNC() {
            }
        }
     }).done(function(data) {
-          for (vm of data["data"]) {
-              if (vm['vncURL'] != "") {
-                  x = "#vnc-" + vm['id'];
+          vncList = data;
+          addVNC();
+
+          loadedProject['vnc'] = true;
+          loadingWheels();
+    })
+};
+
+// Add VNC URLs to buttons
+function addVNC() {
+    if (typeof vncList !== undefined && isEmpty(vncList) === false) {
+        for (vm of vncList["data"]) {
+             x = "#vnc-" + vm['id'];
+             if (typeof vm['vncURL'] !== undefined || vm['vncURL'] !== "") {
                   y = 'window.open("' + vm["vncURL"] + '","_blank")'
-//                  Uncomment to use GUI popup 
+//                  Uncomment to use GUI popup
 //                  y = 'vncdialog(\'' + row['token'] + '\', \'' + name + '\', \'' + row['vncURL'] + '\')'
                   $(x).attr("onclick", y);
                   $(x).removeAttr("disabled");
-
-              }
-          }
-          if (loadedProject['vms'] == true){
-              loadedProject['vnc'] = true;
-              loadingWheels();
-          }
-    })
-};
+            } else {
+                  $(x).attr("disabled", "");
+            }
+        }
+    }
+}
 
 var fedid = Cookies.get('fedid');
 

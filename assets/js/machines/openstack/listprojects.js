@@ -61,7 +61,7 @@ function makeAjaxCalls() {
     vmlist.draw();
     drawTable(miscAction);
 
-    addVNC();
+    getVNC();
 }
 
 function loadingWheels() {

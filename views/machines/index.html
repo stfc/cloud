@@ -38,8 +38,15 @@ if (CLOUDPLATFORM == "opennebula") {
         setInterval(function () {
             quota.update();
             drawTable(miscAction);
-            addVNC();
+            getVNC();
         }, 60000);
+    });
+    $(function() {
+        setInterval(function () {
+            if (loadedProject['vnc'] === true && loadedProject['vms'] === true) {
+                addVNC();
+            }
+        }, 5000);
     });
     var count_limit = {{ countLimit }};
 }
