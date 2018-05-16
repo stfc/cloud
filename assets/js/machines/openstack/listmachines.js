@@ -60,13 +60,20 @@ $('.show-hide').change( 'click', function (e) {
     column.visible( ! column.visible() );
 });
 
-var vncList = {};
 
 // Get VNC URLs
+var vncList = {};
+var getVNCRequest = null;
 function getVNC() {
-    $.ajax({
+
+    getVNCRequest = $.ajax({
        type: 'GET',
        url: '/api/vnc',
+        beforeSend: function() {
+            if(getVNCRequest != null) {
+                getVNCRequest.abort();
+            }
+        },
        statusCode: {
            400: function(data) {
                $("#errormessage").html(data.statusText);
@@ -112,11 +119,20 @@ function addVNC() {
 
 var fedid = Cookies.get('fedid');
 
+
+
+var drawTableRequest = null;
 function drawTable(action) {
-    $.ajax({
+
+    drawTableRequest = $.ajax({
         type: "GET",
         url: "/api/vm",
         data: {'action' : action},
+        beforeSend: function() {
+            if(drawTableRequest != null) {
+                drawTableRequest.abort();
+            }
+        },
         statusCode: {
             400: function(data) {
                 $("#errormessage").html(data.statusText);

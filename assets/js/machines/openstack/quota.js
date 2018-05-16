@@ -1,10 +1,16 @@
+var quotaUpdateRequest = null;
 var quota = {
     quota: 0,
     used: 0,
     update: function () {
-        $.ajax({
+        quotaUpdateRequest = $.ajax({
             type: "GET",
             url: "/api/quota",
+            beforeSend: function() {
+                if(quotaUpdateRequest != null) {
+                    quotaUpdateRequest.abort();
+                }
+            },
             statusCode: {
                 403: function() {
                     exceptions("403");
