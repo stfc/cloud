@@ -68,8 +68,12 @@ function loadingWheels() {
 
     if (loadedProject['quota'] == true && loadedProject['templates'] == true && loadedProject['flavors'] == true) {
         $('#newMachine').removeAttr('disabled');
+        $('#newMachine').removeAttr('title');
+        $('#newMachine').attr('title', 'Create New Machine');
     } else {
         $('#newMachine').attr('disabled', '');
+        $('#newMachine').removeAttr('title');
+        $('#newMachine').attr('title', 'Please wait until images, flavors and quota have loaded before creating a new machine');
     }
 
     for (wheel in loadedProject) {
