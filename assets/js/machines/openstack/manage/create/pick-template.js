@@ -8,7 +8,7 @@ var selected_template_description = '';
 var aqManaged = "false";
 
 function getTemplateList(){
-    $.ajax({
+    var getTemplateListRequest = $.ajax({
         type: 'GET',
         url: '/api/templatelist',
         dataType: 'json',
@@ -31,7 +31,7 @@ function getTemplateList(){
 }
 
 function getFlavors(){
-    $.ajax({
+    getFlavorsRequest = $.ajax({
         type: 'GET',
         url: '/api/flavors',
         dataType: 'json',

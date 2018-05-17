@@ -35,6 +35,11 @@ function getProjects() {
 }
 
 var loadedProject = {};
+var getTemplateListRequest = $.ajax({});
+var getFlavorsRequest = $.ajax({});
+var quotaUpdateRequest = $.ajax({});
+var drawTableRequest = $.ajax({});
+var getVNCRequest = $.ajax({});
 
 function makeAjaxCalls() {
 
@@ -52,6 +57,12 @@ function makeAjaxCalls() {
     var date = new Date();
     date.setTime(date.getTime() + (86400 * 1000));    // Cookie will expire 24 hours after creating
     Cookies.set("projectID", document.getElementById("projectChoice").value, {expires : date, path : '/'});
+
+    getTemplateListRequest.abort();
+    getFlavorsRequest.abort();
+    quotaUpdateRequest.abort();
+    drawTableRequest.abort();
+    getVNCRequest.abort();
  
     getTemplateList();
     getFlavors();

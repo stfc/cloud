@@ -63,17 +63,11 @@ $('.show-hide').change( 'click', function (e) {
 
 // Get VNC URLs
 var vncList = {};
-var getVNCRequest = null;
 function getVNC() {
 
     getVNCRequest = $.ajax({
        type: 'GET',
        url: '/api/vnc',
-        beforeSend: function() {
-            if(getVNCRequest != null) {
-                getVNCRequest.abort();
-            }
-        },
        statusCode: {
            400: function(data) {
                $("#errormessage").html(data.statusText);
@@ -119,20 +113,12 @@ function addVNC() {
 
 var fedid = Cookies.get('fedid');
 
-
-
-var drawTableRequest = null;
 function drawTable(action) {
 
     drawTableRequest = $.ajax({
         type: "GET",
         url: "/api/vm",
         data: {'action' : action},
-        beforeSend: function() {
-            if(drawTableRequest != null) {
-                drawTableRequest.abort();
-            }
-        },
         statusCode: {
             400: function(data) {
                 $("#errormessage").html(data.statusText);
