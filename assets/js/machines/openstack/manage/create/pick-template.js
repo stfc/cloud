@@ -135,7 +135,11 @@ function draw_buttons() {
             image = image_list[selected_flavour][selected_release][selected_type][id];
             image_id = image.id;
             image_name = image.name;
-            image_description = image.description;
+            if (image.description === null) {
+                image_description = "An image with no description"
+            } else {
+                image_description = image.description;
+            }
             image_cpu = image.cpu;
             image_min_disk = image.minDisk;
             image_min_ram = image.minRAM/1024;
@@ -151,7 +155,7 @@ function draw_buttons() {
                 selected_template_name = image_name;
                 selected_template_description = image_description;
                 helptext = '';
-                buttons = 'Complete!<br> You chose ' + image_name + '. ' + selected_template_description; // When occurs? Why no min. amounts?
+                buttons = 'Complete!<br> You chose ' + image_name + '. ' + selected_template_description + '. '; // When occurs? Why no min. amounts?
                 draw_buttons();
                 controls = '<a class="btn btn-danger" id="buttonback" onclick="selected_template=\'\';selected_type=\'\';selected_template_name=\''+image_name+'\'; selected_template_description=\''+image_description+'\'; aqManaged=\'\'; draw_buttons();hide_resources();">Back</a>';
             }
@@ -165,7 +169,7 @@ function draw_buttons() {
 
     else {
         $('#pick-resources').show();
-        buttons = 'Complete!<br> You chose ' + selected_template_name + '. ' + image_description + 'This has a minimum disk requirement of ' + image_min_disk + 'GB' + ' and a minimum RAM requirement of ' + image_min_ram + 'GB';
+        buttons = 'Complete!<br> You chose ' + selected_template_name + '. ' + image_description + '. ' + 'This has a minimum disk requirement of ' + image_min_disk + 'GB' + ' and a minimum RAM requirement of ' + image_min_ram + 'GB';
         controls = '<a class="btn btn-danger" id="buttonback" onclick="selected_template=\'\'; selected_template_name=\'\'; selected_template_description=\'\'; draw_buttons(); hide_resources();">Back</a>';
         pick_resources(flavorList);
     }
