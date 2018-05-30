@@ -34,7 +34,8 @@ wskey      : The location of the SSL key
 wstokendir : A directory to store NoVNC tokens in
 
 wsgi_enabled : Set to true if you want to launch this application behind something like Apache
-cloudPlatform : OpenStack or OpenNebula
+cloudPlatform : openstack or opennebula
+aqProfiles: URL of aquilon profiles directory
 ```
 
 

@@ -22,12 +22,14 @@ var vmlist = $('#vm-list').DataTable( {
             sort: 'stime.timestamp'
         }},
         { data: 'type'},        // Column 5
-        { data: 'aquilon'},     // Column 6
-        { data: 'flavor'},      // Column 7
-        { data: 'cpu'},         // Column 8
-        { data: 'memory'},      // Column 9
-        { data: 'token'},       // Column 10
-        { data: 'id'}           // Column 11
+        { data: 'branch'},      // Column 6
+        { data: 'archetype'},   // Column 7
+        { data: 'personality'}, // Column 8
+        { data: 'flavor'},      // Column 9
+        { data: 'cpu'},         // Column 10
+        { data: 'memory'},      // Column 11
+        { data: 'token'},       // Column 12
+        { data: 'id'}           // Column 13
     ],
     "order": [
         [4, "desc"]
@@ -35,15 +37,15 @@ var vmlist = $('#vm-list').DataTable( {
     "columnDefs": [
         {
             "width": "1px",
-            "targets": [5, 6, 7, 8, 9, 10] // Collapse if they don't exist
+            "targets": [5, 6, 7, 8, 9, 10, 11] // Collapse if they don't exist
         },
         {
             "orderable": false,
-            "targets": [10, 11] // Stop 'VNC' and 'Delete' from being orderable
+            "targets": [12, 13] // Stop 'VNC' and 'Delete' from being orderable
         },
         {
             "visible": false,
-            "targets": [6] // Hide Aquilon column by default, since this field will be empty for most VMs
+            "targets": [6, 7, 8] // Hide Aquilon columns by default, since these fields will be empty for most VMs
         },
     ],
     "dom": '<"top"f>t<"bottom"lpi><"clear">'

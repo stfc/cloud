@@ -1,4 +1,5 @@
-import cherrypy
+import cherrypy, urllib
+import json
 from datetime import datetime
 from time import mktime
 
@@ -98,7 +99,7 @@ class VM(object):
 	novaClient = getNovaInstance()
         username = cherrypy.request.cookie.get('fedid').value
 
-	json = []	
+	instanceList = []
 	flavorList = {}
         imageList = {}
 
@@ -140,7 +141,7 @@ class VM(object):
 	    except Exception as ex:	
                 cherrypy.log('- ' + str(type(ex)) + ' when getting flavor for VM: ' + str(server.name), username)
 
-            cherrypy.log('- ' + server.name + ' - ' + flavorName + ' - ' + str(flavorCPU) + ' - ' + str(flavorMemory), username)
+            cherrypy.log('- ' + server.name + ' - ' + flavorName + ' - ' + str(flavorCPU) + ' CPUs - ' + str(flavorMemory) + 'MB', username)
 
 
 	    # Image Name
@@ -167,50 +168,84 @@ class VM(object):
 
 
             # Aquilon Metadata
-            aquilon = ""
+            aq_branch = ""
+            aq_archetype = ""
+            aq_personality = ""
             try:
                 if (imageList[server.image['id']]['aq'] != u'false'):
-                    aqToolTip = '<i title="Aquilon may still work even if metadata is not stored in OpenStack" style="opacity:.65">'
+                    aq_missing = '<i style="opacity:.65" title="Aquilon profile/metadata may be missing or restricted">Missing '
 
                     try:
-                        aq_personality = server.metadata[u'AQ_ARCHETYPE'] + '/' + server.metadata[u'AQ_PERSONALITY']
-                    except Exception as ex:
-                        aq_personality = aqToolTip + "Missing Personality </i>"
-                        cherrypy.log('- ' + str(type(ex)) + ' when getting Aquilon archetype/personality metadata for VM: ' + server.name, username)
+                        profile_url = cherrypy.request.config.get('aqProfiles')
+                        url = profile_url + server.metadata[u'HOSTNAMES'] + '.json'
+                        response = urllib.urlopen(url)
+                        profile = json.loads(response.read())
 
-                    try:
-                        aq_sandbox = server.metadata[u'AQ_SANDBOX']
-                    except Exception as ex:
-                        aq_sandbox = aqToolTip + "Missing Sandbox </i>"
-                        cherrypy.log('- ' + str(type(ex)) + ' when getting Aquilon sandbox  metadata for VM: ' + server.name, username)
+                        # Domain/Sandbox
+                        try:
+                            profile_author = ""
+                            if (profile['metadata']['template']['branch']['type'] == "sandbox"):
+                                profle_author = profile['metadata']['template']['branch']['author'] + '/'
 
-                    aquilon = aq_personality + " <br>" + aq_sandbox
+                            profile_branch = profile['metadata']['template']['branch']['name']
+                            aq_branch = profile_author + profile_branch
+
+                        except Exception as ex:
+                            cherrypy.log('- ' + str(type(ex)) + ' when getting Aquilon domain/sandbox metadata for VM: ' + server.name, username)
+                            aq_branch = aq_missing + "Domain/Sandbox</i>"
+
+
+                        # Archetype
+                        try:
+                            aq_archetype = profile['system']['archetype']['name']
+                        except:
+                            cherrypy.log('- ' + str(type(ex)) + ' when getting Aquilon archetype/personality metadata for VM: ' + server.name, username)
+                            aq_archetype = aq_missing + "Archetype</i>"
+
+
+                        # Personality
+                        try:
+                            aq_personality = profile['system']['personality']['name']
+                        except:
+                            cherrypy.log('- ' + str(type(ex)) + ' when getting Aquilon archetype/personality metadata for VM: ' + server.name, username)
+                            aq_personality = aq_missing + "Personality</i>"
+
+
+                    except Exception as ex:
+                        cherrypy.log('- ' + str(type(ex)) + ' when getting Aquilon profile for VM: ' + server.name, username)
+                        aq_branch = aq_missing + "Profile</i>"
+                        aq_archetype = aq_missing + "Profile</i>"
+                        aq_personality = aq_missing + "Profile</i>"
 
             except Exception as ex:
                 cherrypy.log('- ' + str(type(ex)) + ' when getting Aquilon metadata for VM: ' + server.name, username)
 
-            cherrypy.log('- ' + server.name + ' - ' + aquilon, username)
+            cherrypy.log('- ' + server.name + ' - ' + aq_branch, username)
+            cherrypy.log('- ' + server.name + ' - ' + aq_archetype, username)
+            cherrypy.log('- ' + server.name + ' - ' + aq_personality, username)
 
 
 	    # Put VM data into json format for .js file
-	    json.append({
-		'id'       : server.id,
-                'name'     : server.name,
-		'hostname' : hostname,
-                'user'     : "",
-                'group'    : "",
-                'state'    : serverStatus,
-                'stime'    : stime,
-                'etime'    : "",
-		'flavor'   : flavorName,
-                'cpu'      : flavorCPU,
-                'memory'   : flavorMemory,
-                'type'     : imageName,
-                'candelete': True,
-		'keypair'  : server.key_name,
-                'aquilon'  : aquilon,
+	    instanceList.append({
+                'id'          : server.id,
+                'name'        : server.name,
+                'hostname'    : hostname,
+                'user'        : "",
+                'group'       : "",
+                'state'       : serverStatus,
+                'stime'       : stime,
+                'etime'       : "",
+                'flavor'      : flavorName,
+                'cpu'         : flavorCPU,
+                'memory'      : flavorMemory,
+                'type'        : imageName,
+                'candelete'   : True,
+                'keypair'     : server.key_name,
+                'branch'      : aq_branch,
+                'archetype'   : aq_archetype,
+                'personality' : aq_personality,
 	    })
-	return {"data":json}
+	return {"data":instanceList}
 
     # Starts on the first character of important info (e.g. image ID)
     # Searches for the end of it and returns the end position
