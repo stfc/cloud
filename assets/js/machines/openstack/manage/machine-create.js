@@ -25,6 +25,7 @@ function createVMdialog() {
     $('#cpu-output').val('1');
     $('#memory-input').val('0.5');
     $('#memory-output').val('0.5');
+
     // Show modal window
     $('#createvmdialog').modal('show');
 }
@@ -46,15 +47,24 @@ function fetch_values(selected_template) {
 
     var data = {
         // 'name' gets added if check_errors() is happy
-        'template_id': selected_template,
-        'archetype': $('#archetype_options').val(),
-        'personality': $('#personality_options').val(),
-        'sandbox': $('#sandbox_options').val(),
-        'cpu': '' + cpu,
-        'memory': '' + memory,
-        'flavorID': flavorList['data'][document.getElementById("flavorChoice").value]['id'],
-        'count': $('#vmCount').val(),
+        'template_id'  : selected_template,
+        'cpu'          : '' + cpu,
+        'memory'       : '' + memory,
+        'flavorID'     : flavorList['data'][document.getElementById("flavorChoice").value]['id'],
+        'count'        : $('#vmCount').val(),
     };
+
+    if (aqManaged == 'true') {
+        if ($('#archetype_options').val() !== '') {
+            data['archetype'] = $('#archetype_options').val()
+        }
+        if ($('#personality_options').val() !== '') {
+            data['personality'] = $('#personality_options').val()
+        }
+        if ($('#sandbox_options').val() !== '') {
+            data['sandbox'] = $('#sandbox_options').val()
+        }
+    }
     check_errors(data, selected_template);
 }
 
@@ -66,63 +76,89 @@ function check_errors(data, selected_template) {
     name = print_name.toLowerCase();
 
     $.get(badwords_url, function(words) {
+        check = {
+            'name'      : false,
+            'count'     : false,
+            'template'  : false,
+            'resources' : false,
+        }
+
         data['name'] = 'badname';
+
 
         // Remove new lines and replace with | then cut off the last |
         badwords = words.replace(/\r?\n|\r/g, '|').slice('|', -1);
         regexp = new RegExp('(' + badwords + ')', 'g');
 
-        var count = true;
-        // Check if name has any bad words
-        if (name.match(regexp)) {
-            creation_error('name-creation-error', 'Please try a different name. "<b>'+ print_name +'</b>" contains blocked words.');
-        } else {
-            data['name'] = print_name;
-        }
 
-        // Show warning if no name
-        if (data['name'] === '') {
+        // Check Name
+        if (name === '') {
+            // Name field is empty
             creation_error('name-creation-error','Please enter a name.');
         }
+        else if (name.match(regexp)) {
+            // Name contains badwords
+            creation_error('name-creation-error', 'Please try a different name. "<b>'+ print_name +'</b>" contains blocked words.');
+        }
+        else {
+            // Name is approved
+            data['name'] = print_name;
+            check['name'] = true;
+        }
+
  
-        // Show warning if no count
+        // Check Count
         if (data['count'] === '') {
+            // Show warning if no count
             creation_error('name-creation-error', 'Please enter how many VMs you want to create.');
-            count = false;
         }
-
-        // Show warning if count is 0
-        if (data['count'] < 1 && data['count'] !== '') {
+        else if (data['count'] < 1 && data['count'] !== '') {
+            // Show warning if count is < 1
             creation_error('name-creation-error', 'You cannot have less than 1 VM, enter the number of VMs you want to create.');
-            count = false;
         }
-
-        // Show Warning if count is > quota
-        if (data['count'] > availablequotavm && groupquotavm !== -1) {
+        else if (data['count'] > availablequotavm && groupquotavm !== -1) {
+            // Show Warning if count is > quota
             creation_error('name-creation-error','You do not have the quota to create ' + data['count'] + ' VMs');
-            count = false;
         } 
-
-        // Limit numbers of VMs created at once in unlimited quotas
-        if (data['count'] > count_limit && groupquotavm === -1) {
+        else if (data['count'] > count_limit && groupquotavm === -1) {
+            // Limit numbers of VMs created at once in unlimited quotas
             creation_error('name-creation-error','You cannot create more than ' + count_limit + ' VMs at one time');
-            count=false;
+        } else {
+            // Count Approved
+            check['count'] = true;
         }
 
-        // Show warning if no template
+
+        // Check Template
         if (selected_template === '') {
+            // Show warning if no template
             creation_error('template-creation-error','Please enter a Template.');
         }
+        else if ((data['archetype'] !== undefined) && (data['personality'] === undefined)) {
+            // Archetype selected but personality not
+            creation_error('template-creation-error','Please select personality or deselect archetype');
+        }
+        else if ((aqManaged == 'true') && ($('#user_options').val() !== '') && (data['sandbox'] === undefined)) {
+            // User selected but sandbox not
+            creation_error('template-creation-error','Please select sandbox or deselect user');
+        }
+        else {
+            // Template Approved
+            check['template'] = true;
+        }
 
-        // Show warning if no resources
+
+        // Check Resources
         if ((availablequotavm > 0 || groupquotavm === -1) && (availablequotacpu > 0 || groupquotacpu === -1) && (availablequotamem > 0 || groupquotamem === -1)) {
-            resources = true;
+            // Resources approved
+            check['resources'] = true;
         } else {
+            // Show warning if no resources
             creation_error('resource-creation-error','You do not have the resources to create a new VM. Please delete uneeded VMs or contact us to discuss your quota.');
         }
 
         // If all fields are good send data to /api/vm.py
-        if (data['name'].length > 0 && data['name'] !== 'badname' && selected_template.length > 0 && resources === true && count === true) {
+        if (Object.values(check).includes(false) === false) {
             // Disable 'Create' button - no errors
             document.getElementById('create-btn').disabled = true;
             create_VM(data);

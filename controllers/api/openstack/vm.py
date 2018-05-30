@@ -32,21 +32,36 @@ class VM(object):
 	except IndexError:
 	    keyname = ""
 
+
 	# Creating VM
         try:
-	    novaClient.servers.create(
-	        name = json['name'], 
- 	        image = json['template_id'], 
-	        flavor = json['flavorID'],
-	        key_name = keyname,
-	        nics = [{"net-id": vmNetwork.id}],
-	        security_groups = [cherrypy.request.config.get("securityGroupName")],
-	        availability_zone = cherrypy.request.config.get("availabilityZoneName"),
-                min_count = json['count'],
-                aq_archetype = json['archetype'],
-                aq_personality = json['personality'],
-                aq_sandbox = json['sandbox']
-	    )
+            create_args = {
+                'name'              : json['name'],
+                'image'             : json['template_id'],
+                'flavor'            : json['flavorID'],
+                'key_name'          : keyname,
+                'nics'              : [{"net-id": vmNetwork.id}],
+                'security_groups'   : [cherrypy.request.config.get("securityGroupName")],
+                'availability_zone' : cherrypy.request.config.get("availabilityZoneName"),
+                'min_count'         : json['count']
+            }
+
+            # Aquilon
+            meta = {}
+
+            if (json['archetype'] != None) and (json['archetype'] != ''):
+                meta['AQ_ARCHETYPE'] = json['archetype']
+                meta['AQ_PERSONALITY'] = json['personality']
+
+            if (json['sandbox'] != None) and (json['sandbox'] != ''):
+                meta['AQ_SANDBOX'] = json['sandbox']
+
+            if (meta):
+                create_args['meta'] = meta
+
+
+	    novaClient.servers.create(**create_args)
+
         except (ClientException, KeyError) as e:
             cherrypy.log('- ' + str(e), username)
             raise cherrypy.HTTPError('500 There has been a problem with creating the VM, try again later.')
@@ -87,16 +102,25 @@ class VM(object):
 	flavorList = {}
         imageList = {}
 
+        # Flavor List
 	for flavor in novaClient.flavors.list(detailed = True):
 	    flavorList[flavor.id] = {'name':str(flavor.name), 'vcpus':flavor.vcpus, 'ram':flavor.ram}
-        print flavorList
 
+        # Image List
         for image in novaClient.images.list(detailed = True):
-            imageList[image.id] = {'name':str(image.name)}
-        print imageList
+            try:
+                 imageList[image.id] = {
+                     'name' : str(image.name),
+                     'aq'   : image.metadata[u'aq_managed']
+                 }
+            except:
+                 imageList[image.id] = {
+                     'name': str(image.name),
+                     'aq'  : u'false'
+                 }
 
 	for server in novaClient.servers.list(detailed = True):
-	    print server.name + " - " + server.status
+            cherrypy.log('- ' + server.name + ' - ' + server.status, username)
 
 	    serverStatus = server.status
 
@@ -104,43 +128,69 @@ class VM(object):
 	    stime = datetime.strptime(server.created, '%Y-%m-%dT%H:%M:%SZ')
 	    stime = mktime(stime.timetuple())
 
-	    # Gets flavor ID --> flavor name
+
+	    # Flavor
+            flavorName = ""
+            flavorCPU = ""
+            flavorMemory = ""
             try:
                 flavorName = flavorList[server.flavor['id']]['name']
+                flavorCPU = flavorList[server.flavor['id']]['vcpus']
+                flavorMemory = flavorList[server.flavor['id']]['ram']
 	    except Exception as ex:	
-                cherrypy.log('- ' + str(type(ex)) + ' when getting flavorName for VM: ' + str(server.name), username)
-                cherrypy.log(str(ex))
-                flavorName = ""
+                cherrypy.log('- ' + str(type(ex)) + ' when getting flavor for VM: ' + str(server.name), username)
 
-	    print server.name + " - " + flavorName
+            cherrypy.log('- ' + server.name + ' - ' + flavorName + ' - ' + str(flavorCPU) + ' - ' + str(flavorMemory), username)
 
-	    # Gets image ID --> image name
+
+	    # Image Name
+            imageName = ""
             try:
                 imageName = imageList[server.image['id']]['name']
 	    except Exception as ex:	
                 cherrypy.log('- ' + str(type(ex)) + ' when getting imageName for VM: ' + str(server.name), username)
-                cherrypy.log(str(ex))
-                imageName = ""
 
-	    print server.name + " - " + imageName
+            cherrypy.log('- ' + server.name + ' - ' + imageName, username)
 
-	    hostname = ""
+
+            # Hostname/IP
+            hostname = ""
 	    try:
                 serverIP = str(novaClient.servers.ips(server))
                 if serverIP != "{}":
                     serverNetwork = self.getServerNetworkLabel(serverIP)
                     hostname = novaClient.servers.ips(server)[serverNetwork][0][u'addr']
-            except (ClientException, KeyError) as e:
-                cherrypy.log(username + ' - ' + str(type(e)) + ' when assiging Hostname - ' + str(e))
+            except (ClientException, KeyError) as ex:
+                cherrypy.log('- ' + str(type(ex)) + ' when getting Hostname for VM: ' + str(server.name), username)
 
-            print server.name + " - " + hostname
+            cherrypy.log('- ' + server.name + ' - ' + hostname, username)
 
-            if (flavorName != ""):
-                flavorCPU = flavorList[server.flavor['id']]['vcpus']
-                flavorMemory = flavorList[server.flavor['id']]['ram']
-            else:
-                flavorCPU = ""
-                flavorMemory = ""
+
+            # Aquilon Metadata
+            aquilon = ""
+            try:
+                if (imageList[server.image['id']]['aq'] != u'false'):
+                    aqToolTip = '<i title="Aquilon may still work even if metadata is not stored in OpenStack" style="opacity:.65">'
+
+                    try:
+                        aq_personality = server.metadata[u'AQ_ARCHETYPE'] + '/' + server.metadata[u'AQ_PERSONALITY']
+                    except Exception as ex:
+                        aq_personality = aqToolTip + "Missing Personality </i>"
+                        cherrypy.log('- ' + str(type(ex)) + ' when getting Aquilon archetype/personality metadata for VM: ' + server.name, username)
+
+                    try:
+                        aq_sandbox = server.metadata[u'AQ_SANDBOX']
+                    except Exception as ex:
+                        aq_sandbox = aqToolTip + "Missing Sandbox </i>"
+                        cherrypy.log('- ' + str(type(ex)) + ' when getting Aquilon sandbox  metadata for VM: ' + server.name, username)
+
+                    aquilon = aq_personality + " <br>" + aq_sandbox
+
+            except Exception as ex:
+                cherrypy.log('- ' + str(type(ex)) + ' when getting Aquilon metadata for VM: ' + server.name, username)
+
+            cherrypy.log('- ' + server.name + ' - ' + aquilon, username)
+
 
 	    # Put VM data into json format for .js file
 	    json.append({
@@ -158,6 +208,7 @@ class VM(object):
                 'type'     : imageName,
                 'candelete': True,
 		'keypair'  : server.key_name,
+                'aquilon'  : aquilon,
 	    })
 	return {"data":json}
 
