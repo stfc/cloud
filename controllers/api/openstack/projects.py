@@ -37,4 +37,4 @@ class Projects(object):
              except AttributeError:
                  cherrypy.log('- There\'s been an AttributeError when getting the project data for user', username)
 
-             return {"data":projectList}
+        return {"data":projectList}

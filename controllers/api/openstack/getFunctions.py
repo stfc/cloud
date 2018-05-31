@@ -26,7 +26,7 @@ def getNovaInstance():
     try:
         client = nClient.Client(NOVA_VERSION, session = sess)
     except ClientException as e:
-        cherrypy.log('- Error when creating client instance: ' + str(e), username)
+        cherrypy.log('- Error when creating client instance', username, traceback=True)
         raise cherrypy.HTTPError('500 There\'s been an error when logging you in')
     return client
 

@@ -89,6 +89,6 @@ class User(object):
             else:
                 novaClient.keypairs.delete(keyname)
                 novaClient.keypairs.create(name = keyname, public_key = key)
-        except BadRequest as e:
-            cherrypy.log('- BadRequest when submitting keypair to OpenStack: ' + str(e), username)
+        except BadRequest:
+            cherrypy.log('- BadRequest when submitting keypair to OpenStack', username, traceback=True)
             raise cherrypy.HTTPError('400 You have tried to submit an invalid key, try again.')

@@ -24,10 +24,9 @@ class VNC(object):
             if server.status == "ACTIVE":
                 try:
                     vncURL = server.get_vnc_console(console_type = "novnc")[u'console'][u'url']
-                     vncToken = self.cutString(vncURL, 62, len(vncURL))
-                except ClientException as e:
-                    cherrypy.log(username + ' - ' + str(type(e)) + ' when retrieving VNC details for ' + server.name);
-                    cherrypy.log(str(e));
+                    vncToken = self.cutString(vncURL, 62, len(vncURL))
+                except ClientException:
+                    cherrypy.log(' - Non-Fatal Exception when retrieving VNC details for VM: %s' %(server.name), username, traceback=True);
                     vncURL = ""
                     vncToken = ""
             else:
@@ -40,7 +39,7 @@ class VNC(object):
                 'token'  : vncToken,
                 'vncURL' : vncURL,
             })
-            return {"data":json}
+        return {"data":json}
 
 
     def cutString(self, string, start, end):

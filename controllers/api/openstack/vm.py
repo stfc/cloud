@@ -64,7 +64,7 @@ class VM(object):
             novaClient.servers.create(**create_args)
 
         except (ClientException, KeyError) as e:
-            cherrypy.log('- ' + str(e), username)
+            cherrypy.log('- ', username, traceback=True)
             raise cherrypy.HTTPError('500 There has been a problem with creating the VM, try again later.')
 
     '''
@@ -82,7 +82,7 @@ class VM(object):
         try:
             novaClient.servers.delete(id)
         except ClientException as e:
-            cherrypy.log('- ' + str(e), username)
+            cherrypy.log('- ', username, traceback=True)
             raise cherrypy.HTTPError('500 There has been an unforeseen error in deleting the VM, try again later.')
 
 
@@ -121,7 +121,7 @@ class VM(object):
                  }
 
         for server in novaClient.servers.list(detailed = True):
-            cherrypy.log('- ' + server.name + ' - ' + server.status, username)
+            cherrypy.log('- %s - %s'%(server.name, server.status), username)
 
             serverStatus = server.status
 
@@ -139,20 +139,14 @@ class VM(object):
                 flavorCPU = flavorList[server.flavor['id']]['vcpus']
                 flavorMemory = flavorList[server.flavor['id']]['ram']
             except Exception as ex:
-                cherrypy.log('- ' + str(type(ex)) + ' when getting flavor for VM: ' + str(server.name), username)
-
-            cherrypy.log('- ' + server.name + ' - ' + flavorName + ' - ' + str(flavorCPU) + ' CPUs - ' + str(flavorMemory) + 'MB', username)
-
+                cherrypy.log('- Non-Fatal Exception when getting flavor info for VM: %s' %(server.name), username, traceback=True)
 
             # Image Name
             imageName = ""
             try:
                 imageName = imageList[server.image['id']]['name']
             except Exception as ex:
-                cherrypy.log('- ' + str(type(ex)) + ' when getting imageName for VM: ' + str(server.name), username)
-
-            cherrypy.log('- ' + server.name + ' - ' + imageName, username)
-
+                cherrypy.log('- Non-Fatal Exception when getting image name for VM: %s' %(server.name), username, traceback=True)
 
             # Hostname/IP
             hostname = ""
@@ -162,10 +156,7 @@ class VM(object):
                     serverNetwork = self.getServerNetworkLabel(serverIP)
                     hostname = novaClient.servers.ips(server)[serverNetwork][0][u'addr']
             except (ClientException, KeyError) as ex:
-                cherrypy.log('- ' + str(type(ex)) + ' when getting Hostname for VM: ' + str(server.name), username)
-
-            cherrypy.log('- ' + server.name + ' - ' + hostname, username)
-
+                cherrypy.log('- Non-Fatal Exception when getting hostname/ip for VM: %s' %(server.name), username, traceback=True)
 
             # Aquilon Metadata
             aq_branch = ""
@@ -176,6 +167,7 @@ class VM(object):
                     aq_missing = '<i style="opacity:.65" title="Aquilon profile/metadata may be missing or restricted">Missing '
 
                     try:
+                        # Get aquilon profile
                         profile_url = cherrypy.request.config.get('aqProfiles')
                         url = profile_url + server.metadata[u'HOSTNAMES'] + '.json'
                         response = urllib.urlopen(url)
@@ -191,7 +183,7 @@ class VM(object):
                             aq_branch = profile_author + profile_branch
 
                         except Exception as ex:
-                            cherrypy.log('- ' + str(type(ex)) + ' when getting Aquilon domain/sandbox metadata for VM: ' + server.name, username)
+                            cherrypy.log('- Non-Fatal Exception when getting aquilon domain/sandbox for VM: %s' %(server.name), username, traceback=True)
                             aq_branch = aq_missing + "Domain/Sandbox</i>"
 
 
@@ -199,7 +191,7 @@ class VM(object):
                         try:
                             aq_archetype = profile['system']['archetype']['name']
                         except:
-                            cherrypy.log('- ' + str(type(ex)) + ' when getting Aquilon archetype/personality metadata for VM: ' + server.name, username)
+                            cherrypy.log('- Non-Fatal Exception when getting aquilon archetype for VM: %s' %(server.name), username, traceback=True)
                             aq_archetype = aq_missing + "Archetype</i>"
 
 
@@ -207,23 +199,18 @@ class VM(object):
                         try:
                             aq_personality = profile['system']['personality']['name']
                         except:
-                            cherrypy.log('- ' + str(type(ex)) + ' when getting Aquilon archetype/personality metadata for VM: ' + server.name, username)
+                            cherrypy.log('- Non-Fatal Exception when getting aquilon personality for VM: %s' %(server.name), username, traceback=True)
                             aq_personality = aq_missing + "Personality</i>"
 
 
                     except Exception as ex:
-                        cherrypy.log('- ' + str(type(ex)) + ' when getting Aquilon profile for VM: ' + server.name, username)
+                        cherrypy.log('- Non-Fatal Exception when getting aquilon profile for VM: %s' %(server.name), username, traceback=True)
                         aq_branch = aq_missing + "Profile</i>"
                         aq_archetype = aq_missing + "Profile</i>"
                         aq_personality = aq_missing + "Profile</i>"
 
             except Exception as ex:
-                cherrypy.log('- ' + str(type(ex)) + ' when getting Aquilon metadata for VM: ' + server.name, username)
-
-            cherrypy.log('- ' + server.name + ' - ' + aq_branch, username)
-            cherrypy.log('- ' + server.name + ' - ' + aq_archetype, username)
-            cherrypy.log('- ' + server.name + ' - ' + aq_personality, username)
-
+                cherrypy.log('- Non-Fatal Exception when getting aquilon metadata for VM: %s' %(server.name), username, traceback=True)
 
             # Put VM data into json format for .js file
             instanceList.append({
@@ -245,7 +232,9 @@ class VM(object):
                 'archetype'   : aq_archetype,
                 'personality' : aq_personality,
             })
-            return {"data":instanceList}
+            cherrypy.log('- %s - Loaded' %(server.name), username)
+        cherrypy.log(str(instanceList))
+        return {"data":instanceList}
 
     # Starts on the first character of important info (e.g. image ID)
     # Searches for the end of it and returns the end position
@@ -281,8 +270,8 @@ class VM(object):
        
         try:
              bootServer = novaClient.servers.find(id = params.get("id"))
-        except NotFound as e:
-             cherrypy.log(username + ' - ' + str(e))
+        except NotFound:
+             cherrypy.log('- Not Found Error', username, traceback=True)
              raise cherrypy.HTTPError('500 OpenStack hasn\'t been able to find the VM you want to boot.')
 
         bootServerState = bootServer.status
@@ -296,7 +285,7 @@ class VM(object):
                 bootServer.unpause()
             elif bootServerState == "SHELVED" or bootServerState == "SHELVED_OFFLOADED":
                 bootServer.unshelve()
-        except ClientException as e:
-            cherrypy.log(username + ' - ' + str(e))
+        except ClientException:
+            cherrypy.log('- Client Exception', username, traceback=True)
             raise cherrypy.HTTPError('500 There was a problem booting the VM, the VM was in the ' + bootServerState + ' state.')
 

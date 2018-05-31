@@ -23,7 +23,7 @@ class TemplateList(object):
         # os_distro - name of flavor
         menuchoices = defaultdict(lambda: defaultdict(dict))
         for image in novaClient.images.list():
-            cherrypy.log("- Loading '" + str(image.name) + "'", username)
+            cherrypy.log('- Loading %s' %(image.name), username)
 
             osDistro  = os_metadata(image, username, 'os_distro')
             osVersion = os_metadata(image, username, 'os_version')
@@ -32,7 +32,7 @@ class TemplateList(object):
             description = os_metadata(image, username, 'description')
 
             if osDistro is None or osVersion is None or osVariant is None:
-                cherrypy.log("- Image '" + str(image.name) + "' will not be visible", username)
+                cherrypy.log('- Image %s will not be visible' %(image.name), username)
                 continue
             else:
 
@@ -54,7 +54,7 @@ class TemplateList(object):
 def os_metadata(image, username, tag):
     try:
         if tag not in image.metadata:
-           cherrypy.log("- Image '" + str(image.name) + "' is missing '" + str(tag) + "' in metadata", username)
+           cherrypy.log('- Image %s is missing metadata' %(image.name), username)
            if tag == "aq_managed":
                return "false"
 
@@ -62,11 +62,11 @@ def os_metadata(image, username, tag):
            return image.metadata[u''+tag+'']
 
         else:
-           cherrypy.log("- Image '" + str(image.name) + "' has uninstantiated '"  + str(tag) + "' in metadata", username)
+           cherrypy.log('- Image %s is missing %s' %(image.name, tag), username)
            if tag == "aq_managed":
                return "false"
            else:
               return ""
 
     except KeyError:
-        cherrypy.log("- KeyError when getting image metadata '" + tag + "'  in image: " + str(image.name), username)
+        cherrypy.log('- Error when getting %s metadata for %s' %(tag, image.name), username, traceback=True)

@@ -24,6 +24,6 @@ class Rename(object):
             vm.update(json['name']);
             cherrypy.log("- Renamed VM (" + json['id'] + ") '" + json['prevname'] + "' to '" + json['name'] + "'", username)
         except (ClientException, KeyError) as e:
-            cherrypy.log('- ' + str(e), username)
+            cherrypy.log('- ', username, traceback=True)
             raise cherrypy.HTTPError('500 There has been a problem with renaming the VM, try again later.')
 
