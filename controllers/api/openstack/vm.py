@@ -19,22 +19,22 @@ class VM(object):
     @cherrypy.tools.json_in()
     def PUT(self):
         username = cherrypy.request.cookie.get('fedid').value
-	json = cherrypy.request.json
-	
+        json = cherrypy.request.json
+
         if not json.get("template_id") or not json.get("name"):
             raise cherrypy.HTTPError('400 Bad parameters')
 
-	novaClient = getNovaInstance()
-	vmNetwork = novaClient.networks.find(label=cherrypy.request.config.get("vmNetworkLabel"))
-	
-	# Making sure user has a keypair
+        novaClient = getNovaInstance()
+        vmNetwork = novaClient.networks.find(label=cherrypy.request.config.get("vmNetworkLabel"))
+
+        # Making sure user has a keypair
         try:
-	    keyname = novaClient.keypairs.list()[0].name
-	except IndexError:
-	    keyname = ""
+            keyname = novaClient.keypairs.list()[0].name
+        except IndexError:
+            keyname = ""
 
 
-	# Creating VM
+        # Creating VM
         try:
             create_args = {
                 'name'              : json['name'],
@@ -61,7 +61,7 @@ class VM(object):
                 create_args['meta'] = meta
 
 
-	    novaClient.servers.create(**create_args)
+            novaClient.servers.create(**create_args)
 
         except (ClientException, KeyError) as e:
             cherrypy.log('- ' + str(e), username)
@@ -96,16 +96,16 @@ class VM(object):
     @cherrypy.tools.isAuthorised()
     @cherrypy.tools.json_out()
     def GET(self, action):
-	novaClient = getNovaInstance()
+        novaClient = getNovaInstance()
         username = cherrypy.request.cookie.get('fedid').value
 
-	instanceList = []
-	flavorList = {}
+        instanceList = []
+        flavorList = {}
         imageList = {}
 
         # Flavor List
-	for flavor in novaClient.flavors.list(detailed = True):
-	    flavorList[flavor.id] = {'name':str(flavor.name), 'vcpus':flavor.vcpus, 'ram':flavor.ram}
+        for flavor in novaClient.flavors.list(detailed = True):
+            flavorList[flavor.id] = {'name':str(flavor.name), 'vcpus':flavor.vcpus, 'ram':flavor.ram}
 
         # Image List
         for image in novaClient.images.list(detailed = True):
@@ -120,17 +120,17 @@ class VM(object):
                      'aq'  : u'false'
                  }
 
-	for server in novaClient.servers.list(detailed = True):
+        for server in novaClient.servers.list(detailed = True):
             cherrypy.log('- ' + server.name + ' - ' + server.status, username)
 
-	    serverStatus = server.status
+            serverStatus = server.status
 
-	    # Converts date/time into format for .js file
-	    stime = datetime.strptime(server.created, '%Y-%m-%dT%H:%M:%SZ')
-	    stime = mktime(stime.timetuple())
+            # Converts date/time into format for .js file
+            stime = datetime.strptime(server.created, '%Y-%m-%dT%H:%M:%SZ')
+            stime = mktime(stime.timetuple())
 
 
-	    # Flavor
+            # Flavor
             flavorName = ""
             flavorCPU = ""
             flavorMemory = ""
@@ -138,17 +138,17 @@ class VM(object):
                 flavorName = flavorList[server.flavor['id']]['name']
                 flavorCPU = flavorList[server.flavor['id']]['vcpus']
                 flavorMemory = flavorList[server.flavor['id']]['ram']
-	    except Exception as ex:	
+            except Exception as ex:
                 cherrypy.log('- ' + str(type(ex)) + ' when getting flavor for VM: ' + str(server.name), username)
 
             cherrypy.log('- ' + server.name + ' - ' + flavorName + ' - ' + str(flavorCPU) + ' CPUs - ' + str(flavorMemory) + 'MB', username)
 
 
-	    # Image Name
+            # Image Name
             imageName = ""
             try:
                 imageName = imageList[server.image['id']]['name']
-	    except Exception as ex:	
+            except Exception as ex:
                 cherrypy.log('- ' + str(type(ex)) + ' when getting imageName for VM: ' + str(server.name), username)
 
             cherrypy.log('- ' + server.name + ' - ' + imageName, username)
@@ -156,7 +156,7 @@ class VM(object):
 
             # Hostname/IP
             hostname = ""
-	    try:
+            try:
                 serverIP = str(novaClient.servers.ips(server))
                 if serverIP != "{}":
                     serverNetwork = self.getServerNetworkLabel(serverIP)
@@ -225,8 +225,8 @@ class VM(object):
             cherrypy.log('- ' + server.name + ' - ' + aq_personality, username)
 
 
-	    # Put VM data into json format for .js file
-	    instanceList.append({
+            # Put VM data into json format for .js file
+            instanceList.append({
                 'id'          : server.id,
                 'name'        : server.name,
                 'hostname'    : hostname,
@@ -244,25 +244,25 @@ class VM(object):
                 'branch'      : aq_branch,
                 'archetype'   : aq_archetype,
                 'personality' : aq_personality,
-	    })
-	return {"data":instanceList}
+            })
+            return {"data":instanceList}
 
     # Starts on the first character of important info (e.g. image ID)
     # Searches for the end of it and returns the end position
     # This is then used in cutString() to extract the exact section of the string needed
     def getInfoID(self, strName, startRange, endRange, search):
-	for i in range(startRange, endRange):
-	    if strName[i] == search:
-		break
-	return i
+        for i in range(startRange, endRange):
+            if strName[i] == search:
+                break
+        return i
 
     def cutString(self, string, start, end):
-	return string[start:end]
+        return string[start:end]
 
     def getServerNetworkLabel(self, serverIP):
-	serverNetworkEnd = self.getInfoID(serverIP, 3, len(serverIP), "'")
+        serverNetworkEnd = self.getInfoID(serverIP, 3, len(serverIP), "'")
         serverNetwork = self.cutString(serverIP, 3, serverNetworkEnd)
-	return serverNetwork
+        return serverNetwork
      
 
     '''
@@ -285,13 +285,13 @@ class VM(object):
              cherrypy.log(username + ' - ' + str(e))
              raise cherrypy.HTTPError('500 OpenStack hasn\'t been able to find the VM you want to boot.')
 
-	bootServerState = bootServer.status
+        bootServerState = bootServer.status
 
         try:
             if bootServerState == "SHUTOFF":
-	        bootServer.start()
+                bootServer.start()
             elif bootServerState == "SUSPENDED":
-	        bootServer.resume()
+                bootServer.resume()
             elif bootServerState == "PAUSED":
                 bootServer.unpause()
             elif bootServerState == "SHELVED" or bootServerState == "SHELVED_OFFLOADED":

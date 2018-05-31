@@ -17,9 +17,9 @@ class Flavors(object):
         
         for flavor in novaClient.flavors.list():
             try:
-	        # match() only searches at start of the string
+                # match() only searches at start of the string
                 # search() searches throughout entire string
-	        if re.match(pattern, flavor.name, flags=0):
+                if re.match(pattern, flavor.name, flags=0):
                     flavorList.append({
                         'id'   : flavor.id,
                         'name' : flavor.name,
@@ -29,9 +29,9 @@ class Flavors(object):
                     })
             except AttributeError:
                 cherrypy.log('- AttributeError while appending flavorList: ' + str(flavor), username)
-	# Sorting flavors in ascending order
-	# Based on CPU, RAM & disk amounts
-	flavorList.sort()
+        # Sorting flavors in ascending order
+        # Based on CPU, RAM & disk amounts
+        flavorList.sort()
 
-	return {"data":flavorList}
+        return {"data":flavorList}
 

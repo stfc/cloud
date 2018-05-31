@@ -19,10 +19,10 @@ class TemplateList(object):
 
         novaClient = getNovaInstance()
 
-	# Gets data for each image
-	# os_distro - name of flavor
-	menuchoices = defaultdict(lambda: defaultdict(dict))
- 	for image in novaClient.images.list():
+        # Gets data for each image
+        # os_distro - name of flavor
+        menuchoices = defaultdict(lambda: defaultdict(dict))
+        for image in novaClient.images.list():
             cherrypy.log("- Loading '" + str(image.name) + "'", username)
 
             osDistro  = os_metadata(image, username, 'os_distro')

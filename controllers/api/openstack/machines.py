@@ -42,19 +42,19 @@ class Machines(object):
         username = cherrypy.request.cookie.get('fedid').value
         novaClient = getNovaInstance()
 
-	# Checking if user has a keypair and dealing if this isn't the case
-	try:
-	    key = novaClient.keypairs.list()[0].public_key
-	    keyname = novaClient.keypairs.list()[0].name
-	except IndexError:
-	    key = ""
-	    keyname = ""
+        # Checking if user has a keypair and dealing if this isn't the case
+        try:
+            key = novaClient.keypairs.list()[0].public_key
+            keyname = novaClient.keypairs.list()[0].name
+        except IndexError:
+            key = ""
+            keyname = ""
         except AttributeError:
             key = ""
             keyname = ""
             cherrypy.log('- AttributeError when getting user\'s keypair:', username)
             raise cherrypy.HTTPError('500 There\'s been a problem with getting your keypair data')
-	
+
         return { 'key' : key , 'keyname' : keyname, "cloudPlatform" : CLOUDPLATFORM }
 
     @cherrypy.expose

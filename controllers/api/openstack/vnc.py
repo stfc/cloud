@@ -14,35 +14,35 @@ class VNC(object):
     @cherrypy.tools.isAuthorised()
     @cherrypy.tools.json_out()
     def GET(self):
-	novaClient = getNovaInstance()
+        novaClient = getNovaInstance()
         username = cherrypy.request.cookie.get('fedid').value
 
-	json = []	
+        json = []
 
         for server in novaClient.servers.list(detailed = True):
             # Gets URL with VNC token embedded
             if server.status == "ACTIVE":
-		try:
-		    vncURL = server.get_vnc_console(console_type = "novnc")[u'console'][u'url']
-		    vncToken = self.cutString(vncURL, 62, len(vncURL))
-		except ClientException as e:
+                try:
+                    vncURL = server.get_vnc_console(console_type = "novnc")[u'console'][u'url']
+                     vncToken = self.cutString(vncURL, 62, len(vncURL))
+                except ClientException as e:
                     cherrypy.log(username + ' - ' + str(type(e)) + ' when retrieving VNC details for ' + server.name);
                     cherrypy.log(str(e));
-		    vncURL = ""
-		    vncToken = ""
-	    else:
-		vncURL = ""
+                    vncURL = ""
+                    vncToken = ""
+            else:
+                vncURL = ""
                 vncToken = ""
 
-	    # Put VM data into json format for .js file
-	    json.append({
-		'id'       : server.id,
+            # Put VM data into json format for .js file
+            json.append({
+                'id'       : server.id,
                 'token'    : vncToken,
-		'vncURL'   : vncURL,
-	    })
-	return {"data":json}
+                'vncURL'   : vncURL,
+            })
+            return {"data":json}
 
 
     def cutString(self, string, start, end):
-	return string[start:end]
+        return string[start:end]
 

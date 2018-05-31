@@ -40,7 +40,8 @@ class Quota(object):
             raise cherrypy.HTTPError('500 There has been an error getting quota data from OpenStack.')
 
         quotaDataKeys = []
-        # Available quota figures only used when there are limits on quotas
+
+        # Available quota figures, only used when there are limits on quotas
 
         if quotaData['groupquotamem'] > -1:
             quotaData['availablequotamem'] = quotaData['groupquotamem'] - quotaData['groupusedmem']
@@ -51,7 +52,7 @@ class Quota(object):
         if quotaData['groupquotavm'] > -1:
             quotaData['availablequotavm'] = quotaData['groupquotavm'] - quotaData['groupusedvm']
 
-        # Always appended as there's no disk quota - biggest disk size will always be required
+        # Available flavor limits, used when no quota or smaller than quota
         quotaDataKeys.append('biggestRAMAmount')
         quotaDataKeys.append('biggestCPUAmount')
         quotaDataKeys.append('biggestDiskAmount')
