@@ -36,9 +36,9 @@ class VNC(object):
 
             # Put VM data into json format for .js file
             json.append({
-                'id'       : server.id,
-                'token'    : vncToken,
-                'vncURL'   : vncURL,
+                'id'     : server.id,
+                'token'  : vncToken,
+                'vncURL' : vncURL,
             })
             return {"data":json}
 

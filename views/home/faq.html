@@ -14,11 +14,12 @@
 {% endblock %}
 
 {% block content %}
+
 {% set questions = [{
     'id': 'login',
     'q':  'How do I login?',
-    'a':  'You can SSH into your machines with your federal credentials 
-           eg. <strong>ssh fed12345@vm20.nubes.stfc.ac.uk</strong>.
+    'a':  'You can SSH into your machines with your federal credentials.
+           e.g. <strong>ssh fed12345@vm20.nubes.stfc.ac.uk</strong>.
            You can also associate your SSH public key to your account for passwordless login.'
     },{
     'id': 'root',
@@ -74,7 +75,7 @@
     'id': 'stopping',
     'q':  'What is the <span class="label label-warning">STOPPING</span> state?',
     'a':  'When a VM is deleted, a snapshop is taken an stored for a period of time.
-           This is for the reason of security and traceability'
+           This is for reasons of security and traceability'
     },{
     'id': 'os',
     'q':  'Do you support other Linux variants/version?',
@@ -84,10 +85,9 @@
     'id': 'pakiti',
     'q':  'Why are Pakiti and rsyslog running on my VM?',
     'a':  'These services are used for monitoring and security.
-           Please refrain from stopping or changing the behaviour of either of these service.
+           You must not stop or change the behaviour of either of these services.
            Please make sure you have read the <a href="/tos">Terms of Service</a>.'
     }] %}
-
 
 
 <div class="row">

@@ -50,11 +50,11 @@ class VM(object):
             # Aquilon
             meta = {}
 
-            if (json['archetype'] != None) and (json['archetype'] != ''):
+            if (json['archetype'] is not None) and (json['archetype'] != ''):
                 meta['AQ_ARCHETYPE'] = json['archetype']
                 meta['AQ_PERSONALITY'] = json['personality']
 
-            if (json['sandbox'] != None) and (json['sandbox'] != ''):
+            if (json['sandbox'] is not None) and (json['sandbox'] != ''):
                 meta['AQ_SANDBOX'] = json['sandbox']
 
             if (meta):
