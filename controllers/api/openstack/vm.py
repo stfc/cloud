@@ -1,50 +1,70 @@
-import cherrypy
+import cherrypy, urllib
+import json
 from datetime import datetime
 from time import mktime
-from getFunctions import getNovaInstance
+
 from novaclient.exceptions import ClientException, NotFound
 
-class VM(object):
-    exposed = True
+from getFunctions import getNovaInstance
 
+class VM(object):
     '''
         Create a new VM
 
         template_id : the id of template to use with VM
         name        : name for the new VM
     '''
+    exposed = True
     @cherrypy.tools.isAuthorised()
     @cherrypy.tools.json_in()
     def PUT(self):
         username = cherrypy.request.cookie.get('fedid').value
-	json = cherrypy.request.json
-	
+        json = cherrypy.request.json
+
         if not json.get("template_id") or not json.get("name"):
             raise cherrypy.HTTPError('400 Bad parameters')
 
-	novaClient = getNovaInstance()
-	vmNetwork = novaClient.networks.find(label=cherrypy.request.config.get("vmNetworkLabel"))
-	
-	# Making sure user has a keypair
-        try:
-	    keyname = novaClient.keypairs.list()[0].name
-	except IndexError:
-	    raise cherrypy.HTTPError('400 You haven\'t got a keypair, you must have a keypair to create a VM.')
+        novaClient = getNovaInstance()
+        vmNetwork = novaClient.networks.find(label=cherrypy.request.config.get("vmNetworkLabel"))
 
-	# Creating VM
+        # Making sure user has a keypair
         try:
-	    novaClient.servers.create(
-	        name = json['name'], 
- 	        image = json['template_id'], 
-	        flavor = json['flavorID'],
-	        key_name = keyname,
-	        nics = [{"net-id": vmNetwork.id}],
-	        security_groups = [cherrypy.request.config.get("securityGroupName")],
-	        availability_zone = cherrypy.request.config.get("availabilityZoneName"),
-                min_count = json['count']
-	    )
+            keyname = novaClient.keypairs.list()[0].name
+        except IndexError:
+            keyname = ""
+
+
+        # Creating VM
+        try:
+            create_args = {
+                'name'              : json['name'],
+                'image'             : json['template_id'],
+                'flavor'            : json['flavorID'],
+                'key_name'          : keyname,
+                'nics'              : [{"net-id": vmNetwork.id}],
+                'security_groups'   : [cherrypy.request.config.get("securityGroupName")],
+                'availability_zone' : cherrypy.request.config.get("availabilityZoneName"),
+                'min_count'         : json['count']
+            }
+
+            # Aquilon
+            meta = {}
+
+            if (json['archetype'] is not None) and (json['archetype'] != ''):
+                meta['AQ_ARCHETYPE'] = json['archetype']
+                meta['AQ_PERSONALITY'] = json['personality']
+
+            if (json['sandbox'] is not None) and (json['sandbox'] != ''):
+                meta['AQ_SANDBOX'] = json['sandbox']
+
+            if (meta):
+                create_args['meta'] = meta
+
+
+            novaClient.servers.create(**create_args)
+
         except (ClientException, KeyError) as e:
-            cherrypy.log('- ' + str(e), username)
+            cherrypy.log('- ', username, traceback=True)
             raise cherrypy.HTTPError('500 There has been a problem with creating the VM, try again later.')
 
     '''
@@ -62,7 +82,7 @@ class VM(object):
         try:
             novaClient.servers.delete(id)
         except ClientException as e:
-            cherrypy.log('- ' + str(e), username)
+            cherrypy.log('- ', username, traceback=True)
             raise cherrypy.HTTPError('500 There has been an unforeseen error in deleting the VM, try again later.')
 
 
@@ -76,100 +96,163 @@ class VM(object):
     @cherrypy.tools.isAuthorised()
     @cherrypy.tools.json_out()
     def GET(self, action):
-	novaClient = getNovaInstance()
+        novaClient = getNovaInstance()
         username = cherrypy.request.cookie.get('fedid').value
 
-	json = []	
-	flavorInfo = {}
+        instanceList = []
+        flavorList = {}
+        imageList = {}
 
-	for flavor in novaClient.flavors.list(detailed = True):
-	    flavorInfo[flavor.name] = [flavor.vcpus, flavor.ram]
+        # Flavor List
+        for flavor in novaClient.flavors.list(detailed = True):
+            flavorList[flavor.id] = {'name':str(flavor.name), 'vcpus':flavor.vcpus, 'ram':flavor.ram}
 
-	for server in novaClient.servers.list(detailed = True):
-	    # Print to command line - Testing what does what
-	    print server.name + " - " + server.status
-
-	    serverStatus = server.status
-
-	    # Converts date/time into format for .js file
-	    stime = datetime.strptime(server.created, '%Y-%m-%dT%H:%M:%SZ')
-	    stime = mktime(stime.timetuple())
-
-	    # Gets flavor ID --> flavor name
+        # Image List
+        for image in novaClient.images.list(detailed = True):
             try:
- 	        flavorName = str(novaClient.flavors.find(id = server.flavor[u'id']))
- 	        flavorName = self.cutString(flavorName, 9, -1)
-	    except KeyError:	# KeyError for getting server.flavor[u'id']
-                cherrypy.log('- KeyError when getting flavorName for VM: ' + str(server.name), username)
-                flavorName = ""
+                 imageList[image.id] = {
+                     'name' : str(image.name),
+                     'aq'   : image.metadata[u'aq_managed']
+                 }
+            except:
+                 imageList[image.id] = {
+                     'name': str(image.name),
+                     'aq'  : u'false'
+                 }
 
-	    # Gets image ID --> image name
+        for server in novaClient.servers.list(detailed = True):
+            cherrypy.log('- %s - %s'%(server.name, server.status), username)
+
+            serverStatus = server.status
+
+            # Converts date/time into format for .js file
+            stime = datetime.strptime(server.created, '%Y-%m-%dT%H:%M:%SZ')
+            stime = mktime(stime.timetuple())
+
+
+            # Flavor
+            flavorName = ""
+            flavorCPU = ""
+            flavorMemory = ""
             try:
-	        imageName = str(novaClient.images.find(id = server.image[u'id']))
-	        imageName = self.cutString(imageName, 8, -1)
-            except KeyError:
-                cherrypy.log('- KeyError when getting imageName for VM: ' + str(server.name), username)
-		imageName = ""
+                flavorName = flavorList[server.flavor['id']]['name']
+                flavorCPU = flavorList[server.flavor['id']]['vcpus']
+                flavorMemory = flavorList[server.flavor['id']]['ram']
+            except Exception as ex:
+                cherrypy.log('- Non-Fatal Exception when getting flavor info for VM: %s' %(server.name), username, traceback=True)
 
-	    hostname = ""
-	    try:
+            # Image Name
+            imageName = ""
+            try:
+                imageName = imageList[server.image['id']]['name']
+            except Exception as ex:
+                cherrypy.log('- Non-Fatal Exception when getting image name for VM: %s' %(server.name), username, traceback=True)
+
+            # Hostname/IP
+            hostname = ""
+            try:
                 serverIP = str(novaClient.servers.ips(server))
                 if serverIP != "{}":
                     serverNetwork = self.getServerNetworkLabel(serverIP)
                     hostname = novaClient.servers.ips(server)[serverNetwork][0][u'addr']
-            except (ClientException, KeyError) as e:
-                cherrypy.log(username + ' - ' + str(e))
+            except (ClientException, KeyError) as ex:
+                cherrypy.log('- Non-Fatal Exception when getting hostname/ip for VM: %s' %(server.name), username, traceback=True)
 
-            # Gets URL with VNC token embedded
-            if serverStatus == "ACTIVE" and action != "1":
-		try:
-		    vncURL = server.get_vnc_console(console_type = "novnc")[u'console'][u'url']
-		    vncToken = self.cutString(vncURL, 62, len(vncURL))
-		except ClientException as e:
-                    cherrypy.log(username + ' - ' + str(e))
-		    vncURL = ""
-		    vncToken = ""
-	    else:
-		vncURL = ""
-		vncToken = ""
-	
-	    # Put VM data into json format for .js file
-	    json.append({
-		'id'       : server.id,
-                'name'     : server.name,
-		'hostname' : hostname,
-                'user'     : "",
-                'group'    : "",
-                'state'    : serverStatus,
-                'stime'    : stime,
-                'etime'    : "",
-		'flavor'   : flavorName,
-                'cpu'      : flavorInfo[flavorName][0],
-                'memory'   : flavorInfo[flavorName][1],
-                'type'     : imageName,
-                'token'    : vncToken,
-		'vncURL'   : vncURL,		
-                'candelete': True,
-		'keypair'  : server.key_name
-	    })
-	return {"data":json}
+            # Aquilon Metadata
+            aq_branch = ""
+            aq_archetype = ""
+            aq_personality = ""
+            try:
+                if (imageList[server.image['id']]['aq'] != u'false'):
+                    aq_missing = '<i style="opacity:.65" title="Aquilon profile/metadata may be missing or restricted">Missing '
+
+                    try:
+                        # Get aquilon profile
+                        profile_url = cherrypy.request.config.get('aqProfiles')
+                        url = profile_url + server.metadata[u'HOSTNAMES'] + '.json'
+                        response = urllib.urlopen(url)
+                        profile = json.loads(response.read())
+
+                        # Domain/Sandbox
+                        try:
+                            profile_author = ""
+                            if (profile['metadata']['template']['branch']['type'] == "sandbox"):
+                                profle_author = profile['metadata']['template']['branch']['author'] + '/'
+
+                            profile_branch = profile['metadata']['template']['branch']['name']
+                            aq_branch = profile_author + profile_branch
+
+                        except Exception as ex:
+                            cherrypy.log('- Non-Fatal Exception when getting aquilon domain/sandbox for VM: %s' %(server.name), username, traceback=True)
+                            aq_branch = aq_missing + "Domain/Sandbox</i>"
+
+
+                        # Archetype
+                        try:
+                            aq_archetype = profile['system']['archetype']['name']
+                        except:
+                            cherrypy.log('- Non-Fatal Exception when getting aquilon archetype for VM: %s' %(server.name), username, traceback=True)
+                            aq_archetype = aq_missing + "Archetype</i>"
+
+
+                        # Personality
+                        try:
+                            aq_personality = profile['system']['personality']['name']
+                        except:
+                            cherrypy.log('- Non-Fatal Exception when getting aquilon personality for VM: %s' %(server.name), username, traceback=True)
+                            aq_personality = aq_missing + "Personality</i>"
+
+
+                    except Exception as ex:
+                        cherrypy.log('- Non-Fatal Exception when getting aquilon profile for VM: %s' %(server.name), username, traceback=True)
+                        aq_branch = aq_missing + "Profile</i>"
+                        aq_archetype = aq_missing + "Profile</i>"
+                        aq_personality = aq_missing + "Profile</i>"
+
+            except Exception as ex:
+                cherrypy.log('- Non-Fatal Exception when getting aquilon metadata for VM: %s' %(server.name), username, traceback=True)
+
+            # Put VM data into json format for .js file
+            instanceList.append({
+                'id'          : server.id,
+                'name'        : server.name,
+                'hostname'    : hostname,
+                'user'        : "",
+                'group'       : "",
+                'state'       : serverStatus,
+                'stime'       : stime,
+                'etime'       : "",
+                'flavor'      : flavorName,
+                'cpu'         : flavorCPU,
+                'memory'      : flavorMemory,
+                'type'        : imageName,
+                'candelete'   : True,
+                'keypair'     : server.key_name,
+                'branch'      : aq_branch,
+                'archetype'   : aq_archetype,
+                'personality' : aq_personality,
+            })
+            cherrypy.log('- %s - Loaded' %(server.name), username)
+        cherrypy.log(str(instanceList))
+        return {"data":instanceList}
 
     # Starts on the first character of important info (e.g. image ID)
     # Searches for the end of it and returns the end position
     # This is then used in cutString() to extract the exact section of the string needed
     def getInfoID(self, strName, startRange, endRange, search):
-	for i in range(startRange, endRange):
-	    if strName[i] == search:
-		break
-	return i
+        for i in range(startRange, endRange):
+            if strName[i] == search:
+                break
+        return i
 
     def cutString(self, string, start, end):
-	return string[start:end]
+        return string[start:end]
 
     def getServerNetworkLabel(self, serverIP):
-	serverNetworkEnd = self.getInfoID(serverIP, 3, len(serverIP), "'")
+        serverNetworkEnd = self.getInfoID(serverIP, 3, len(serverIP), "'")
         serverNetwork = self.cutString(serverIP, 3, serverNetworkEnd)
-	return serverNetwork
+        return serverNetwork
+     
 
     '''
         Update VM info/state
@@ -187,22 +270,22 @@ class VM(object):
        
         try:
              bootServer = novaClient.servers.find(id = params.get("id"))
-        except NotFound as e:
-             cherrypy.log(username + ' - ' + str(e))
+        except NotFound:
+             cherrypy.log('- Not Found Error', username, traceback=True)
              raise cherrypy.HTTPError('500 OpenStack hasn\'t been able to find the VM you want to boot.')
 
-	bootServerState = bootServer.status
+        bootServerState = bootServer.status
 
         try:
             if bootServerState == "SHUTOFF":
-	        bootServer.start()
+                bootServer.start()
             elif bootServerState == "SUSPENDED":
-	        bootServer.resume()
+                bootServer.resume()
             elif bootServerState == "PAUSED":
                 bootServer.unpause()
             elif bootServerState == "SHELVED" or bootServerState == "SHELVED_OFFLOADED":
                 bootServer.unshelve()
-        except ClientException as e:
-            cherrypy.log(username + ' - ' + str(e))
+        except ClientException:
+            cherrypy.log('- Client Exception', username, traceback=True)
             raise cherrypy.HTTPError('500 There was a problem booting the VM, the VM was in the ' + bootServerState + ' state.')
 

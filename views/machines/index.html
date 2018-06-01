@@ -3,6 +3,10 @@
 
 {% extends "layout.html" %}
 
+{% if (countLimit is none) or (countLimit is not number) %}
+    {% set countLimit = 10 %}
+{% endif %}
+
 {% block css %}
 <link rel="stylesheet" href="/assets/components/bootstrap/css/bootstrap-select-1.9.4.min.css" type="text/css" />
 <link rel="stylesheet" href="/assets/components/bootstrap/css/dataTables.bootstrap-1.10.10.min.css" type="text/css" />
@@ -34,8 +38,17 @@ if (CLOUDPLATFORM == "opennebula") {
         setInterval(function () {
             quota.update();
             drawTable(miscAction);
+            getVNC();
         }, 60000);
     });
+    $(function() {
+        setInterval(function () {
+            if (loadedProject['vnc'] === true && loadedProject['vms'] === true) {
+                addVNC();
+            }
+        }, 5000);
+    });
+    var count_limit = {{ countLimit }};
 }
 
 </script>
@@ -63,27 +76,64 @@ if (CLOUDPLATFORM == "opennebula") {
 <script src="/assets/js/machines/{{ cloudPlatform }}/manage/create/pick-aquilon.js"></script>
 <script src="/assets/js/machines/{{ cloudPlatform }}/manage/create/pick-template.js"></script>
 <script src="/assets/js/machines/{{ cloudPlatform }}/manage/create/pick-resources.js"></script>
+<!-- Rename -->
+{% if cloudPlatform == "openstack" %}
+    <script src="/assets/js/machines/openstack/rename.js"></script>
+{% endif %}
 
 {% endblock %}
 
 {% block content %}
 <div class="row">
     <div class="col-md-12">
-        <h1 class="page-header">Machines
-            <button type="button" class="btn btn-green pull-right" onclick="createVMdialog()"><span class="glyphicon glyphicon-plus" style="font-size:15px"></span>&nbsp;&nbsp;New Machine</button>
+        <h1 class="page-header">Machines 
+
+        <span id="projectChoiceBlock" class="pull-right">
+            Current Project:
+            <select style="height:34px" id="projectChoice" class="btn btn-default btn-xs" onchange="makeAjaxCalls()"></select>
+        </span>
+
         </h1>
         <div id="error" class="alert alert-danger text-center" role="alert" style="display:none">
             <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> <span id="errormessage"></span>
             <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         </div>
        
-        <div>
-            Current Project:
-            <select id="projectChoice" class="btn btn-default btn-xs" onchange="makeAjaxCalls()"></select>
-            <span id="loadingStatus"></span>
-        </div>
+<div style="height: 34px">
+        <button id="newMachine" type="button" class="btn btn-green" onclick="createVMdialog()" title="Create New Machine"
+            {% if cloudPlatform == "openstack" %}disabled=""{% endif %}
+        >
+        <span class="glyphicon glyphicon-plus" style="font-size:15px"></span>&nbsp;&nbsp;New Machine</button>
+
+        {% if cloudPlatform == "openstack" %}
+            <span>
+
+            <span id="loading-quota" style="display:none;">
+                &nbsp; Loading Quota: <div class="loader"></div>
+            </span>
+
+            <span id="loading-templates" style="display:none;">
+                &nbsp; Loading Images: <div class="loader"></div>
+            </span>
+
+            <span id="loading-flavors" style="display:none;">
+                &nbsp; Loading Flavors: <div class="loader"></div>
+            </span>
+    
+            <span id="loading-vms" style="display:none;">
+                &nbsp; Loading VMs: <div class="loader"></div>
+            </span>
+
+            <span id="loading-vnc" style="display:none;">
+                &nbsp; Loading GUI consoles: <div class="loader"></div>
+            </span>
+
+            </span>
+        {% endif %}
 
         <button type="button" class="btn btn-default" id="filter-button" title="Table Filters" onclick="filterTableDialog()"><span class="glyphicon glyphicon-cog"></span></button>
+        </span>
+</div>
         <div class="tab-content">
             <div class="tab-pane active">
                 <table id="vm-list" class="table" cellspacing="0" width="100%">
@@ -106,5 +156,7 @@ if (CLOUDPLATFORM == "opennebula") {
 {% include "machines/manage/machine-delete.html" %}
 
 {% include "machines/novnc/novnc.html" %}
+
+{% include "machines/manage/rename.html" %}
 
 {% endblock %}

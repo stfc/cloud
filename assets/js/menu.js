@@ -47,11 +47,20 @@ function note_members(id, type, title, body) {
     }
 }
 
-function exceptions(error_number) {
+function exceptions(error_number, message) {
+
+    if (typeof message === "undefined") {
+        message = "";
+    }
+
     if (error_number == "403") {
         Cookies.remove('session', {path : '/'});
         Cookies.remove('name', {path : '/'});
         Cookies.remove('fedid', {path : '/'});
         window.location.replace("/login");
+    } else {
+        email = '<a href="mailto:"' + EMAIL + '">' + EMAIL + '</a>'
+        $("#errormessage").html(error_number + " Error " + message + " - If the problem persists, please contact " + email);
+        $("#error").show();
     }
 }

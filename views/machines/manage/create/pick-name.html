@@ -1,7 +1,7 @@
 <fieldset>
     <legend>Name Your Machine</legend>
     <div id="name-creation-error" class="creation-error alert alert-danger text-center" class="alert alert-danger text-center" role="alert"></div>
-    <div class="form-group">
+    <div class="form-group name-field">
         <label for="name" class="col-sm-3 control-label">Name</label>
         <div class="col-sm-8">
             <div class="input-group">
@@ -14,12 +14,14 @@
             </div>
         </div>
     </div>
-    <div class="form-group">
+{% if cloudPlatform == "openstack" %}
+    <div class="form-group count-field">
         <label for="vmCount" class="col-sm-3 control-label">Count</label>
         <div class="col-sm-8">
            <div class="input-group">
-               <input type="number" id="vmCount" name="vmCount" class="form-control noEnterSubmit" value="1" required />
+               <input type="number" id="vmCount" name="vmCount" class="form-control noEnterSubmit" value="1" onchange="setSliderAmounts(flavorList, false);" required />
            </div>
         </div>    
     </div>
+{% endif %}
 </fieldset>

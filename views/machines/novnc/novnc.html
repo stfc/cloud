@@ -1,12 +1,15 @@
 <div class="modal fade" id="vncdialog" tabindex="-1" role="dialog" aria-labelledby="vncdialogLabel" aria-hidden="true">
-    <div class="modal-dialog" style="width:1124px">
+    <div id="vncdialog-box" class="modal-dialog" style="width:80%">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                <h4 class="modal-title"><button type="button" class="btn btn-blue btn-xs"><img src="/assets/images/icon-display.png" style="width:14px;margin-top:-2px"></button>&nbsp;&nbsp;<span id="vnc-title"></span></h4>
-		<span id="vncURL"></span>
+                <h4 class="modal-title">
+                <button type="button" class="btn btn-blue btn-xs"><img src="/assets/images/icon-display.png" style="width:14px;margin-top:-2px"></button>
+                <button id="noVNC-newtab" class="btn btn-blue btn-xs" style="display:none;">Open in new tab</button>
+                <span id="vnc-title" style="vertical-align: middle;"></span></h4>
+                <i id="noVNC-notice" style="display:none;">If keyboard input is not being registered, try clicking on the blue bar then typing again</i>
             </div>
-            <div class="modal-body" style="text-align:center">
+            <div id="vmConsole" class="modal-body" style="text-align:center">
                 <div id="noVNC_screen">
                     <canvas id="noVNC_canvas" width="640px" height="20px" style="cursor:none">
                         Canvas not supported.

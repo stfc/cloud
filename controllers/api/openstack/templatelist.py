@@ -1,6 +1,8 @@
 #!/usr/bin/python
 import cherrypy
+
 from collections import defaultdict
+
 from getFunctions import getNovaInstance
 
 class TemplateList(object):
@@ -17,51 +19,54 @@ class TemplateList(object):
 
         novaClient = getNovaInstance()
 
-	# Gets data for each image
-	# os_distro - name of flavor
-	menuchoices = defaultdict(lambda: defaultdict(dict))
-	for image in novaClient.images.list():
-            try:
-                if image.metadata[u'os_distro'] is not None:
-                    osDistro = image.metadata[u'os_distro']
-	        else:
-		    cherrypy.log("has an uninstantiated image flavour: " + str(image), username)
-		    continue
-    	        if image.metadata[u'os_version'] is not None:
-                    osVersion = image.metadata[u'os_version']
-                else:
-                    cherrypy.log("has an uninstantiated image version: " + str(image), username)
-                    continue
-	        if image.metadata[u'os_variant'] is not None:
-                    osVariant = image.metadata[u'os_variant']
-                else:
-                    cherrypy.log("has an uninstantiated image variant: " + str(image), username)
-                    continue
-            except KeyError:
-                cherrypy.log("- KeyError when getting image metadata in image:" + str(image), username)
+        # Gets data for each image
+        # os_distro - name of flavor
+        menuchoices = defaultdict(lambda: defaultdict(dict))
+        for image in novaClient.images.list():
+            cherrypy.log('- Loading %s' %(image.name), username)
 
-	    aqManaged = "false"
-            try:
-                if image.metadata[u'aq_managed'] == "true":
-                    aqManaged = "true"
-            except KeyError:
-                cherrypy.log("- KeyError when seeing if an image is Aquilon managed, Image: " + str(image), username)
+            osDistro  = os_metadata(image, username, 'os_distro')
+            osVersion = os_metadata(image, username, 'os_version')
+            osVariant = os_metadata(image, username, 'os_variant')
+            aqManaged = os_metadata(image, username, 'aq_managed')
+            description = os_metadata(image, username, 'description')
 
-	    if osVariant not in menuchoices[osDistro][osVersion]:
-	        menuchoices[osDistro][osVersion][osVariant] = list()
+            if osDistro is None or osVersion is None or osVariant is None:
+                cherrypy.log('- Image %s will not be visible' %(image.name), username)
+                continue
+            else:
 
-	    try:
-	        description = image.metadata[u'description'] + ". "
-            except KeyError:
-		description = ""
-                cherrypy.log("- KeyError in image:" + str(image), username)
+                if osVariant not in menuchoices[osDistro][osVersion]:
+                    menuchoices[osDistro][osVersion][osVariant] = list()
 
-	    menuchoices[osDistro][osVersion][osVariant].append({
-		'name' : image.name,
-		'id' : image.id,
-		'minDisk' : image.minDisk,
-		'minRAM' : image.minRam,
-		'description' : description,
-		'aqManaged' : aqManaged
-	    })
+                menuchoices[osDistro][osVersion][osVariant].append({
+                    'name' : image.name,
+                    'id' : image.id,
+                    'minDisk' : image.minDisk,
+                    'minRAM' : image.minRam,
+                    'description' : description,
+                    'aqManaged' : aqManaged
+                })
+
         return menuchoices
+
+
+def os_metadata(image, username, tag):
+    try:
+        if tag not in image.metadata:
+           cherrypy.log('- Image %s is missing metadata' %(image.name), username)
+           if tag == "aq_managed":
+               return "false"
+
+        elif image.metadata[u''+tag+''] is not None:
+           return image.metadata[u''+tag+'']
+
+        else:
+           cherrypy.log('- Image %s is missing %s' %(image.name, tag), username)
+           if tag == "aq_managed":
+               return "false"
+           else:
+              return ""
+
+    except KeyError:
+        cherrypy.log('- Error when getting %s metadata for %s' %(tag, image.name), username, traceback=True)

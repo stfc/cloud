@@ -22,11 +22,14 @@ var vmlist = $('#vm-list').DataTable( {
             sort: 'stime.timestamp'
         }},
         { data: 'type'},        // Column 5
-        { data: 'flavor'},      // Column 6
-        { data: 'cpu'},         // Column 7
-        { data: 'memory'},      // Column 8
-        { data: 'token'},       // Column 9
-        { data:'id'}           // Column 10
+        { data: 'branch'},      // Column 6
+        { data: 'archetype'},   // Column 7
+        { data: 'personality'}, // Column 8
+        { data: 'flavor'},      // Column 9
+        { data: 'cpu'},         // Column 10
+        { data: 'memory'},      // Column 11
+        { data: 'token'},       // Column 12
+        { data: 'id'}           // Column 13
     ],
     "order": [
         [4, "desc"]
@@ -34,11 +37,15 @@ var vmlist = $('#vm-list').DataTable( {
     "columnDefs": [
         {
             "width": "1px",
-            "targets": [5, 6, 7, 8, 9]	// Collapse if they don't exist
+            "targets": [5, 6, 7, 8, 9, 10, 11] // Collapse if they don't exist
         },
         {
             "orderable": false,
-            "targets": [9, 10] // Stop 'VNC' and 'Delete' form being orderable
+            "targets": [12, 13] // Stop 'VNC' and 'Delete' from being orderable
+        },
+        {
+            "visible": false,
+            "targets": [6, 7, 8] // Hide Aquilon columns by default, since these fields will be empty for most VMs
         },
     ],
     "dom": '<"top"f>t<"bottom"lpi><"clear">'
@@ -60,10 +67,62 @@ $('.show-hide').change( 'click', function (e) {
     column.visible( ! column.visible() );
 });
 
+
+// Get VNC URLs
+var vncList = {};
+function getVNC() {
+
+    getVNCRequest = $.ajax({
+       type: 'GET',
+       url: '/api/vnc',
+       statusCode: {
+           400: function(data) {
+               $("#errormessage").html(data.statusText);
+               $("#error").show();
+           },
+           403: function() {
+               exceptions("403");
+           },
+           500: function(data) {
+               $("#errormessage").html(data.statusText);
+               $("#error").show();
+           }
+       }
+    }).done(function(data) {
+          vncList = data;
+          addVNC();
+
+          loadedProject['vnc'] = true;
+          loadingWheels();
+    })
+};
+
+// Add VNC URLs to buttons
+function addVNC() {
+    if (typeof vncList !== undefined) {
+        for (vm of vncList["data"]) {
+             x = "#vnc-" + vm['id'];
+             if (vm['vncURL'] == undefined || vm['vncURL'] == "" || vm['vncURL'] == null) {
+                 $(x).attr("disabled", "");
+             } else {
+                 y = 'window.open("' + vm["vncURL"] + '","_blank")'
+
+//                  Uncomment to use GUI popup
+//                  y = 'vncdialog(\'' + row['token'] + '\', \'' + name + '\', \'' + row['vncURL'] + '\')'
+
+                 $(x).removeAttr("onclick");
+                 $(x).attr("onclick", y);
+                 $(x).removeAttr("disabled");
+             }
+        }
+    }
+}
+
 var fedid = Cookies.get('fedid');
 
 function drawTable(action) {
-    $.ajax({
+
+    drawTableRequest = $.ajax({
         type: "GET",
         url: "/api/vm",
         data: {'action' : action},
@@ -75,22 +134,23 @@ function drawTable(action) {
             403: function() {
                 exceptions("403");
             },
-            500: function(data) {
-                $("#errormessage").html(data.statusText);
-                $("#error").show();
+            500: function() {
+                exceptions("500", "getting VMs list.");
             }
         }
     }).done(function(data) {
-        loadingCount++;
-        console.log(loadingCount);
 
         $('#all-vms').hide();
         vmlist.clear();
+
         for (row of data["data"]) {
+            //Rename
+            name = row['name']
+            row['name'] = '<button style="margin-left:5px;float:right;" type="button" class="btn btn-default btn-xs hide-until-hover" title="Rename Machine" onclick="renameDialog(\'' + row['id'] + '\',\'' + name + '\')"><span class="glyphicon glyphicon-pencil" style="vertical-align:middle;margin-top:-2px"></span></button>' + name;
+
             // State
             state = row['state'];
             disabled = (state != "ACTIVE" ? "disabled" : "");
-
             row['state'] = '<span class="status-label status-label-'+ stateDictionary[state] +'">'+ state +'</span><progress max="4" value="'+ stateDictionary[state] +'"></progress>';
 
             // Time
@@ -106,12 +166,22 @@ function drawTable(action) {
             if (stateDictionary[state] === 0) {
                 row['token'] = '<button type="button" class="btn btn-success btn-xs" title="Boot Machine" onclick="bootVM(\'' + row['id'] + '\')"><span class="glyphicon glyphicon-arrow-up" style="vertical-align:middle;margin-top:-2px"></span></button>';
             } else {
-                row['token'] = '<button type="button" class="btn btn-blue btn-xs" title="Launch Desktop GUI" onclick="vncdialog(\'' + row['token'] + '\', \'' + row['name'] + '\', \'' + row['vncURL'] + '\')" ' + disabled + '><img src="/assets/images/icon-display.png" style="width:14px;margin-top:-2px" /></button>';
+                // noVNC                
+                x = "vnc-" + row['id']
+                y = ""
+                if ($('#'+x).attr("onclick") == undefined) {
+		   y = 'disabled=""'
+                } else {
+                   y = 'onclick="' + toString($('#'+x).attr("onclick")) + '"'
+                }
+
+		row['token'] = '<button id="' + x + '" type="button" class="btn btn-blue btn-xs" title="Launch GUI in new tab" ' + y + '><img src="/assets/images/icon-display.png" style="width:14px;"/></button>';
+                
             }
 
             // Delete
             if (row['user'] === fedid || row['candelete'] === true) {
-                row['id'] = '<button type="button" class="btn btn-danger btn-xs" title="Delete Machine" onclick="deleteVMdialog(\'' + row['id'] + '\', \'' + row['name'] + '\')"><span class="glyphicon glyphicon-remove" style="vertical-align:middle;margin-top:-2px"></span></button>';
+                row['id'] = '<button type="button" class="btn btn-danger btn-xs" title="Delete Machine" onclick="deleteVMdialog(\'' + row['id'] + '\', \'' + name + '\')"><span class="glyphicon glyphicon-remove" style="vertical-align:middle;margin-top:-2px"></span></button>';
             } else {
                 row['id'] = '<button type="button" class="btn btn-default btn-xs" title="You do not own this machine" onclick=""><span class="glyphicon glyphicon-remove" style="vertical-align:middle;margin-top:-2px"></span></button>';
             }
@@ -133,7 +203,10 @@ function drawTable(action) {
                 vmlist.row.add(row);
             }
         }
-        vmlist.draw(true); // 'false' saves the paging position
+        // 'false' saves the paging position
+        vmlist.draw(false);
+        loadedProject['vms'] = true;
+        loadingWheels();
     });
 }
 
@@ -141,3 +214,4 @@ function drawTable(action) {
 $('.noEnterSubmit').keypress(function(e){
     if ( e.which == 13 ) e.preventDefault();
 });
+

@@ -2,7 +2,7 @@ var quota = {
     quota: 0,
     used: 0,
     update: function () {
-        $.ajax({
+        quotaUpdateRequest = $.ajax({
             type: "GET",
             url: "/api/quota",
             statusCode: {
@@ -10,15 +10,15 @@ var quota = {
                     exceptions("403");
                 },
                 500: function() {
-                    $("#errormessage").html("The cloud may be experiencing problems. Please try again later.");
-                    $("#error").show();
+                    exceptions("500", "getting project quota.");
                     $('#resources').hide();
                 }
             }
         }).done(function(json_out) {
-            loadingCount++;
-            console.log(loadingCount);
+            loadedProject['quota'] = true;
+            loadingWheels();
 
+            $('.quotaBox').show();  
             $('#resources').show();
 
             // Structure

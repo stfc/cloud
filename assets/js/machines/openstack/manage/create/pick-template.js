@@ -8,7 +8,7 @@ var selected_template_description = '';
 var aqManaged = "false";
 
 function getTemplateList(){
-    $.ajax({
+    var getTemplateListRequest = $.ajax({
         type: 'GET',
         url: '/api/templatelist',
         dataType: 'json',
@@ -17,19 +17,21 @@ function getTemplateList(){
                 exceptions("403");
             },
             500: function() {
-                $('#errormessage').html('The cloud may be experiencing problems. Please try again later.');
-                $('#error').show();
+                exceptions("500", "getting template list.");
+            },
+            504: function() {
+                exceptions("504", "getting template list.");
             }
         }
     }).done(function(data) {
         image_list = data;
-        loadingCount++;
-        console.log(loadingCount);
+        loadedProject['templates'] = true;
+        loadingWheels();
     });
 }
 
 function getFlavors(){
-    $.ajax({
+    getFlavorsRequest = $.ajax({
         type: 'GET',
         url: '/api/flavors',
         dataType: 'json',
@@ -38,14 +40,17 @@ function getFlavors(){
                 exceptions("403");
             },
             500: function() {
-                $('#errormessage').html('The cloud may be experiencing problems. Please try again later.');
-                $('#error').show();
+                exceptions("500", "getting flavor list.");
+            },
+            504: function() {
+                exceptions("504", "getting flavor list.");
             }
         }
     }).done(function(data) {
         flavorList = data;
-        loadingCount++;
-        console.log(loadingCount);
+        loadedProject['flavors'] = true;
+        loadingWheels();
+
     });
 }
 
@@ -59,6 +64,7 @@ function draw_buttons() {
     helptext = '';
     var os_flavour,release,type,image = null;
     $('#aquilon-select').css('display', 'none');
+    $('.opennebulaResources').css('display', 'none');
 
     if ($.isEmptyObject(image_list)) {
         buttons = '<div class="alert alert-danger" role="alert"><p>You do not appear to have any templates available to you. Please contact <a href="mailto:' + EMAIL + '">' + EMAIL + '</a>.</p></div>';
@@ -107,7 +113,8 @@ function draw_buttons() {
                 controls = '<a class="btn btn-danger" id="buttonback" onclick="selected_type=\'\';selected_release=\'\'; draw_buttons();">Back</a>';
             }
             else {
-                buttons += '<a class="btn btn-lev3" id="'+type+'" onclick="selected_type=\''+type+'\'; aqManaged=\''+image_list[selected_flavour][selected_release][type][i].aqManaged+'\'; draw_buttons();">'+type+'</a>';
+                isAqManaged = Object.values(image_list[selected_flavour][selected_release])[i][0].aqManaged
+                buttons += '<a class="btn btn-lev3" id="'+type+'" onclick="selected_type=\''+type+'\'; aqManaged=\''+isAqManaged+'\'; draw_buttons();">'+type+'</a>';
             }
             i = i + 1;
         }
@@ -128,7 +135,11 @@ function draw_buttons() {
             image = image_list[selected_flavour][selected_release][selected_type][id];
             image_id = image.id;
             image_name = image.name;
-            image_description = image.description;
+            if (image.description === null) {
+                image_description = "An image with no description"
+            } else {
+                image_description = image.description;
+            }
             image_cpu = image.cpu;
             image_min_disk = image.minDisk;
             image_min_ram = image.minRAM/1024;
@@ -144,7 +155,7 @@ function draw_buttons() {
                 selected_template_name = image_name;
                 selected_template_description = image_description;
                 helptext = '';
-                buttons = 'Complete!<br> You chose ' + image_name + '. ' + selected_template_description; // When occurs? Why no min. amounts?
+                buttons = 'Complete!<br> You chose ' + image_name + '. ' + selected_template_description + '. '; // When occurs? Why no min. amounts?
                 draw_buttons();
                 controls = '<a class="btn btn-danger" id="buttonback" onclick="selected_template=\'\';selected_type=\'\';selected_template_name=\''+image_name+'\'; selected_template_description=\''+image_description+'\'; aqManaged=\'\'; draw_buttons();hide_resources();">Back</a>';
             }
@@ -158,10 +169,24 @@ function draw_buttons() {
 
     else {
         $('#pick-resources').show();
-        buttons = 'Complete!<br> You chose ' + selected_template_name + '. ' + image_description + 'This has a minimum disk requirement of ' + image_min_disk + 'GB' + ' and a minimum RAM requirement of ' + image_min_ram + 'GB';
+        buttons = 'Complete!<br> You chose ' + selected_template_name + '. ' + image_description + '. ' + 'This has a minimum disk requirement of ' + image_min_disk + 'GB' + ' and a minimum RAM requirement of ' + image_min_ram + 'GB';
         controls = '<a class="btn btn-danger" id="buttonback" onclick="selected_template=\'\'; selected_template_name=\'\'; selected_template_description=\'\'; draw_buttons(); hide_resources();">Back</a>';
         pick_resources(flavorList);
     }
+
+    if ($('<div>' + buttons + '</div>').children().filter('.btn').length >= 4) {
+        $('#buttonbox').removeClass('btn-group')
+         .addClass('btn-group-vertical')
+         .removeClass('btn-group-justified')
+         .attr("style","width:100%");
+    }
+    else {
+        $('#buttonbox').removeClass('btn-group-vertical')
+         .addClass('btn-group')
+         .addClass('btn-group-justified')
+         .removeAttr("style","width:100%");
+    }
+
     $('#buttonbox').html(buttons);
     $('#helpbox').html(helptext);
     $('#controlbox').html(controls);

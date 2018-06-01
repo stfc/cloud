@@ -1,9 +1,11 @@
 $(function() {
     $('#sshform').submit(function() {
+
         var key = $("#sshkey").val();
         document.getElementById('submitkey').disabled = true;
 
         var keyname = $('#keynameLabel').attr('value');
+
         $.ajax({
             type: "POST",
             url: "/api/user",

@@ -34,7 +34,9 @@ function pick_aquilon() {
                         $('#sandbox_options').append('<option value="' + $('#user_options').val() +'/' + sandbox + '">' + sandbox + '</option>');
                     }
                 }
-                $('#sandbox_options').removeAttr('disabled');
+                if ($('#user_options').val() != '') {
+                    $('#sandbox_options').removeAttr('disabled');
+                }
             });
         });
     });
@@ -73,11 +75,13 @@ function pick_aquilon() {
                         $('#personality_options').append('<option value="' + personality + '">' + personality + '</option>');
                     }
                 }
-                $('#personality_options').removeAttr('disabled');
+                if ($('#archetype_options').val() != '') {
+                    $('#personality_options').removeAttr('disabled');
+                }
             });
         });
     });
 
-    helptext = 'You have selected an Aquilon Managed machine, please select a User/Sandbox and Archetype/Personality';
+    helptext = 'You have selected an Aquilon Managed machine, please select a User/Sandbox and Archetype/Personality.';
     controls = '<a class="btn btn-danger" id="buttonback" onclick="selected_type=\'\'; draw_buttons();">Back</a>';
 }

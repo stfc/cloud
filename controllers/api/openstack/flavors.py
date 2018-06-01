@@ -1,5 +1,6 @@
 import cherrypy
 import re
+
 from getFunctions import getNovaInstance
 
 
@@ -16,9 +17,9 @@ class Flavors(object):
         
         for flavor in novaClient.flavors.list():
             try:
-	        # match() only searches at start of the string
+                # match() only searches at start of the string
                 # search() searches throughout entire string
-	        if re.match(pattern, flavor.name, flags=0):
+                if re.match(pattern, flavor.name, flags=0):
                     flavorList.append({
                         'id'   : flavor.id,
                         'name' : flavor.name,
@@ -27,10 +28,10 @@ class Flavors(object):
                         'disk' : flavor.disk
                     })
             except AttributeError:
-                cherrypy.log('- AttributeError while appending flavorList: ' + str(flavor), username)
-	# Sorting flavors in ascending order
-	# Based on CPU, RAM & disk amounts
-	flavorList.sort()
+                cherrypy.log('- AttributeError while appending flavorList: %s' %(flavor), username, traceback=True)
+        # Sorting flavors in ascending order
+        # Based on CPU, RAM & disk amounts
+        flavorList.sort()
 
-	return {"data":flavorList}
+        return {"data":flavorList}
 

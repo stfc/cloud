@@ -4,41 +4,103 @@ function getProjects() {
         url: "/api/projects",
         statusCode: {
             500: function() {
-                $("#errormessage").html("The cloud may be experiencing problems. Please try again later.");
-                $("#error").show();
+                exceptions("500", "getting project list.");
+            },
+            504: function() {
+                exceptions("504", "getting project list.");
             }
         }
     }).done(function(data) {
-        var projectList = data;
-        //console.log(data);
-        var select = document.getElementById("projectChoice");
-        for (i = 0; i < projectList['data'].length; i++){
-              select.options[select.options.length] = new Option(projectList['data'][i]['name'], projectList['data'][i]['id']);
+        if (!(data['data'].length >= 1)) {
+              $("#errormessage").html("You do not have access to any projects");
+              $("#error").show();
+        } else {
+              $('#loading-project').hide();
+              var projectList = data;
+              var select = document.getElementById("projectChoice");
+              for (i = 0; i < projectList['data'].length; i++){
+                  select.options[select.options.length] = new Option(projectList['data'][i]['name'], projectList['data'][i]['id']);
+              }
+        
+              var selItem = Cookies.get("projectID");
+              for (i = 0; i < Object.values(data.data).length; i++){
+                  if (Object.values(data.data[i]).includes(selItem)) {
+	              $('#projectChoice').val(selItem);
+	          }
+              }
+
+              makeAjaxCalls();
         }
-        makeAjaxCalls();
     });
 }
 
+var loadedProject = {};
+var getTemplateListRequest = $.ajax({});
+var getFlavorsRequest = $.ajax({});
+var quotaUpdateRequest = $.ajax({});
+var drawTableRequest = $.ajax({});
+var getVNCRequest = $.ajax({});
+
 function makeAjaxCalls() {
-    $("#loadingStatus").html("Loading Project Data");
-    loadingCount = 0;
+
+    loadedProject = {
+        'quota'     : false,
+        'templates' : false,
+        'flavors'   : false,
+        'vms'       : false,
+        'vnc'       : false
+    };
+
+    $('.quotaBox').hide();
+    loadingWheels();
+
     var date = new Date();
     date.setTime(date.getTime() + (86400 * 1000));    // Cookie will expire 24 hours after creating
     Cookies.set("projectID", document.getElementById("projectChoice").value, {expires : date, path : '/'});
+
+    getTemplateListRequest.abort();
+    getFlavorsRequest.abort();
+    quotaUpdateRequest.abort();
+    drawTableRequest.abort();
+    getVNCRequest.abort();
+ 
     getTemplateList();
     getFlavors();
     quota.update();
+
+    vmlist.clear();
+    vmlist.draw();
     drawTable(miscAction);
 
-
-//    while (loadingCount <= 4){
-        console.log(loadingCount);
-        // Nothing
-    //}
-    if (loadingCount === 4){
-        $("#loadingStatus").html("Finished Loading");
-    }
-//    $("#loadingStatus").html("Finished Loading");
-
+    getVNC();
 }
 
+function loadingWheels() {
+
+    if (loadedProject['quota'] == true && loadedProject['templates'] == true && loadedProject['flavors'] == true) {
+        $('#newMachine').removeAttr('disabled');
+        $('#newMachine').removeAttr('title');
+        $('#newMachine').attr('title', 'Create New Machine');
+    } else {
+        $('#newMachine').attr('disabled', '');
+        $('#newMachine').removeAttr('title');
+        $('#newMachine').attr('title', 'Please wait until images, flavors and quota have loaded before creating a new machine');
+    }
+
+    for (wheel in loadedProject) {
+        if (loadedProject[wheel] == true ) {
+            $('#loading-' + wheel).hide();
+            $('#loading-' + wheel + '-big').hide();
+        } else {
+            $('#loading-' + wheel).show();
+            $('#loading-' + wheel + '-big').show();
+        }
+    }
+
+    if (Object.values(loadedProject).includes(false) === false) {
+        $('#loading-all').hide();
+    } else {
+        $('#loading-all').show();
+    }
+
+}
