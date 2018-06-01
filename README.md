@@ -31,7 +31,7 @@ When running the webfrontend without Apache, you might have to manually launch w
 Configuration
 ===
 
-Copy `config/default.conf` to `config/global.conf` and change unset values, or any you wish, using the guide below.
+Copy `config/default.conf` to `config/global.conf` and change unset values, or any you wish, using the guide below:
 
 ```
 [global]
@@ -46,12 +46,12 @@ server.socket_host = Network interface CherryPy will listen to
 server.socket_port = TCP port CherryPy will listen to
 
 # Cherrypy Tools
-tools.caching.on = False
-tools.isAuthorised.on = False
-tools.jinja.on = True
-tools.sessions.on = True
-tools.sessions.storage_type = 'File'
-tools.sessions.storage_path = Path to sessions file
+tools.caching.on = Set False to disable CherryPy caching
+tools.isAuthorised.on = Set False to log out users without session
+tools.jinja.on = Set True to enable CherryPy Jinja helper
+tools.sessions.on = Set True to enable session storing
+tools.sessions.storage_type = CherryPy class to use for session storing ('ram', 'file', 'postgresql' or 'memcached')
+tools.sessions.storage_path = Path to sessions file directory
 tools.sessions.timeout =  Number of minutes to timeout sessions
 
 # Logs
@@ -95,7 +95,7 @@ aqProfiles = URL storing aquilon profiles
 countLimit = Maximum number of VMs created in OpenStack at once (If quota is unlimited)
 
 # Misc
-response.headers.server = "Nothing to see here ... move along :)"
+response.headers.server = Default response headers
 email = The helpdesk/support email address that appears throughout the website
 
 ```
