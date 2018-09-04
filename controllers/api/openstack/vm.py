@@ -6,6 +6,7 @@ from time import mktime
 from novaclient.exceptions import ClientException, NotFound
 
 from getFunctions import getNovaInstance
+from getFunctions import getGlanceInstance
 
 class VM(object):
     '''
@@ -50,11 +51,11 @@ class VM(object):
             # Aquilon
             meta = {}
 
-            if (json['archetype'] is not None) and (json['archetype'] != ''):
+            if ('archetype' in json) and (json['archetype'] is not None) and (json['archetype'] != ''):
                 meta['AQ_ARCHETYPE'] = json['archetype']
                 meta['AQ_PERSONALITY'] = json['personality']
 
-            if (json['sandbox'] is not None) and (json['sandbox'] != ''):
+            if ('sandbox' in json) and (json['sandbox'] is not None) and (json['sandbox'] != ''):
                 meta['AQ_SANDBOX'] = json['sandbox']
 
             if (meta):
@@ -97,6 +98,7 @@ class VM(object):
     @cherrypy.tools.json_out()
     def GET(self, action):
         novaClient = getNovaInstance()
+        glanceClient = getGlanceInstance()
         username = cherrypy.request.cookie.get('fedid').value
 
         instanceList = []
@@ -108,7 +110,7 @@ class VM(object):
             flavorList[flavor.id] = {'name':str(flavor.name), 'vcpus':flavor.vcpus, 'ram':flavor.ram}
 
         # Image List
-        for image in novaClient.images.list(detailed = True):
+        for image in glanceClient.images.list(detailed = True):
             try:
                  imageList[image.id] = {
                      'name' : str(image.name),
