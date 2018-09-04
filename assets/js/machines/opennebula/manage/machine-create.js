@@ -126,3 +126,5 @@ function create_VM(data) {
         $('#createvmdialog').modal('hide');
     });
 }
+
+$('#pick-resources').css('display', 'none');

@@ -20,7 +20,7 @@ function drawPagination(page)
         page: p,
         onSelect: function (page) {
             offset = this.slice[0];
-            drawTable();
+            drawTable(miscAction);
         },
         onFormat: function (type) {
             switch (type) {

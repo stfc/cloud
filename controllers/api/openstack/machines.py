@@ -2,12 +2,13 @@ import cherrypy
 import os
 import xmlrpclib
 import xml.etree.ElementTree as ET
-
 from random import randint
 
 from helpers.auth import *
 from helpers.jinja import *
 from helpers.oneerror import *
+
+from getFunctions import getNovaInstance
 
 
 class Machines(object):
@@ -19,41 +20,42 @@ class Machines(object):
         WSHOSTNAME = cherrypy.request.config.get("wshostname")
         WSPORT = cherrypy.request.config.get("wsport")
         EMAIL = cherrypy.request.config.get("email")
-        return {"wshostname" : WSHOSTNAME, "wsport" : WSPORT, "email" : EMAIL}
+        CLOUDPLATFORM = cherrypy.request.config.get("cloudPlatform")
+        COUNTLIMIT = cherrypy.request.config.get("countLimit")
+        return {"wshostname" : WSHOSTNAME, "wsport" : WSPORT, "email" : EMAIL, "cloudPlatform" : CLOUDPLATFORM, "countLimit" : COUNTLIMIT}
 
 
     @cherrypy.expose
     @cherrypy.tools.isAuthorised(redirect=True)
     @cherrypy.tools.jinja(template="machines/history.html")
     def history(self):
-        pass
+        CLOUDPLATFORM = cherrypy.request.config.get("cloudPlatform")
+        return {"cloudPlatform" : CLOUDPLATFORM}
 
 
     @cherrypy.expose
     @cherrypy.tools.isAuthorised(redirect=True)
     @cherrypy.tools.jinja(template="machines/ssh.html")
     def ssh(self):
+        CLOUDPLATFORM = cherrypy.request.config.get("cloudPlatform")
 
-        HEADNODE = cherrypy.request.config.get("headnode")
-        FEDID = cherrypy.request.cookie.get('fedid').value
-        SESSION = cherrypy.request.cookie.get('session').value
+        username = cherrypy.request.cookie.get('fedid').value
+        novaClient = getNovaInstance()
 
-        server = xmlrpclib.ServerProxy(HEADNODE)
-
-        request = [
-            "%s:%s"%(FEDID,SESSION), # auth token
-            -1                       # return details for current user
-        ]
-        response = server.one.user.info(*request)
-        validateresponse(response)
-        user_info = ET.fromstring(response[1])
-
+        # Checking if user has a keypair and dealing if this isn't the case
         try:
-            key = user_info.find('TEMPLATE').find('SSH_PUBLIC_KEY').text
-        except:
+            key = novaClient.keypairs.list()[0].public_key
+            keyname = novaClient.keypairs.list()[0].name
+        except IndexError:
             key = ""
+            keyname = ""
+        except AttributeError:
+            key = ""
+            keyname = ""
+            cherrypy.log('- AttributeError when getting user\'s keypair:', username)
+            raise cherrypy.HTTPError('500 There\'s been a problem with getting your keypair data')
 
-        return { 'key' : key }
+        return { 'key' : key , 'keyname' : keyname, "cloudPlatform" : CLOUDPLATFORM }
 
     @cherrypy.expose
     def random(self):

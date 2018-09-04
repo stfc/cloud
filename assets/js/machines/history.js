@@ -56,6 +56,10 @@ function drawHistory()
             403: function() {
                 exceptions("403");
             },
+            404: function() {
+                $("#errormessage").html("Can't find VM history, this still needs to be implemented for OpenStack.");
+                $("#error").show();
+            },               
             500: function() {
                 $("#errormessage").html("The cloud may be experiencing problems. Please try again later.");
                 $("#error").show();

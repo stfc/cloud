@@ -14,75 +14,105 @@
 {% endblock %}
 
 {% block content %}
+
+{% set questions = [{
+    'id': 'login',
+    'q':  'How do I login?',
+    'a':  'You can SSH into your machines with your federal credentials.
+           e.g. <strong>ssh fed12345@vm20.nubes.stfc.ac.uk</strong>.
+           You can also associate your SSH public key to your account for passwordless login.'
+    },{
+    'id': 'root',
+    'q':  'Can I get root access?',
+    'a':  'Yes, once you have logged in with your federal credentials you will have permission to use <strong>sudo</strong>.
+           <p class="text-danger">
+            NOTE: you must not change the root password or remove entires from the authorized_keys file for the root account.
+            Please make sure you have read the <a href="/tos">Terms of Service</a>.
+           </p>'
+    },{
+    'id': 'gui',
+    'q':  'Can I get a GUI session?',
+    'a':  'Click the <button type="button" class="btn btn-blue btn-xs">
+           <img src="/assets/images/icon-display.png" style="width:14px;margin-top:-2px" /></button>
+           button to get an interactive GUI session inside your browser.'
+    },{
+    'id': 'projects',
+    'q':  'What are projects?',
+    'a':  'Projects are groups that work together, every member of a project will be able to see all VMs in said project.
+           Use the drop-down in the top right of the page to switch between projects.',
+    'p':  'openstack'
+    },{
+    'id': 'newprojects',
+    'q':  'Can I create/join another project?',
+    'a':  'Yes, if you would like to create/join another project email us at
+           <a href="mailto:' + email + '">' + email + '</a>.',
+    'p':  'openstack'
+    },{
+    'id': 'rename',
+    'q':  'Can I rename my VM?',
+    'a':  'Yes, simply mouseover the VM name and click the 
+           <span class=" btn btn-default btn-xs glyphicon glyphicon-pencil" style="vertical-align:middle;margin-top:-2px"></span>
+           button that appears. It may take a few moments for the name to update on the machines page.',
+    'p':  'openstack'
+    },{
+    'id': 'flavors',
+    'q':  'What are flavors?',
+    'a':  'Flavors define the resources assigned to a VM when it is created.
+           Once you have chosen a template, you will be prompted to choose a flavor from the drop-down.',
+    'p':  'openstack'
+    },{
+    'id': 'resources',
+    'q':  'Can I increase the CPUs, RAM or Disk size?',
+    'a':  'Currently we only provide a standard set of resources for each machine.
+           If you would like to discuss increasing these values email us at
+           <a href="mailto:' + email + '">' + email + '</a>.',
+    },{
+    'id': 'quota',
+    'q':  'Can I increase my quota?',
+    'a':  'Yes, if you would like your quota increased email us at
+           <a href="mailto:' + email + '">' + email + '</a>.'
+    },{
+    'id': 'stopping',
+    'q':  'What is the <span class="label label-warning">STOPPING</span> state?',
+    'a':  'When a VM is deleted, a snapshop is taken an stored for a period of time.
+           This is for reasons of security and traceability'
+    },{
+    'id': 'os',
+    'q':  'Do you support other Linux variants/version?',
+    'a':  'Yes, if you would like to discuss adding different images or versions to the cloud, email us at 
+           <a href="mailto:' + email + '">' + email + '</a>.',
+    },{
+    'id': 'pakiti',
+    'q':  'Why are Pakiti and rsyslog running on my VM?',
+    'a':  'These services are used for monitoring and security.
+           You must not stop or change the behaviour of either of these services.
+           Please make sure you have read the <a href="/tos">Terms of Service</a>.'
+    }] %}
+
+
 <div class="row">
     <div class="col-md-12">
         <h1 class="page-header">FAQ</h1>
         <ol>
-            <li><a href="#login">How do I login?</a></li>
-            <li><a href="#root">Can I get root access?</a></li>
-            <li><a href="#gui">Can I get a GUI session?</a></li>
-            <li><a href="#resources">Can I increase the RAM or CPUs?</a></li>
-            <li><a href="#quota">Can I increase my quota?</a></li>
-            <li><a href="#disk">Can I increase my disk size?</a></li>
-            <li><a href="#stopping">What is the <span class="label label-warning">STOPPING</span> state?</a></li>
-            <li><a href="#os">Do you support other Linux variants/version?</a></li>
-            <li><a href="#pakiti">Why are Pakiti and rsyslog running on my VM?</a></li>
+        {% for item in questions %}
+            {% if (cloudPlatform != item.p) and (item.p is defined)%}
+            {% else %}
+                <li><a href="#{{ item.id }}">{{ item.q }}</a></li>
+            {% endif %}
+        {% endfor %}
         </ol>
 
-        <br />
-        <h3><a name="login" href="#login" class="faq">1. How do I login?</a></h3>
-        <p>
-            You can SSH into your machines with your federal credentials eg. <strong>ssh fed12345@vm20.nubes.stfc.ac.uk</strong>. You can also associate your SSH public key to your account for passwordless login.
-        </p>
+        {% for item in questions %}
+            {% if (cloudPlatform != item.p) and (item.p is defined)%}
+            {% else %}
+                <br>
+                <h3><a name="{{ item.id }}" href="#{{ item.id }}" class="faq">{{ item.q }}</a></h3>
+                <p>
+                    {{ item.a }}
+                </p>
+            {% endif %}
+        {% endfor %}
 
-        <br />
-        <h3><a name="root" href="#root" class="faq">2. Can I get root access?</a></h3>
-        Yes, once you have logged in with your federal credentials you will have permission to use <strong>sudo</strong>.
-        <p class="text-danger">
-            NOTE: you must not change the root password or remove entires from the authorized_keys file for the root account. Please make sure you have read the <a href="/tos">Terms of Service</a>.
-        </p>
-
-        <br />
-        <h3><a name="gui" href="#gui" class="faq">3. Can I get a GUI session?</a></h3>
-        <p>
-            Click the <button type="button" class="btn btn-blue btn-xs"><img src="/assets/images/icon-display.png" style="width:14px;margin-top:-2px" /></button> button to get an interactive GUI session inside your browser.
-        </p>
-
-        <br />
-        <h3><a name="resources" href="#resources" class="faq">4. Can I increase the RAM or CPUs?</a></h3>
-        <p>
-            Currently we only provide a standard set of resources for each machine. If you would like to discuss increasing these values email us at <a href="mailto:{{ email }}">{{ email }}</a>.
-        </p>
-
-        <br />
-        <h3><a name="quota" href="#quota" class="faq">5. Can I increase my quota?</a></h3>
-        <p>
-            Yes, if you would like your quota increased email us at <a href="mailto:{{ email }}">{{ email }}</a>.
-        </p>
-
-        <br />
-        <h3><a name="disk" href="#disk" class="faq">6. Can I increase my disk size?</a></h3>
-        <p>
-            Yes, if you would like access to more storage email us at <a href="mailto:{{ email }}">{{ email }}</a>.
-        </p>
-
-        <br />
-        <h3><a name="stopping" href="#stopping" class="faq">7. What is the <span class="label label-warning" style="font-size:50%;vertical-align:middle">STOPPING</span> state?</a></h3>
-        <p>
-            When a VM is deleted, a snapshop is taken an stored for a period of time. This is for the reason of security and traceability.
-        <p>
-
-        <br />
-        <h3><a name="os" href="#os" class="faq">8. Do you support other Linux variants/version?</a></h3>
-        <p>
-            Yes, if you would like to discuss adding different images or versions to the cloud, email us at <a href="mailto:{{ email }}">{{ email }}</a>.
-        </p>
-
-        <br />
-        <h3><a name="pakiti" href="#pakiti" class="faq">9. Why are Pakiti and rsyslog running on my VM?</a></h3>
-        <p>
-            These services are used for monitoring and security. Please refrain from stopping or changing the behaviour of either of these service. Please make sure you have read the <a href="/tos">Terms of Service</a>.
-        </p>
     </div>
 </div>
 {% endblock %}

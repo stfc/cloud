@@ -1,6 +1,9 @@
 *.pyc
+*.pyo
 *~
 *.swp
 /tokens
 global.conf
 /assets/badwords
+
+

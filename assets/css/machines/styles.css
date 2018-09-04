@@ -40,6 +40,9 @@
 
 
 /* input forms */
+#vmCount {
+ border-radius: 4px;
+}
 .aq-form {
   width: 50%;
   float: left;
@@ -52,10 +55,91 @@
   margin: 0 10%;
   float: left;
 }
-.aq-form label {
-  padding-top: 20px;
+.aq-form .form-control {
+  margin-bottom: 20px;
+}
+.aq-form select {
+  border-radius: 4px !important;
 }
 
+/* Loading */
+.loader {
+  display: inline-block;
+  vertical-align: middle;
+  border: 0.25em solid #f3f3f3;
+  border-top: 0.25em solid #00418d;
+  border-radius: 100%;
+  width: 1.8em;
+  height: 1.8em;
+  -webkit-animation: spin 0.75s linear infinite; /* Safari */
+  animation: spin 0.75s linear infinite;
+}
+
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loader-big {
+  border: 0.6em solid #f3f3f3;
+  border-top: 0.6em solid #00418d;
+  width: 5em;
+  height: 5em;
+//  margin: auto;
+}
+
+
+/*Rename Buttons*/
+td .hide-until-hover {
+    display: none;
+}
+td:hover .hide-until-hover {
+    display: block;
+}
+
+
+/*Flavor Bar*/
+
+.flavorBarContainer {
+  margin-left: 25px;
+  margin-right: 25px;
+  font-weight: bold;
+  
+  span {
+    display: inline-block;
+    float: left;
+    text-align: left;
+  }
+}
+
+#flavorMaxCPU, #flavorMaxMemory, #flavorMaxDisk {
+  float: right;
+  text-align: right;
+}
+
+.flavorBar {
+  background-color: #f3f3f3;
+  margin: 0px;
+  border-radius: 6px;
+  width: auto;
+  color: #333;
+}
+
+.flavorBarChild {
+  margin: 0px;
+  padding: 6px;
+  width: 0px;
+  background-color: #333;
+  color: #fff;
+  text-align: right;
+  text-shadow: 1px 1px #555;
+}
+  
 
 
 /* VM STATES */
@@ -96,6 +180,12 @@ progress[value="3"]::-moz-progress-bar {
 progress[value="4"]::-moz-progress-bar {
   background: #24990b;
 }
+
+progress[value="5"]::-moz-progress-bar {
+  background: #FF0000;
+}
+
+
 
 .status-label {
   color: #444444;
@@ -166,7 +256,7 @@ progress[value="4"]::-moz-progress-bar {
 .resource-text {
   text-align: center;
   padding-right: 10%;
-  font-size: 12px;
+  font-size: 14px;
 }
 
 .table-responsive {
@@ -202,8 +292,8 @@ progress[value="4"]::-moz-progress-bar {
   float: right;
   height: 34px;
   width: 34px;
-  margin-top: -42px;
 }
+
 #filter-button span {
   font-size: 20px;
   margin-left: -5px;
@@ -211,9 +301,10 @@ progress[value="4"]::-moz-progress-bar {
 
 #vm-list_filter, #vm-history_filter {
   float: right;
-  margin-top: -48px;
+  margin-top: -40px;
   margin-right: 40px;
 }
+
 #vm-list_filter input, #vm-history_filter input {
   height: 34px;
 }
