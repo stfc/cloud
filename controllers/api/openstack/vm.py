@@ -51,11 +51,11 @@ class VM(object):
             # Aquilon
             meta = {}
 
-            if ('archetype' in json) and (json['archetype'] is not None) and (json['archetype'] != ''):
+            if ('archetype' in json):
                 meta['AQ_ARCHETYPE'] = json['archetype']
                 meta['AQ_PERSONALITY'] = json['personality']
 
-            if ('sandbox' in json) and (json['sandbox'] is not None) and (json['sandbox'] != ''):
+            if ('sandbox' in json):
                 meta['AQ_SANDBOX'] = json['sandbox']
 
             if (meta):
@@ -254,7 +254,7 @@ class VM(object):
         serverNetworkEnd = self.getInfoID(serverIP, 3, len(serverIP), "'")
         serverNetwork = self.cutString(serverIP, 3, serverNetworkEnd)
         return serverNetwork
-     
+
 
     '''
         Update VM info/state
@@ -269,7 +269,7 @@ class VM(object):
             raise cherrypy.HTTPError('400 Bad parameters')
 
         novaClient = getNovaInstance()
-       
+
         try:
              bootServer = novaClient.servers.find(id = params.get("id"))
         except NotFound:
@@ -290,4 +290,3 @@ class VM(object):
         except ClientException:
             cherrypy.log('- Client Exception', username, traceback=True)
             raise cherrypy.HTTPError('500 There was a problem booting the VM, the VM was in the ' + bootServerState + ' state.')
-
