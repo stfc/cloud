@@ -154,10 +154,10 @@ class VM(object):
             # Hostname/IP
             hostname = ""
             try:
-                serverIP = str(novaClient.servers.ips(server))
+                serverIP = str(server.networks)
                 if serverIP != "{}":
                     serverNetwork = self.getServerNetworkLabel(serverIP)
-                    hostname = novaClient.servers.ips(server)[serverNetwork][0][u'addr']
+                    hostname = server.networks[serverNetwork][0]
             except (ClientException, KeyError) as ex:
                 cherrypy.log('- Non-Fatal Exception when getting hostname/ip for VM: %s' %(server.name), username, traceback=True)
 
@@ -255,7 +255,7 @@ class VM(object):
         serverNetworkEnd = self.getInfoID(serverIP, 3, len(serverIP), "'")
         serverNetwork = self.cutString(serverIP, 3, serverNetworkEnd)
         return serverNetwork
-     
+
 
     '''
         Update VM info/state
@@ -270,7 +270,7 @@ class VM(object):
             raise cherrypy.HTTPError('400 Bad parameters')
 
         novaClient = getNovaInstance()
-       
+
         try:
              bootServer = novaClient.servers.find(id = params.get("id"))
         except NotFound:
@@ -291,4 +291,3 @@ class VM(object):
         except ClientException:
             cherrypy.log('- Client Exception', username, traceback=True)
             raise cherrypy.HTTPError('500 There was a problem booting the VM, the VM was in the ' + bootServerState + ' state.')
-
