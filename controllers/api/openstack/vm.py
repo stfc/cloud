@@ -26,7 +26,7 @@ class VM(object):
             raise cherrypy.HTTPError('400 Bad parameters')
 
         novaClient = getNovaInstance()
-        vmNetwork = novaClient.networks.find(label=cherrypy.request.config.get("vmNetworkLabel"))
+        vmNetwork = cherrypy.request.config.get("vmNetworkLabel")
 
         # Making sure user has a keypair
         try:
@@ -42,7 +42,7 @@ class VM(object):
                 'image'             : json['template_id'],
                 'flavor'            : json['flavorID'],
                 'key_name'          : keyname,
-                'nics'              : [{"net-id": vmNetwork.id}],
+                'nics'              : [{"net-id": vmNetwork}],
                 'security_groups'   : [cherrypy.request.config.get("securityGroupName")],
                 'availability_zone' : cherrypy.request.config.get("availabilityZoneName"),
                 'min_count'         : json['count']
@@ -51,11 +51,11 @@ class VM(object):
             # Aquilon
             meta = {}
 
-            if ('archetype' in json):
+            if ('archetype' in json) and (json['archetype'] is not None) and (json['archetype'] != ''):
                 meta['AQ_ARCHETYPE'] = json['archetype']
                 meta['AQ_PERSONALITY'] = json['personality']
 
-            if ('sandbox' in json):
+            if ('sandbox' in json) and (json['sandbox'] is not None) and (json['sandbox'] != ''):
                 meta['AQ_SANDBOX'] = json['sandbox']
 
             if (meta):
@@ -148,6 +148,7 @@ class VM(object):
             try:
                 imageName = imageList[server.image['id']]['name']
             except Exception as ex:
+                imageName = ''
                 cherrypy.log('- Non-Fatal Exception when getting image name for VM: %s' %(server.name), username, traceback=True)
 
             # Hostname/IP
@@ -254,7 +255,7 @@ class VM(object):
         serverNetworkEnd = self.getInfoID(serverIP, 3, len(serverIP), "'")
         serverNetwork = self.cutString(serverIP, 3, serverNetworkEnd)
         return serverNetwork
-
+     
 
     '''
         Update VM info/state
@@ -269,7 +270,7 @@ class VM(object):
             raise cherrypy.HTTPError('400 Bad parameters')
 
         novaClient = getNovaInstance()
-
+       
         try:
              bootServer = novaClient.servers.find(id = params.get("id"))
         except NotFound:
@@ -290,3 +291,4 @@ class VM(object):
         except ClientException:
             cherrypy.log('- Client Exception', username, traceback=True)
             raise cherrypy.HTTPError('500 There was a problem booting the VM, the VM was in the ' + bootServerState + ' state.')
+
