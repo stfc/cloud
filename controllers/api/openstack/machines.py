@@ -20,7 +20,7 @@ class Machines(object):
 
         try:
             username = cherrypy.request.cookie.get('fedid').value
-        except:
+        except AttributeError:
             cherrypy.log('- Could not fetch cookie')
             raise cherrypy.HTTPRedirect('/login')
 
@@ -66,7 +66,7 @@ class Machines(object):
 
     @cherrypy.expose
     def random(self):
-        
+
         goodwords = cherrypy.config.goodwords
         badwords = cherrypy.config.badwords
         name = []
