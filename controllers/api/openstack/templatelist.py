@@ -28,28 +28,30 @@ class TemplateList(object):
             cherrypy.log('- Loading %s' %(image.name), username)
 
             cherrypy.log(' - %s' %(image), username)
-            osDistro  = os_metadata_item(image, username, 'os_distro')
-            osVersion = os_metadata_item(image, username, 'os_version')
-            osVariant = os_metadata_item(image, username, 'os_variant')
-            aqManaged = os_metadata_item(image, username, 'aq_managed')
-            description = os_metadata_item(image, username, 'description')
+            if image.get('status') == 'active':
+                osDistro  = os_metadata_item(image, username, 'os_distro')
+                osVersion = os_metadata_item(image, username, 'os_version')
+                osVariant = os_metadata_item(image, username, 'os_variant')
+                aqManaged = os_metadata_item(image, username, 'aq_managed')
+                description = os_metadata_item(image, username, 'description')
 
-            if osDistro is None or osVersion is None or osVariant is None:
-                cherrypy.log('- Image %s will not be visible' %(image.name), username)
-                continue
-            else:
+                if osDistro is None or osVersion is None or osVariant is None:
+                    cherrypy.log('- Image %s will not be visible' %(image.name), username)
+                    continue
+                else:
 
-                if osVariant not in menuchoices[osDistro][osVersion]:
-                    menuchoices[osDistro][osVersion][osVariant] = list()
+                    if osVariant not in menuchoices[osDistro][osVersion]:
+                        menuchoices[osDistro][osVersion][osVariant] = list()
 
-                menuchoices[osDistro][osVersion][osVariant].append({
-                    'name' : image.name,
-                    'id' : image.id,
-                    'minDisk' : image.min_disk,
-                    'minRAM' : image.min_ram,
-                    'description' : description,
-                    'aqManaged' : aqManaged
-                })
+                    menuchoices[osDistro][osVersion][osVariant].append({
+                        'name' : image.name,
+                        'id' : image.id,
+                        'minDisk' : image.min_disk,
+                        'minRAM' : image.min_ram,
+                        'description' : description,
+                        'aqManaged' : aqManaged
+                    })
+            
 
         return menuchoices
 
