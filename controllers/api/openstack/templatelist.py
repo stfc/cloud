@@ -24,16 +24,15 @@ class TemplateList(object):
         # Gets data for each image
         # os_distro - name of flavor
         menuchoices = defaultdict(lambda: defaultdict(dict))
-        for image in glanceClient.images.list():
+        for image in glanceClient.images.list(detailed = True):
             cherrypy.log('- Loading %s' %(image.name), username)
 
             cherrypy.log(' - %s' %(image), username)
-            osMetadata = os_metadata(image,username)
-            osDistro  = os_metadata_item(image,osMetadata, username, 'os_distro')
-            osVersion = os_metadata_item(image,osMetadata, username, 'os_version')
-            osVariant = os_metadata_item(image,osMetadata, username, 'os_variant')
-            aqManaged = os_metadata_item(image,osMetadata, username, 'aq_managed')
-            description = os_metadata_item(image,osMetadata, username, 'description')
+            osDistro  = os_metadata_item(image, username, 'os_distro')
+            osVersion = os_metadata_item(image, username, 'os_version')
+            osVariant = os_metadata_item(image, username, 'os_variant')
+            aqManaged = os_metadata_item(image, username, 'aq_managed')
+            description = os_metadata_item(image, username, 'description')
 
             if osDistro is None or osVersion is None or osVariant is None:
                 cherrypy.log('- Image %s will not be visible' %(image.name), username)
@@ -54,24 +53,14 @@ class TemplateList(object):
 
         return menuchoices
 
-
-def os_metadata(image, username):
-    try:
-        glanceClientMD = getGlanceInstance()
-        imagemetadata =  glanceClientMD.images.get(image.id)
-        return imagemetadata
-    except KeyError:
-        cherrypy.log('- Error when getting %s metadata for %s' %(tag, image.name), username, traceback=True)
-        # cherrypy.log(' ------  debug %S' %(imagemetadata),username)
-
-def os_metadata_item(image,imagemetadata,username,tag):
-        if tag not in imagemetadata:
+def os_metadata_item(image,username,tag):
+        if image.get(tag) is None:
            cherrypy.log('- Image %s is missing metadata' %(image.name), username)
            if tag == "aq_managed":
                return "false"
 
-        elif imagemetadata[u''+tag+''] is not None:
-           return imagemetadata[u''+tag+'']
+        elif image.get(tag) is not None:
+           return image.get(tag)
 
         else:
            cherrypy.log('- Image %s is missing %s' %(image.name, tag), username)
@@ -79,4 +68,3 @@ def os_metadata_item(image,imagemetadata,username,tag):
                return "false"
            else:
               return ""
-
