@@ -6,6 +6,7 @@ from time import mktime
 from novaclient.exceptions import ClientException, NotFound
 
 from getFunctions import getNovaInstance
+from getFunctions import getGlanceInstance
 
 class VM(object):
     '''
@@ -25,7 +26,7 @@ class VM(object):
             raise cherrypy.HTTPError('400 Bad parameters')
 
         novaClient = getNovaInstance()
-        vmNetwork = novaClient.networks.find(label=cherrypy.request.config.get("vmNetworkLabel"))
+        vmNetwork = cherrypy.request.config.get("vmNetworkLabel")
 
         # Making sure user has a keypair
         try:
@@ -41,7 +42,7 @@ class VM(object):
                 'image'             : json['template_id'],
                 'flavor'            : json['flavorID'],
                 'key_name'          : keyname,
-                'nics'              : [{"net-id": vmNetwork.id}],
+                'nics'              : [{"net-id": vmNetwork}],
                 'security_groups'   : [cherrypy.request.config.get("securityGroupName")],
                 'availability_zone' : cherrypy.request.config.get("availabilityZoneName"),
                 'min_count'         : json['count']
@@ -50,11 +51,11 @@ class VM(object):
             # Aquilon
             meta = {}
 
-            if (json['archetype'] is not None) and (json['archetype'] != ''):
+            if ('archetype' in json) and (json['archetype'] is not None) and (json['archetype'] != ''):
                 meta['AQ_ARCHETYPE'] = json['archetype']
                 meta['AQ_PERSONALITY'] = json['personality']
 
-            if (json['sandbox'] is not None) and (json['sandbox'] != ''):
+            if ('sandbox' in json) and (json['sandbox'] is not None) and (json['sandbox'] != ''):
                 meta['AQ_SANDBOX'] = json['sandbox']
 
             if (meta):
@@ -97,6 +98,7 @@ class VM(object):
     @cherrypy.tools.json_out()
     def GET(self, action):
         novaClient = getNovaInstance()
+        glanceClient = getGlanceInstance()
         username = cherrypy.request.cookie.get('fedid').value
 
         instanceList = []
@@ -108,7 +110,7 @@ class VM(object):
             flavorList[flavor.id] = {'name':str(flavor.name), 'vcpus':flavor.vcpus, 'ram':flavor.ram}
 
         # Image List
-        for image in novaClient.images.list(detailed = True):
+        for image in glanceClient.images.list(detailed = True):
             try:
                  imageList[image.id] = {
                      'name' : str(image.name),
@@ -146,15 +148,16 @@ class VM(object):
             try:
                 imageName = imageList[server.image['id']]['name']
             except Exception as ex:
+                imageName = ''
                 cherrypy.log('- Non-Fatal Exception when getting image name for VM: %s' %(server.name), username, traceback=True)
 
             # Hostname/IP
             hostname = ""
             try:
-                serverIP = str(novaClient.servers.ips(server))
+                serverIP = str(server.networks)
                 if serverIP != "{}":
                     serverNetwork = self.getServerNetworkLabel(serverIP)
-                    hostname = novaClient.servers.ips(server)[serverNetwork][0][u'addr']
+                    hostname = server.networks[serverNetwork][0]
             except (ClientException, KeyError) as ex:
                 cherrypy.log('- Non-Fatal Exception when getting hostname/ip for VM: %s' %(server.name), username, traceback=True)
 
@@ -252,7 +255,7 @@ class VM(object):
         serverNetworkEnd = self.getInfoID(serverIP, 3, len(serverIP), "'")
         serverNetwork = self.cutString(serverIP, 3, serverNetworkEnd)
         return serverNetwork
-     
+
 
     '''
         Update VM info/state
@@ -267,7 +270,7 @@ class VM(object):
             raise cherrypy.HTTPError('400 Bad parameters')
 
         novaClient = getNovaInstance()
-       
+
         try:
              bootServer = novaClient.servers.find(id = params.get("id"))
         except NotFound:
@@ -288,4 +291,3 @@ class VM(object):
         except ClientException:
             cherrypy.log('- Client Exception', username, traceback=True)
             raise cherrypy.HTTPError('500 There was a problem booting the VM, the VM was in the ' + bootServerState + ' state.')
-

@@ -17,6 +17,13 @@ class Machines(object):
     @cherrypy.tools.isAuthorised(redirect=True)
     @cherrypy.tools.jinja(template="machines/index.html")
     def index(self):
+
+        try:
+            username = cherrypy.request.cookie.get('fedid').value
+        except AttributeError:
+            cherrypy.log('- Could not fetch cookie')
+            raise cherrypy.HTTPRedirect('/login')
+
         WSHOSTNAME = cherrypy.request.config.get("wshostname")
         WSPORT = cherrypy.request.config.get("wsport")
         EMAIL = cherrypy.request.config.get("email")
@@ -59,7 +66,7 @@ class Machines(object):
 
     @cherrypy.expose
     def random(self):
-        
+
         goodwords = cherrypy.config.goodwords
         badwords = cherrypy.config.badwords
         name = []
