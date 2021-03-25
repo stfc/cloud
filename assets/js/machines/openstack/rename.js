@@ -47,7 +47,7 @@ function renameVm(object) {
     }).done(function(json) {
         drawTable(miscAction);
         quota.update();
-        $('#renamedialog').modal('show');
+        $('#renamedialog').modal('hide');
     });
 }	
 
