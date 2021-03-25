@@ -5,8 +5,8 @@ from time import mktime
 
 from novaclient.exceptions import ClientException, NotFound
 
-from getFunctions import getNovaInstance
-from getFunctions import getGlanceInstance
+from .getFunctions import getNovaInstance
+from .getFunctions import getGlanceInstance
 
 class VM(object):
     '''

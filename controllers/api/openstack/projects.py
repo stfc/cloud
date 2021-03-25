@@ -4,6 +4,7 @@ from keystoneauth1 import session
 from keystoneauth1.identity import v3
 from keystoneclient.v3 import client
 
+from .getFunctions import getOpenStackSession
 
 class Projects(object):
     exposed = True

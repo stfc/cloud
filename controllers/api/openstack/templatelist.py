@@ -3,8 +3,8 @@ import cherrypy
 
 from collections import defaultdict
 
-from getFunctions import getNovaInstance
-from getFunctions import getGlanceInstance
+from .getFunctions import getNovaInstance
+from .getFunctions import getGlanceInstance
 
 class TemplateList(object):
 

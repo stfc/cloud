@@ -1,6 +1,7 @@
 import cherrypy
 import os
-import xmlrpclib
+#import xmlrpclib
+import xmlrpc   # NOTE: Python version tweak (to revert: delete this and uncomment 'import xmlrpclib')
 import xml.etree.ElementTree as ET
 from random import randint
 
@@ -8,7 +9,7 @@ from helpers.auth import *
 from helpers.jinja import *
 from helpers.oneerror import *
 
-from getFunctions import getNovaInstance
+from .getFunctions import getNovaInstance
 
 
 class Machines(object):

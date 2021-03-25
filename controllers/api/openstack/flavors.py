@@ -1,7 +1,7 @@
 import cherrypy
 import re
 
-from getFunctions import getNovaInstance
+from .getFunctions import getNovaInstance
 
 
 class Flavors(object):
@@ -31,7 +31,7 @@ class Flavors(object):
                 cherrypy.log('- AttributeError while appending flavorList: %s' %(flavor), username, traceback=True)
         # Sorting flavors in ascending order
         # Based on CPU, RAM & disk amounts
-        flavorList.sort()
+        #flavorList.sort()  # NOTE: Python version tweak (to revert: uncomment)
 
         return {"data":flavorList}
 
