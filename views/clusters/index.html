@@ -1,0 +1,84 @@
+{% set menufocus = "clusters" %}
+{% set title = "Clusters" %}
+
+{% extends "layout.html" %}
+
+{% if (countLimit is none) or (countLimit is not number) %}
+    {% set countLimit = 10 %}
+{% endif %}
+
+{% block css %}
+<link rel="stylesheet" href="/assets/components/bootstrap/css/bootstrap-select-1.9.4.min.css" type="text/css" />
+<link rel="stylesheet" href="/assets/components/bootstrap/css/dataTables.bootstrap-1.10.10.min.css" type="text/css" />
+<link rel="stylesheet" href="/assets/css/machines/styles.css" type="text/css" />
+{% endblock %}
+
+{% block javascript %}
+<!-- Other -->
+<script src="/assets/components/bootstrap/js/bootstrap-select-1.9.4.min.js"></script>
+<script src="/assets/components/jquery/jquery.knob-1.2.11.min.js"></script>
+<script src="/assets/components/jquery/moment.js"></script>
+<!-- DataTables -->
+<script src="/assets/components/jquery/jquery.dataTables-1.10.10.min.js"></script>
+<script src="/assets/components/bootstrap/js/dataTables.bootstrap-1.10.10.min.js"></script>
+
+{% if cloudPlatform == "openstack" %}
+    <!-- Clusters -->
+    <script src="/assets/js/clusters/get-projects.js"></script>
+    <script src="/assets/js/clusters/get-clusters.js"></script>
+    <script src="/assets/js/clusters/get-cluster-templates.js"></script>
+    <script src="/assets/js/clusters/get-flavors.js"></script>
+    <script src="/assets/js/clusters/get-cluster-config.js"></script>
+    <script src="/assets/js/clusters/create-cluster.js"></script>
+    <script src="/assets/js/clusters/delete-cluster.js"></script>
+    <script>
+        $(function() {
+            addProjects();
+            setInterval(function (){
+                drawClusterTable();
+            }, 60000)
+        })
+    </script>
+{% endif %}
+
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <!-- NOTE: Embedding non-heading features within heading tags (as bellow) is bad practice for accessibility reasons.
+                I have copied this from the Machines page for consistency but should be changed. -->
+        <h1 class="page-header">Clusters
+        
+        <span class="pull-right">
+            Current Project:
+            <select style="height:34px" id="project-select" class="btn btn-default btn-xs" onchange="refreshSelectedProject()"></select>
+        </span>
+        
+        </h1>
+        
+        <div>
+            <button id="new-cluster-btn" type="button" class="btn btn-green" onclick="createClusterDialog()" title="Create New Cluster"> 
+                <span class="glyphicon glyphicon-plus" style="font-size:15px; margin-right:5px;"></span>New Cluster
+            </button>
+        
+            <span id="loading-clusters">
+                Loading Clusters: <div class="loader"></div>
+            </span>
+        </div>
+
+        <div class="tab-content">
+            <div class="tab-pane active">
+                <table id="cluster-list" class="table" cellspacing="0" width="100%"></table>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% include "clusters/create-modal.html" %}
+
+{% include "clusters/config-modal.html" %}
+
+{% include "clusters/delete-modal.html" %}
+
+{% endblock %}

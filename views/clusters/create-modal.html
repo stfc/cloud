@@ -1,0 +1,84 @@
+<div class="modal fade" id="create-cluster-dialog" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title">Create Cluster</h4>
+            </div>
+            <form id="create-cluster-form" class="form-horizontal" role="form">
+                <div class="modal-body">             
+                    
+                    <div class="form-group name-field">
+                        <label for="cluster-name" class="col-sm-3 control-label">Name</label>
+                        <div class="col-sm-8">
+                            <div class="input-group">
+                                <input type="text" id="cluster-name" class="form-control noEnterSubmit" data-type="text" required />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="cluster-template-select" class="col-sm-3 control-label">Cluster Template</label>
+                        <div class="col-sm-8">
+                            <span id="loading-cluster-templates">
+                                Loading Cluster Templates <div class="loader"></div>
+                            </span>
+                            <div class="input-group">
+                                <select id="cluster-template-select" class="form-control noEnterSubmit" required></select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="master-flavor-select" class="col-sm-3 control-label">Master Flavour</label>
+                        <div class="col-sm-8">
+                            <span id="loading-master-flavors">
+                                Loading Flavours <div class="loader"></div>
+                            </span>
+                            <div class="input-group">
+                                <select id="master-flavor-select" class="form-control noEnterSubmit" required></select>
+                            </div>
+                        </div>  
+                    </div>
+
+                    <div class="form-group">
+                        <label for="master-count" class="col-sm-3 control-label">Master Count</label>
+                        <div class="col-sm-8">
+                            <div class="input-group">
+                                <input type="number" id="master-count" class="form-control noEnterSubmit" value="1" min="1" required />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="node-flavor-select" class="col-sm-3 control-label">Node Flavour</label>
+                        <div class="col-sm-8">
+                            <span id="loading-node-flavors">
+                                Loading Flavours <div class="loader"></div>
+                            </span>
+                            <div class="input-group">
+                                <select id="node-flavor-select" class="form-control noEnterSubmit" required></select>
+                            </div>
+                        </div>  
+                    </div>
+
+                    <div class="form-group">
+                        <label for="node-count" class="col-sm-3 control-label">Node Count</label>
+                        <div class="col-sm-8">
+                            <div class="input-group">
+                                <input type="number" id="node-count" class="form-control noEnterSubmit" value="1" min="1" required />
+                            </div>
+                        </div>
+                    </div>
+                
+                </div>
+
+                <div class="modal-footer">
+                    <div id="cluster-create-response" align="right"></div>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button id="create-cluster-btn" type="button" class="btn btn-blue" onclick="submitClusterForm()">Create</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
