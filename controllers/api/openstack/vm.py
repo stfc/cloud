@@ -154,10 +154,9 @@ class VM(object):
             # Hostname/IP
             hostname = ""
             try:
-                serverIP = str(server.networks)
-                if serverIP != "{}":
-                    serverNetwork = self.getServerNetworkLabel(serverIP)
-                    hostname = server.networks[serverNetwork][0]
+                if server.networks:
+                    # Returns the first hostname
+                    hostname = list(server.networks.values())[0]
             except (ClientException, KeyError) as ex:
                 cherrypy.log('- Non-Fatal Exception when getting hostname/ip for VM: %s' %(server.name), username, traceback=True)
 
@@ -238,24 +237,6 @@ class VM(object):
             cherrypy.log('- %s - Loaded' %(server.name), username)
         cherrypy.log(str(instanceList))
         return {"data":instanceList}
-
-    # Starts on the first character of important info (e.g. image ID)
-    # Searches for the end of it and returns the end position
-    # This is then used in cutString() to extract the exact section of the string needed
-    def getInfoID(self, strName, startRange, endRange, search):
-        for i in range(startRange, endRange):
-            if strName[i] == search:
-                break
-        return i
-
-    def cutString(self, string, start, end):
-        return string[start:end]
-
-    def getServerNetworkLabel(self, serverIP):
-        serverNetworkEnd = self.getInfoID(serverIP, 3, len(serverIP), "'")
-        serverNetwork = self.cutString(serverIP, 3, serverNetworkEnd)
-        return serverNetwork
-
 
     '''
         Update VM info/state
