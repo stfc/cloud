@@ -5,7 +5,7 @@
  * @param {string} name - The name of the cluster (to display to the user)
  */
 function clusterConfigDialog(uuid, name) {
-    $('#cluster-config-response').hide()
+    $('#cluster-config-response').hide();
     createDownload(name, uuid);
     $('#cluster-config-dialog').modal('show');
 }
@@ -21,7 +21,7 @@ function createDownload(name, uuid){
     download_link.html("Download config file for <strong>"+name+"</strong>");
     download_link.attr("onclick", "showRetrieving('"+name+"')");
     
-    download_link.show()
+    download_link.show();
 }
 
 /**
@@ -30,9 +30,9 @@ function createDownload(name, uuid){
  * @param {string} name - The name of the cluster (to display to the user)
  */
 function showRetrieving(name){
-    $('#config-download').hide()
+    $('#config-download').hide();
 
     var responseDiv = $('#cluster-config-response');
-    responseDiv.html('Your download of the <strong>'+name+'</strong> config file should begin shortly...')
-    responseDiv.show()
+    responseDiv.html('Your download of the <strong>'+name+'</strong> config file should begin shortly...');
+    responseDiv.show();
 }

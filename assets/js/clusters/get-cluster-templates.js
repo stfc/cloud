@@ -12,7 +12,7 @@ function addClusterTemplates(){
         var selectElement = select[0];
         
         for (ct of json_returned["cluster_template_list"]){
-            selectElement.add(new Option(ct['name'], ct['uuid']))
+            selectElement.add(new Option(ct['name'], ct['uuid']));
         }
 
         $('#loading-cluster-templates').hide();

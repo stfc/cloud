@@ -4,7 +4,7 @@
  * Displays the Create Cluster modal.
  */
 function createClusterDialog() {
-    $('#cluster-create-response').hide()
+    $('#cluster-create-response').hide();
     $('#create-cluster-btn').prop('disabled', false); 
     $('#create-cluster-dialog').modal('show');
 }
@@ -16,9 +16,9 @@ function createClusterDialog() {
 function showLoading(){ // TODO: 
     $('#create-cluster-btn').prop('disabled', true); 
     var responseDiv = $('#cluster-create-response');
-    responseDiv.html('<span>Working on it <div class="loader"></div></span>')
-    responseDiv.css("color", "black")
-    responseDiv.show()
+    responseDiv.html('<span>Working on it <div class="loader"></div></span>');
+    responseDiv.css("color", "black");
+    responseDiv.show();
 }
 
 /**
@@ -27,9 +27,9 @@ function showLoading(){ // TODO:
  */
 function showError(){
     var responseDiv = $('#cluster-create-response');
-    responseDiv.html("The backend didn't like that.. ")
-    responseDiv.css("color", "red")
-    responseDiv.show()
+    responseDiv.html("The backend didn't like that.. ");
+    responseDiv.css("color", "red");
+    responseDiv.show();
 
     $('#create-cluster-btn').prop('disabled', false); 
 }
@@ -42,7 +42,7 @@ function showError(){
  * Closes the modal and requests a table re-draw when complete.
  */
 function submitClusterForm(){
-    showLoading()
+    showLoading();
 
     var formData = {
         'name' : $("#cluster-name").val().trim(),
@@ -59,15 +59,15 @@ function submitClusterForm(){
         data: formData,
         statusCode: {
             400: function() {
-                showError()
+                showError();
             },
             500: function() {
-                showError()
+                showError();
             }
         }
     }).done(function(){
         $('#create-cluster-dialog').modal('hide');
-        drawClusterTable()
-    })
+        drawClusterTable();
+    });
 
 }

@@ -11,12 +11,12 @@ function addFlavors(){
         var masterSelectElement = $('#master-flavor-select')[0];
         var nodeSelectElement = $('#node-flavor-select')[0];
         
-        masterSelectElement.add(new Option("Template Default", ""))
-        nodeSelectElement.add(new Option("Template Default", ""))
+        masterSelectElement.add(new Option("Template Default", ""));
+        nodeSelectElement.add(new Option("Template Default", ""));
 
         for (f of json_returned["data"]){
-            masterSelectElement.add(new Option(f['name'], f['name']))   // Flavour names act as ids
-            nodeSelectElement.add(new Option(f['name'], f['name']))
+            masterSelectElement.add(new Option(f['name'], f['name']));  // Flavour names act as ids
+            nodeSelectElement.add(new Option(f['name'], f['name']));
         }
 
         $('#loading-master-flavors').hide();

@@ -70,8 +70,8 @@ function drawClusterTable() {
         clusterTable.clear();
         for (c of json_returned["cluster_list"]){
 
-            c['delete'] = makeDeleteBtn(c['uuid'], c['name'])
-            c['config'] = makeConfigBtn(c['uuid'], c['name'])
+            c['delete'] = makeDeleteBtn(c['uuid'], c['name']);
+            c['config'] = makeConfigBtn(c['uuid'], c['name']);
             clusterTable.row.add(c).draw(false);
         }
 

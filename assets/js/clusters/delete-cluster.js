@@ -5,8 +5,8 @@
  * @param {string} name - The name of the cluster
  */
 function deleteClusterDialog(uuid, name) {
-    $('#cluster-to-delete').html(name)
-    $('#cluster-to-delete').data('uuid', uuid)
+    $('#cluster-to-delete').html(name);
+    $('#cluster-to-delete').data('uuid', uuid);
     $('#delete-cluster-dialog').modal('show');
 }
 
@@ -15,7 +15,7 @@ function deleteClusterDialog(uuid, name) {
  * Closes the modal and requests a table re-draw.
  */
 function deleteCluster(){
-    var uuid = $('#cluster-to-delete').data('uuid')
+    var uuid = $('#cluster-to-delete').data('uuid');
 
     $.ajax({
         type: "DELETE",
@@ -23,6 +23,6 @@ function deleteCluster(){
     }).done(function() {
         $('#delete-cluster-dialog').modal('hide');
         // NOTE: It may take Magnum up to ~1min to update the Status to DELETE_IN_PROGRESS
-        drawClusterTable()
+        drawClusterTable();
     });
 }
