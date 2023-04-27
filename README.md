@@ -1,5 +1,4 @@
-# cloud
-SCD Cloud webportal
+# SCD Cloud webportal
 
 Changed to using Flask
 
