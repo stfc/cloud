@@ -1,4 +1,7 @@
-<p>The SCD Cloud is a service developed for use within Scientific Computing and the wider STFC for developing and supporting projects. SCD Cloud usage must comply with the <a href="https://cloud.stfc.ac.uk/tos">Terms of Service</a>. If you have any questions regarding the following, please contact <a href="mailto:cloud-support@gridpp.rl.ac.uk">cloud-support@gridpp.rl.ac.uk</a></p>
+{% extends "base.html" %}
+{% block title %}SLA{% endblock %}
+{% block content %}
+<p>The SCD Cloud is a service developed for use within Scientific Computing and the wider STFC for developing and supporting projects. SCD Cloud usage must comply with the <a href="https://cloud.stfc.ac.uk/tos">Terms of Service</a>. If you have any questions regarding the following, please contact <a href="mailto:cloud-support@stfc.ac.uk">cloud-support@stfc.ac.uk</a></p>
 <p>By continuing to log in you accept the following Service Level for Virtual Machines (VMs):</p>
 <ul>
 
@@ -32,3 +35,4 @@
         <li>We reserve the right to reboot VMs without notice in order to preserve the integrity of the service.</li>
     </ul>
 </ul>
+{% endblock %}
