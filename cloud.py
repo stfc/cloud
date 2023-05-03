@@ -13,20 +13,15 @@ def terms():
 
 @app.route("/sla")
 def sla():
-    return "Service Level Agreement Page <h1>SLA<h1>"
+    return render_template("sla.html")
 
 # @app.route("/faqs")
 # def faqs():
 #     return "Frequently Asked Questions Page <h1>FAQ<h1>"
 
-# @app.route("/login", methods=["POST", "GET"])
-# def login():
-#     if request.method == "POST":
-#         user = request.form["username"]
-#         session["user"] = user
-#         return redirect(url_for("user"))
-#     else:
-#         return render_template("loginpage.html")
+@app.route("/login", methods=["POST", "GET"])
+def login():
+        return render_template("login.html")
 
 # @app.route("/user")
 # def user():

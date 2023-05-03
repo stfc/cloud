@@ -1,5 +1,33 @@
 {% extends "base.html" %}
 {% block title %}Home{% endblock %}
 {% block content %}
-Landing page
+<div class="row">
+    <div class="col-md-12">
+        <div class="jumbotron">
+            <h1 class="page-header">Welcome to the SCD Cloud</h1>
+            <img src="/static/images/clouds.png" style="float:right;width:300px;padding-left:40px" />
+            <p>
+                This service provides a private <abbr title="Infrastucture as a Service">IaaS</abbr> cloud resource for SCD users.
+                To start, select the login link at the top of the page and enter your federal username and password.
+            </p>
+            <p>
+                You should be aware that the SCD Cloud is still in active development. Please read the <a href="/tos">Terms of Service</a> before proceeding.
+            </p>
+            <p>
+                For any questions, problems or ideas email us at <a href="mailto:{{ email }}">{{ email }}</a>
+            </p>
+        </div>
+
+
+        <div>
+          <a href="http://{{ cloudPlatform }}.org" target="_blank">
+            <img src="/static/images/openstack.png" class="pull-left" style="height:55px;bottom:0px;margin-left:50px">
+          </a>
+          <a href="http://ceph.com" target="_blank">
+            <img src="/static/images/ceph.png" class="pull-right" style="height:60px;margin-right:50px;">
+          </a>
+        </div>
+    </div>
+</div>
+
 {% endblock %}
