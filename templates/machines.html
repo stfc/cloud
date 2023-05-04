@@ -1,0 +1,67 @@
+{% extends "layout.html" %}
+{% block title %}Machines{% endblock %}
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <h1 class="page-header">Machines 
+
+        <span id="projectChoiceBlock" class="pull-right">
+            Current Project:
+            <select style="height:34px" id="projectChoice" class="btn btn-default btn-xs" onchange="makeAjaxCalls()"></select>
+        </span>
+
+        </h1>
+        <div id="error" class="alert alert-danger text-center" role="alert" style="display:none">
+            <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> <span id="errormessage"></span>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        </div>
+       
+<div style="height: 34px">
+        <button id="newMachine" type="button" class="btn btn-green" onclick="createVMdialog()" title="Create New Machine"
+            {% if cloudPlatform == "openstack" %}disabled=""{% endif %}
+        >
+        <span class="glyphicon glyphicon-plus" style="font-size:15px"></span>&nbsp;&nbsp;New Machine</button>
+
+            <span>
+
+            <span id="loading-quota" style="display:none;">
+                &nbsp; Loading Quota: <div class="loader"></div>
+            </span>
+
+            <span id="loading-templates" style="display:none;">
+                &nbsp; Loading Images: <div class="loader"></div>
+            </span>
+
+            <span id="loading-flavors" style="display:none;">
+                &nbsp; Loading Flavors: <div class="loader"></div>
+            </span>
+    
+            <span id="loading-vms" style="display:none;">
+                &nbsp; Loading VMs: <div class="loader"></div>
+            </span>
+
+            <span id="loading-vnc" style="display:none;">
+                &nbsp; Loading GUI consoles: <div class="loader"></div>
+            </span>
+
+        </span>
+
+        <button type="button" class="btn btn-default" id="filter-button" title="Table Filters" onclick="filterTableDialog()"><span class="glyphicon glyphicon-cog"></span></button>
+        </span>
+</div>
+        <div class="tab-content">
+            <div class="tab-pane active">
+                <table id="vm-list" class="table" cellspacing="0" width="100%">
+                    <thead>
+                        <tr>
+                            {% include "/machines/openstack/columntitles.html" %}
+                        </tr>
+                    </thead>
+                </table>
+
+            </div>
+        </div>
+    </div>
+    {% include "/machines/openstack/resources.html" %}
+</div>
+{% endblock %}
