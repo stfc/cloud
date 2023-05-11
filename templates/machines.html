@@ -1,5 +1,75 @@
 {% extends "layout.html" %}
 {% block title %}Machines{% endblock %}
+
+{% if (countLimit is none) or (countLimit is not number) %}
+    {% set countLimit = 10 %}
+{% endif %}
+
+{% block css %}
+<link rel="stylesheet" href="/static/components/bootstrap/css/bootstrap-select-1.9.4.min.css" type="text/css" />
+<link rel="stylesheet" href="/static/components/bootstrap/css/dataTables.bootstrap-1.10.10.min.css" type="text/css" />
+<link rel="stylesheet" href="/static/css/machines/styles.css" type="text/css" />
+
+{% endblock %}
+
+{% block javascript %}
+
+<script>
+var INCLUDE_URI = "/static/js/machines/novnc/";
+var WSHOSTNAME = "{{ wshostname }}";
+var WSPORT = "{{ wsport }}";
+var EMAIL = "{{ email }}";
+var CLOUDPLATFORM = "openstack";
+if (CLOUDPLATFORM == "openstack") {
+    $(function() {
+        getProjects();
+        setInterval(function () {
+            quota.update();
+            drawTable(miscAction);
+            getVNC();
+        }, 60000);
+    });
+    $(function() {
+        setInterval(function () {
+            if (loadedProject['vnc'] === true && loadedProject['vms'] === true) {
+                addVNC();
+            }
+        }, 5000);
+    });
+    var count_limit = {{ countLimit }};
+}
+
+</script>
+<!-- Other -->
+<script src="/static/components/bootstrap/js/bootstrap-select-1.9.4.min.js"></script>
+<script src="/static/components/jquery/jquery.knob-1.2.11.min.js"></script>
+<script src="/static/components/jquery/moment.js"></script>
+<!-- DataTables -->
+<script src="/static/components/jquery/jquery.dataTables-1.10.10.min.js"></script>
+<script src="/static/components/bootstrap/js/dataTables.bootstrap-1.10.10.min.js"></script>
+
+<!-- Main -->
+<script src="/static/js/machines/openstack/listprojects.js"></script>
+<script src="/static/js/machines/openstack/quota.js"></script>
+<script src="/static/js/machines/openstack/listmachines.js"></script>
+<!-- novnc -->
+<script src="/static/js/machines/novnc/util.js"></script>
+<script src="/static/js/machines/openstack/vnc.js"></script>
+
+<!-- Manage -->
+<script src="/static/js/machines/manage/machine-boot.js"></script>
+<script src="/static/js/machines/openstack/manage/machine-delete.js"></script>
+<script src="/static/js/machines/openstack/manage/machine-create.js"></script>
+<!-- Create VM -->
+<script src="/static/js/machines/openstack/manage/create/pick-aquilon.js"></script>
+<script src="/static/js/machines/openstack/manage/create/pick-template.js"></script>
+<script src="/static/js/machines/openstack/manage/create/pick-resources.js"></script>
+<!-- Rename -->
+<script src="/static/js/machines/openstack/rename.js"></script>
+
+
+{% endblock %}
+
 {% block content %}
 <div class="row">
     <div class="col-md-12">
