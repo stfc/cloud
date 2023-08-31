@@ -15,21 +15,18 @@ def terms():
 def sla():
     return render_template("sla.html")
 
-# @app.route("/faqs")
-# def faqs():
-#     return "Frequently Asked Questions Page <h1>FAQ<h1>"
+@app.route("/machines")
+def machines():
+    return render_template("machines.html")
+
+@app.route("/faq")
+def faqs():
+    support_email = 'cloud-support@stfc.ac.uk'
+    return render_template("faqs.html", email=support_email)
 
 @app.route("/login", methods=["POST", "GET"])
 def login():
         return render_template("login.html")
 
-# @app.route("/user")
-# def user():
-#     if "user" in session:
-#         user = session["user"]
-#         return render_template("testpage.html", passdata=user)
-#     else:
-#         return redirect(url_for("login"))
-
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=True)

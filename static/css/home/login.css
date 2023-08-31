@@ -1,0 +1,34 @@
+div.member_signin {
+    text-align: center;
+}
+   
+p.member {
+    font-size: 19px;
+    color: #888888;
+    margin-bottom: 20px;
+}
+
+button.login {
+    width: 100%;
+    text-transform: uppercase;
+}
+
+button.close {
+    margin-top: -2px;
+    margin-right: 2px;
+}
+
+form#loginform div.input-group {
+    width: 100%;
+}
+
+form#loginform input[type="text"], form#loginform input[type="password"] {
+    color: #6C6C6C;
+    text-align: center;
+}
+
+.row {
+    border-radius: 4px;
+    padding: 20px;
+    margin: 0px;
+}
