@@ -1,0 +1,64 @@
+{% set menufocus = "history" %}
+{% set title = "Machine History" %}
+
+{% extends "layout.html" %}
+
+{% block css %}
+<link rel="stylesheet" href="/assets/components/bootstrap/css/bootstrap-select-1.9.4.min.css" type="text/css" />
+<link rel="stylesheet" href="/assets/components/bootstrap/css/dataTables.bootstrap-1.10.10.min.css" type="text/css" />
+<link rel="stylesheet" href="/assets/css/machines/styles.css" type="text/css" />
+{% endblock %}
+
+{% block javascript %}
+<!-- DataTables -->
+<script src="/assets/components/jquery/jquery.dataTables-1.10.10.min.js"></script>
+<script src="/assets/components/bootstrap/js/dataTables.bootstrap-1.10.10.min.js"></script>
+
+<script src="/assets/components/jquery/moment.js"></script>
+<script src="/assets/js/machines/history.js"></script>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <h1 class="page-header">History</h1>
+        <div id="error" class="alert alert-danger text-center" role="alert" style="display:none">
+            <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> <span id="errormessage"></span>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        </div>
+
+        <ul class="nav nav-tabs" role="tablist">
+            <li id="my-vms-history" class="active">
+                <a href="" class="filter" data-toggle="tab" onclick="drawHistory(); vmhistory.draw()">My History</a>
+            </li>
+            <li id="all-vms-history">
+                <a href="" class="filter" data-toggle="tab" onclick="drawHistory(); vmhistory.draw()">All History</a>
+            </li>
+        </ul>
+        <button type="button" class="btn btn-default" id="filter-button" title="Table Filters" onclick="filterTableDialog()"><span class="glyphicon glyphicon-cog"></span></button>
+        <div class="tab-content">
+            <div class="tab-pane active">
+                <table id="vm-history" class="table" cellspacing="0" width="100%">
+                    <thead>
+                        <tr>
+                            <th>VM Name</th>
+                            <th>Owner</th>
+                            <th>Project</th>
+                            <th>Hostname</th>
+                            <th>State</th>
+                            <th>Created</th>
+                            <th>End</th>
+                            <th>Type</th>
+                            <th>CPU</th>
+                            <th>RAM</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% include "machines/" + cloudPlatform + "/filters.html" %}
+
+{% endblock %}
